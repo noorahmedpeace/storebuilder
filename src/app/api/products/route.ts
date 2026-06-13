@@ -7,13 +7,14 @@ import {
 } from "@/lib/auth";
 import { isDatabaseConfigured } from "@/lib/db";
 import { createProduct, listProducts } from "@/lib/repositories";
+import { isUniqueConstraintError, zPrice } from "@/lib/validation";
 
 const createProductSchema = z.object({
   title: z.string().min(2),
   slug: z.string().min(2).regex(/^[a-z0-9-]+$/),
   description: z.string().optional(),
   sku: z.string().min(2),
-  price: z.union([z.string(), z.number()]),
+  price: zPrice,
 });
 
 export async function GET(request: Request) {
@@ -67,13 +68,19 @@ export async function POST(request: Request) {
   }
 
   const storeId = actor.storeId ?? "demo_store";
-  const product = await createProduct(storeId, parsed.data);
-
-  return NextResponse.json(
-    {
-      data: product,
-      message: "Product draft created.",
-    },
-    { status: 201 },
-  );
+  try {
+    const product = await createProduct(storeId, parsed.data);
+    return NextResponse.json(
+      { data: product, message: "Product draft created." },
+      { status: 201 },
+    );
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return NextResponse.json(
+        { error: "A product with that slug or SKU already exists." },
+        { status: 409 },
+      );
+    }
+    throw error;
+  }
 }
