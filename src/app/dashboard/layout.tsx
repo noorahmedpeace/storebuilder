@@ -11,6 +11,7 @@ const moduleLinks = [
   { href: "/dashboard/customers", label: "Customers" },
   { href: "/dashboard/catalog", label: "Catalog" },
   { href: "/dashboard/marketing", label: "Marketing" },
+  { href: "/dashboard/theme", label: "Theme & storefront" },
 ];
 
 export default async function DashboardLayout({

@@ -1,5 +1,7 @@
+import bcrypt from "bcryptjs";
 import { getDb, isDatabaseConfigured } from "@/lib/db";
 import { stores } from "@/lib/platform-data";
+import { getTheme } from "@/lib/themes";
 
 /** Platform-admin scope: stores ARE the tenants, so these are not storeId-scoped. */
 export async function listStores() {
@@ -51,5 +53,167 @@ export async function createStore(input: {
       },
     },
     include: { domains: true, subscription: true },
+  });
+}
+
+/** Slugify a store name into a URL-safe, unique-ish slug. */
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 40);
+}
+
+export type SignupInput = {
+  ownerName: string;
+  email: string;
+  password: string;
+  storeName: string;
+  storeSlug: string;
+  businessType?: string;
+  themeKey?: string;
+};
+
+export type SignupResult =
+  | { ok: true; storeId: string; slug: string; userId: string }
+  | { ok: false; reason: "email" | "slug" | "unknown" };
+
+/** Self-service signup: provisions a new tenant store + owner user in one go. */
+export async function createStoreWithOwner(
+  input: SignupInput,
+): Promise<SignupResult> {
+  const db = getDb();
+  const slug = slugify(input.storeSlug || input.storeName);
+  const email = input.email.trim().toLowerCase();
+
+  const [existingUser, existingStore] = await Promise.all([
+    db.user.findUnique({ where: { email }, select: { id: true } }),
+    db.store.findUnique({ where: { slug }, select: { id: true } }),
+  ]);
+  if (existingUser) return { ok: false, reason: "email" };
+  if (existingStore) return { ok: false, reason: "slug" };
+
+  const theme = getTheme(input.themeKey);
+  const passwordHash = await bcrypt.hash(input.password, 10);
+
+  try {
+    const result = await db.$transaction(async (tx) => {
+      const ownerRole = await tx.role.upsert({
+        where: { name: "STORE_OWNER" },
+        update: {},
+        create: { name: "STORE_OWNER" },
+      });
+
+      const user = await tx.user.create({
+        data: { email, name: input.ownerName, passwordHash },
+      });
+
+      const store = await tx.store.create({
+        data: {
+          name: input.storeName,
+          slug,
+          status: "TRIAL",
+          businessType: input.businessType ?? null,
+          themeKey: theme.key,
+          brandColor: theme.brandColor,
+          accentColor: theme.accentColor,
+          logoText: input.storeName.slice(0, 2).toUpperCase(),
+          tagline: `Welcome to ${input.storeName}`,
+          subscription: { create: { plan: "Starter", status: "trialing" } },
+          members: { create: { userId: user.id, roleId: ownerRole.id } },
+        },
+      });
+
+      return { storeId: store.id, slug: store.slug, userId: user.id };
+    });
+
+    return { ok: true, ...result };
+  } catch (error) {
+    console.error("Store signup failed", error);
+    return { ok: false, reason: "unknown" };
+  }
+}
+
+const STOREFRONT_FIELDS = {
+  id: true,
+  name: true,
+  slug: true,
+  businessType: true,
+  tagline: true,
+  logoText: true,
+  brandColor: true,
+  accentColor: true,
+  themeKey: true,
+  whatsapp: true,
+  announcement: true,
+  heroHeading: true,
+  heroSubheading: true,
+  currency: true,
+} as const;
+
+/** Public storefront data: a store by slug + its active products. */
+export async function getStoreBySlug(slug: string) {
+  const db = getDb();
+  return db.store.findUnique({
+    where: { slug },
+    select: {
+      ...STOREFRONT_FIELDS,
+      products: {
+        where: { status: "active" },
+        include: { variants: { take: 1 }, images: { take: 1 } },
+        orderBy: { createdAt: "desc" },
+        take: 24,
+      },
+    },
+  });
+}
+
+/** Current store branding/theme settings for the dashboard customizer. */
+export async function getStoreSettings(storeId: string) {
+  const db = getDb();
+  return db.store.findUnique({
+    where: { id: storeId },
+    select: { ...STOREFRONT_FIELDS, status: true },
+  });
+}
+
+export type StoreSettingsInput = {
+  name?: string;
+  tagline?: string | null;
+  logoText?: string | null;
+  brandColor?: string;
+  accentColor?: string;
+  themeKey?: string;
+  whatsapp?: string | null;
+  announcement?: string | null;
+  heroHeading?: string | null;
+  heroSubheading?: string | null;
+};
+
+export async function updateStoreSettings(
+  storeId: string,
+  input: StoreSettingsInput,
+) {
+  const db = getDb();
+  return db.store.update({
+    where: { id: storeId },
+    data: {
+      ...(input.name !== undefined ? { name: input.name } : {}),
+      ...(input.tagline !== undefined ? { tagline: input.tagline } : {}),
+      ...(input.logoText !== undefined ? { logoText: input.logoText } : {}),
+      ...(input.brandColor !== undefined ? { brandColor: input.brandColor } : {}),
+      ...(input.accentColor !== undefined ? { accentColor: input.accentColor } : {}),
+      ...(input.themeKey !== undefined ? { themeKey: input.themeKey } : {}),
+      ...(input.whatsapp !== undefined ? { whatsapp: input.whatsapp } : {}),
+      ...(input.announcement !== undefined ? { announcement: input.announcement } : {}),
+      ...(input.heroHeading !== undefined ? { heroHeading: input.heroHeading } : {}),
+      ...(input.heroSubheading !== undefined
+        ? { heroSubheading: input.heroSubheading }
+        : {}),
+    },
   });
 }

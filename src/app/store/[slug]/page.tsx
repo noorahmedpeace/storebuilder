@@ -1,15 +1,32 @@
-import Link from "next/link";
-import {
-  BadgeCheck,
-  Heart,
-  MessageCircle,
-  Search,
-  ShieldCheck,
-  ShoppingCart,
-  Star,
-  Truck,
-} from "lucide-react";
-import { storefrontProducts } from "@/lib/platform-data";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { MessageCircle, ShoppingBag, Star } from "lucide-react";
+import { getStoreBySlug } from "@/lib/repositories/stores";
+import { getTheme } from "@/lib/themes";
+
+function waLink(whatsapp: string | null, text: string) {
+  if (!whatsapp) return null;
+  const digits = whatsapp.replace(/[^0-9]/g, "");
+  if (!digits) return null;
+  return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const store = await getStoreBySlug(slug);
+  if (!store) return { title: "Store not found" };
+  const title = store.name;
+  const description = store.tagline ?? `Shop ${store.name} online.`;
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
+  };
+}
 
 export default async function StorefrontPage({
   params,
@@ -17,170 +34,149 @@ export default async function StorefrontPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const store = await getStoreBySlug(slug);
+  if (!store) notFound();
+
+  const theme = getTheme(store.themeKey);
+  const brand = store.brandColor || theme.brandColor;
+  const accent = store.accentColor || theme.accentColor;
+  const heading = store.heroHeading ?? store.name;
+  const sub =
+    store.heroSubheading ??
+    store.tagline ??
+    `Discover products from ${store.name}.`;
 
   return (
-    <main className="min-h-screen bg-[#fbfaf5] text-[#171717]">
-      <div className="bg-[#143c3a] px-5 py-2 text-center text-sm font-semibold text-white">
-        Free delivery in Lahore over Rs 10,000. WhatsApp support available.
-      </div>
+    <main className="min-h-screen text-[#171717]" style={{ background: theme.bg }}>
+      {store.announcement ? (
+        <div
+          className="px-5 py-2 text-center text-sm font-semibold text-white"
+          style={{ background: brand }}
+        >
+          {store.announcement}
+        </div>
+      ) : null}
 
-      <header className="sticky top-0 z-20 border-b border-black/10 bg-[#fbfaf5]/92 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-black/10 bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <Link href="/" className="text-2xl font-bold">
-            Oud Reserve
-          </Link>
-          <nav className="hidden items-center gap-6 text-sm font-semibold text-[#595f5c] md:flex">
-            <a href="#shop">Shop</a>
-            <a href="#reviews">Reviews</a>
-            <a href="#contact">Contact</a>
-            <Link href="/dashboard">Merchant admin</Link>
-          </nav>
-          <div className="flex items-center gap-2">
-            <button className="grid size-10 place-items-center rounded-lg border border-black/10 bg-white">
-              <Search size={18} />
-            </button>
-            <button className="grid size-10 place-items-center rounded-lg border border-black/10 bg-white">
-              <Heart size={18} />
-            </button>
-            <button className="grid size-10 place-items-center rounded-lg bg-[#143c3a] text-white">
-              <ShoppingCart size={18} />
-            </button>
+          <div className="flex items-center gap-3">
+            <span
+              className="grid size-10 place-items-center rounded-lg font-bold text-white"
+              style={{ background: brand }}
+            >
+              {store.logoText ?? store.name.slice(0, 2).toUpperCase()}
+            </span>
+            <span className="text-xl font-bold">{store.name}</span>
           </div>
+          {waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`) ? (
+            <a
+              href={waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`)!}
+              className="inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-bold text-white"
+              style={{ background: brand }}
+            >
+              <MessageCircle size={16} /> Order on WhatsApp
+            </a>
+          ) : null}
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-7xl gap-8 px-5 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
-        <div className="flex flex-col justify-center">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
-            {slug.replaceAll("-", " ")} storefront
-          </p>
-          <h1 className="mt-4 text-5xl font-bold leading-[1.02] md:text-7xl">
-            Luxury oud perfumes for modern gifting.
-          </h1>
-          <p className="mt-5 max-w-xl text-lg leading-8 text-[#555d59]">
-            Premium fragrance collections with COD, Raast, JazzCash, reviews,
-            schema-ready product pages, and WhatsApp assisted checkout.
-          </p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#shop"
-              className="inline-flex h-12 items-center justify-center rounded-lg bg-[#143c3a] px-5 text-sm font-bold text-white"
-            >
-              Shop collection
-            </a>
-            <a
-              href="https://wa.me/923001234567"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-black/15 bg-white px-5 text-sm font-bold text-[#143c3a]"
-            >
-              <MessageCircle size={17} /> Order on WhatsApp
-            </a>
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-black/10 bg-[#143c3a] p-4 shadow-2xl">
-          <div className="aspect-[4/3] rounded-lg bg-[linear-gradient(135deg,#f6ead4_0%,#d3a44d_42%,#143c3a_100%)]" />
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            {[
-              ["4.9/5", "customer rating"],
-              ["24h", "dispatch"],
-              ["COD", "available"],
-            ].map(([value, label]) => (
-              <div key={label} className="rounded-lg bg-white/10 p-4 text-white">
-                <p className="font-mono text-2xl font-bold">{value}</p>
-                <p className="text-sm text-white/70">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <section className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
+        <p
+          className="text-sm font-bold uppercase tracking-[0.2em]"
+          style={{ color: accent }}
+        >
+          {store.businessType || "Online store"}
+        </p>
+        <h1 className="mt-3 max-w-3xl text-5xl font-bold leading-[1.05] md:text-6xl">
+          {heading}
+        </h1>
+        <p className="mt-5 max-w-2xl text-lg leading-8 text-[#555d59]">{sub}</p>
       </section>
 
-      <section id="shop" className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
-        <div className="mb-7 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
-              Featured
+      <section id="shop" className="mx-auto max-w-7xl px-5 pb-16 lg:px-8">
+        <h2 className="mb-7 text-3xl font-bold">Products</h2>
+
+        {store.products.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-black/15 bg-white/60 p-12 text-center">
+            <ShoppingBag className="mx-auto" style={{ color: brand }} />
+            <p className="mt-3 font-bold">Coming soon</p>
+            <p className="mt-1 text-sm text-[#68716d]">
+              This store hasn&apos;t published any products yet.
             </p>
-            <h2 className="mt-2 text-4xl font-bold">Best sellers</h2>
           </div>
-          <span className="hidden rounded-lg bg-[#e7ece2] px-3 py-2 text-sm font-bold text-[#143c3a] sm:inline-flex">
-            SEO schema enabled
-          </span>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {storefrontProducts.map((product, index) => (
-            <article
-              key={product.name}
-              className="rounded-lg border border-black/10 bg-white p-4 shadow-sm"
-            >
-              <div
-                className={[
-                  "aspect-square rounded-lg",
-                  index === 0
-                    ? "bg-[linear-gradient(135deg,#143c3a,#d6a747)]"
-                    : index === 1
-                      ? "bg-[linear-gradient(135deg,#f3d7a0,#9a6128)]"
-                      : "bg-[linear-gradient(135deg,#f7f4ee,#c17f7c)]",
-                ].join(" ")}
-              />
-              <div className="mt-4 flex items-center justify-between">
-                <span className="rounded-lg bg-[#e7ece2] px-3 py-1 text-xs font-bold text-[#143c3a]">
-                  {product.tag}
-                </span>
-                <span className="flex items-center gap-1 text-sm font-bold text-[#9a6128]">
-                  <Star size={15} fill="currentColor" /> 4.9
-                </span>
-              </div>
-              <h3 className="mt-4 text-xl font-bold">{product.name}</h3>
-              <p className="mt-2 min-h-12 text-sm leading-6 text-[#5d6561]">
-                {product.description}
-              </p>
-              <div className="mt-5 flex items-center justify-between">
-                <span className="font-mono text-lg font-bold">
-                  {product.price}
-                </span>
-                <button className="rounded-lg bg-[#143c3a] px-4 py-2 text-sm font-bold text-white">
-                  Add to cart
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {store.products.map((product) => {
+              const price = product.variants[0]
+                ? Number(product.variants[0].price)
+                : null;
+              const order = waLink(
+                store.whatsapp,
+                `Hi ${store.name}, I'd like to order: ${product.title}`,
+              );
+              return (
+                <article
+                  key={product.id}
+                  className="overflow-hidden rounded-lg border border-black/10 bg-white shadow-sm"
+                >
+                  <div
+                    className="aspect-square w-full"
+                    style={{
+                      background: product.images[0]
+                        ? `center/cover no-repeat url(${product.images[0].url})`
+                        : `linear-gradient(135deg, ${brand}, ${accent})`,
+                    }}
+                  />
+                  <div className="p-4">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="rounded-lg px-2 py-1 text-xs font-bold text-white"
+                        style={{ background: accent }}
+                      >
+                        {store.currency}
+                      </span>
+                      <span className="flex items-center gap-1 text-sm font-bold" style={{ color: accent }}>
+                        <Star size={14} fill="currentColor" /> New
+                      </span>
+                    </div>
+                    <h3 className="mt-3 font-bold">{product.title}</h3>
+                    <p className="mt-1 line-clamp-2 min-h-10 text-sm text-[#5d6561]">
+                      {product.description}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="font-mono text-lg font-bold">
+                        {price !== null
+                          ? `${store.currency} ${price.toLocaleString()}`
+                          : "—"}
+                      </span>
+                      {order ? (
+                        <a
+                          href={order}
+                          className="rounded-lg px-3 py-2 text-sm font-bold text-white"
+                          style={{ background: brand }}
+                        >
+                          Order
+                        </a>
+                      ) : (
+                        <span className="rounded-lg px-3 py-2 text-sm font-bold text-white" style={{ background: brand }}>
+                          Order
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
 
-      <section
-        id="reviews"
-        className="border-y border-black/10 bg-[#e7ece2] px-5 py-12 lg:px-8"
-      >
-        <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-3">
-          {[
-            [Truck, "Fast courier dispatch", "Leopards, TCS, Call Courier, and Trax adapters."],
-            [ShieldCheck, "Trusted checkout", "COD, JazzCash, EasyPaisa, Raast, and Stripe ready."],
-            [BadgeCheck, "Verified reviews", "Product, offer, review, and rating schema supported."],
-          ].map(([Icon, title, text]) => (
-            <div key={title as string} className="rounded-lg bg-white p-6">
-              <Icon className="text-[#143c3a]" />
-              <h3 className="mt-5 text-xl font-bold">{title as string}</h3>
-              <p className="mt-3 leading-7 text-[#5d6561]">{text as string}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <footer id="contact" className="bg-[#143c3a] px-5 py-10 text-white lg:px-8">
+      <footer className="px-5 py-10 text-white lg:px-8" style={{ background: brand }}>
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <p className="text-2xl font-bold">Oud Reserve</p>
-            <p className="mt-2 text-white/70">
-              Powered by BazaarOS Commerce Cloud.
-            </p>
+            <p className="text-2xl font-bold">{store.name}</p>
+            <p className="mt-2 text-white/70">Powered by BazaarOS Commerce Cloud.</p>
           </div>
-          <a
-            href="https://wa.me/923001234567"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-bold text-[#143c3a]"
-          >
-            <MessageCircle size={17} /> WhatsApp support
-          </a>
         </div>
       </footer>
     </main>

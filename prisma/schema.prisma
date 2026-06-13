@@ -39,6 +39,16 @@ model Store {
   status      StoreStatus  @default(TRIAL)
   currency    String       @default("PKR")
   timezone    String       @default("Asia/Karachi")
+  businessType   String?
+  tagline        String?
+  logoText       String?
+  brandColor     String    @default("#143c3a")
+  accentColor    String    @default("#f3b74f")
+  themeKey       String    @default("modern-retail")
+  whatsapp       String?
+  announcement   String?
+  heroHeading    String?
+  heroSubheading String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   domains     Domain[]

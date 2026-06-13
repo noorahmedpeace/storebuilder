@@ -89,6 +89,13 @@ export default async function LoginPage({
             Sign in
           </button>
         </form>
+
+        <p className="mt-4 text-center text-sm text-[#4f5b58]">
+          Don&apos;t have a store?{" "}
+          <Link href="/signup" className="font-semibold text-[#143c3a]">
+            Create one
+          </Link>
+        </p>
       </div>
     </main>
   );

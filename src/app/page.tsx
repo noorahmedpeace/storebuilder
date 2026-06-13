@@ -108,16 +108,16 @@ export default function Home() {
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#dashboards"
+                href="/signup"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#143c3a] px-5 text-sm font-bold text-white transition hover:bg-[#0f2c2a]"
               >
-                View product preview <BarChart3 size={17} />
+                Create your store <Store size={17} />
               </a>
               <a
-                href="#architecture"
+                href="#dashboards"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-black/15 bg-white px-5 text-sm font-bold text-[#143c3a] transition hover:border-[#143c3a]"
               >
-                Architecture <Database size={17} />
+                View product preview <BarChart3 size={17} />
               </a>
             </div>
             <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -38,12 +38,20 @@ export function MarketingHeader() {
           ))}
         </nav>
 
-        <Link
-          href="/admin"
-          className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#143c3a] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0f2c2a]"
-        >
-          Open app <ChevronRight size={16} />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/login"
+            className="hidden h-10 items-center rounded-lg border border-black/15 bg-white px-4 text-sm font-semibold text-[#143c3a] transition hover:border-[#143c3a] sm:inline-flex"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#143c3a] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0f2c2a]"
+          >
+            Create store <ChevronRight size={16} />
+          </Link>
+        </div>
       </div>
     </header>
   );
@@ -122,7 +130,7 @@ export function Panel({
   children,
 }: {
   title: string;
-  action?: string;
+  action?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
