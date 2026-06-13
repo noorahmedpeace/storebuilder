@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bazaaros-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bazaaros
+    ports:
+      - "5432:5432"
+    volumes:
+      - bazaaros-postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: bazaaros-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  bazaaros-postgres:

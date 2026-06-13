@@ -1,65 +1,463 @@
-import Image from "next/image";
+import {
+  Activity,
+  BarChart3,
+  Bot,
+  Boxes,
+  Building2,
+  Check,
+  Cloud,
+  CreditCard,
+  Database,
+  Globe2,
+  Layers3,
+  LockKeyhole,
+  Megaphone,
+  PackageCheck,
+  Route,
+  Search,
+  ShieldCheck,
+  ShoppingBag,
+  Sparkles,
+  Store,
+  Truck,
+  Users,
+  Workflow,
+} from "lucide-react";
+import { MarketingHeader } from "@/components/app-shell";
+
+const stats = [
+  { label: "Target stores", value: "1,000+" },
+  { label: "Monthly visitors", value: "1M+" },
+  { label: "Peak requests", value: "500/s" },
+  { label: "Tenant tables", value: "store_id" },
+];
+
+const modules = [
+  {
+    icon: Store,
+    title: "Store operating system",
+    text: "Products, variants, inventory, orders, customers, coupons, invoices, returns, warehouses, and analytics in one tenant-safe console.",
+  },
+  {
+    icon: Building2,
+    title: "Super admin command center",
+    text: "Manage stores, subscriptions, domains, revenue, feature flags, agencies, support, white labels, audit trails, and platform KPIs.",
+  },
+  {
+    icon: Layers3,
+    title: "Theme and storefront engine",
+    text: "Mobile-first storefronts with sections, layout controls, typography, color settings, reviews, trust badges, wishlist, blog, cart, and checkout.",
+  },
+  {
+    icon: Bot,
+    title: "AI growth system",
+    text: "Generate descriptions, SEO metadata, alt text, FAQs, blogs, WhatsApp replies, campaigns, recommendations, and forecasting workflows.",
+  },
+  {
+    icon: CreditCard,
+    title: "Pakistan payments",
+    text: "COD, EasyPaisa, JazzCash, Raast, Stripe, refunds, partial refunds, webhooks, reconciliation, and transaction add-on billing.",
+  },
+  {
+    icon: Workflow,
+    title: "Automation engine",
+    text: "Order notifications, inventory reduction, invoices, abandoned cart reminders, review requests, win-back flows, and seasonal campaigns.",
+  },
+];
+
+const architecture = [
+  ["Frontend", "Next.js App Router, TypeScript, TailwindCSS, component system"],
+  ["Backend", "Server Actions, route handlers, Node.js services, webhook endpoints"],
+  ["Data", "PostgreSQL, Prisma, tenant isolation, indexes, audit logs"],
+  ["Scale", "Redis cache, Cloudflare CDN, R2 storage, Vercel deployment"],
+  ["Growth", "PostHog analytics, SEO engine, AI credits, campaign automation"],
+  ["Trust", "RBAC, 2FA, rate limits, WAF, backups, encrypted secrets"],
+];
+
+const roadmap = [
+  "Tenant core, auth, billing, RBAC",
+  "Merchant dashboard and catalog management",
+  "Storefront, checkout, payments, couriers",
+  "Themes, SEO, marketing, automation",
+  "AI growth assistant and marketplace",
+];
+
+const payments = ["COD", "EasyPaisa", "JazzCash", "Raast", "Stripe"];
+const couriers = ["Leopards", "TCS", "Call Courier", "Trax"];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-[#f7f4ee] text-[#171717]">
+      <MarketingHeader />
+
+      <section className="relative overflow-hidden border-b border-black/10 bg-[#f7f4ee]">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-16">
+          <div className="flex flex-col justify-center">
+            <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-lg border border-[#c6d1c7] bg-white px-3 py-2 text-sm font-semibold text-[#143c3a]">
+              <Sparkles size={16} />
+              Pakistan-first multi-tenant ecommerce SaaS
+            </div>
+            <h1 className="max-w-3xl text-5xl font-bold leading-[1.02] tracking-normal text-[#111] md:text-6xl">
+              BazaarOS Commerce Cloud
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#4f5b58]">
+              A production-grade ecommerce operating system for retailers,
+              wholesalers, distributors, franchises, and local brands that need
+              branded stores, payments, delivery, automation, SEO, and AI growth
+              without hiring developers.
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <a
+                href="#dashboards"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#143c3a] px-5 text-sm font-bold text-white transition hover:bg-[#0f2c2a]"
+              >
+                View product preview <BarChart3 size={17} />
+              </a>
+              <a
+                href="#architecture"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-black/15 bg-white px-5 text-sm font-bold text-[#143c3a] transition hover:border-[#143c3a]"
+              >
+                Architecture <Database size={17} />
+              </a>
+            </div>
+            <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {stats.map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-lg border border-black/10 bg-white p-4"
+                >
+                  <p className="font-mono text-xl font-bold text-[#143c3a]">
+                    {item.value}
+                  </p>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-[#6b6f69]">
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="rounded-lg border border-black/10 bg-[#102321] p-4 shadow-2xl">
+              <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <p className="text-sm font-semibold text-[#9fcfc0]">
+                    Super Admin
+                  </p>
+                  <h2 className="text-2xl font-bold text-white">
+                    Platform health
+                  </h2>
+                </div>
+                <span className="rounded-lg bg-[#f3b74f] px-3 py-2 text-sm font-bold text-[#1d1b16]">
+                  Live
+                </span>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-3">
+                {[
+                  ["MRR", "Rs 8.4M", "+18%"],
+                  ["Active stores", "1,284", "+64"],
+                  ["AI cost", "Rs 92k", "-7%"],
+                ].map(([label, value, trend]) => (
+                  <div
+                    key={label}
+                    className="rounded-lg border border-white/10 bg-white/[0.06] p-4"
+                  >
+                    <p className="text-sm text-white/60">{label}</p>
+                    <p className="mt-2 font-mono text-2xl font-bold text-white">
+                      {value}
+                    </p>
+                    <p className="mt-2 text-sm font-semibold text-[#9fcfc0]">
+                      {trend} this month
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                <div className="rounded-lg border border-white/10 bg-white/[0.06] p-4">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="font-semibold text-white">Revenue stream</h3>
+                    <Activity className="text-[#9fcfc0]" size={18} />
+                  </div>
+                  <div className="space-y-3">
+                    {[
+                      ["Subscriptions", "78%"],
+                      ["Transaction add-ons", "54%"],
+                      ["Premium themes", "32%"],
+                      ["WhatsApp automation", "46%"],
+                    ].map(([label, width]) => (
+                      <div key={label}>
+                        <div className="mb-1 flex justify-between text-sm text-white/70">
+                          <span>{label}</span>
+                          <span>{width}</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-white/10">
+                          <div
+                            className="h-2 rounded-full bg-[#50b79a]"
+                            style={{ width }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-white/10 bg-[#f7f4ee] p-4 text-[#171717]">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-[#54706b]">
+                        Storefront
+                      </p>
+                      <h3 className="text-xl font-bold">Perfume Brand</h3>
+                    </div>
+                    <PackageCheck className="text-[#143c3a]" />
+                  </div>
+                  <div className="mt-5 rounded-lg bg-white p-4">
+                    <div className="aspect-[4/3] rounded-lg bg-[linear-gradient(135deg,#143c3a,#d6a747_58%,#f7f4ee)]" />
+                    <p className="mt-4 text-sm font-bold">
+                      Oud Reserve Collection
+                    </p>
+                    <p className="mt-1 text-sm text-[#69716d]">
+                      Reviews, inventory, variants, SEO schema, WhatsApp order
+                      intent.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="platform" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+        <div className="max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
+            Complete platform
           </p>
+          <h2 className="mt-3 text-4xl font-bold tracking-normal">
+            Built as commerce infrastructure, not a website builder.
+          </h2>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {modules.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-lg border border-black/10 bg-white p-6 shadow-sm"
+            >
+              <item.icon className="text-[#143c3a]" size={26} />
+              <h3 className="mt-5 text-xl font-bold">{item.title}</h3>
+              <p className="mt-3 leading-7 text-[#5b625f]">{item.text}</p>
+            </article>
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section
+        id="dashboards"
+        className="border-y border-black/10 bg-[#e7ece2] px-5 py-16 lg:px-8"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
+                Merchant workspace
+              </p>
+              <h2 className="mt-3 text-4xl font-bold tracking-normal">
+                Every business gets its own admin panel and branded storefront.
+              </h2>
+              <p className="mt-4 leading-8 text-[#4f5b58]">
+                The merchant experience focuses on daily operations: catalog,
+                orders, inventory, customers, marketing, analytics, SEO, and
+                automation.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {payments.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-lg border border-[#b8c5b6] bg-white px-3 py-2 text-sm font-semibold"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-black/10 bg-white p-4 shadow-xl">
+              <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
+                <aside className="rounded-lg bg-[#143c3a] p-4 text-white">
+                  <p className="text-sm font-semibold text-white/60">
+                    Al Noor Electronics
+                  </p>
+                  <div className="mt-6 space-y-2 text-sm">
+                    {[
+                      ["Products", Boxes],
+                      ["Orders", ShoppingBag],
+                      ["Inventory", PackageCheck],
+                      ["Customers", Users],
+                      ["Marketing", Megaphone],
+                      ["SEO", Search],
+                    ].map(([label, Icon]) => (
+                      <div
+                        key={label as string}
+                        className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2"
+                      >
+                        <Icon size={16} />
+                        <span>{label as string}</span>
+                      </div>
+                    ))}
+                  </div>
+                </aside>
+                <div className="space-y-4">
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {[
+                      ["Orders", "342"],
+                      ["Revenue", "Rs 1.9M"],
+                      ["Conversion", "4.8%"],
+                    ].map(([label, value]) => (
+                      <div
+                        key={label}
+                        className="rounded-lg border border-black/10 p-4"
+                      >
+                        <p className="text-sm text-[#6b6f69]">{label}</p>
+                        <p className="mt-2 font-mono text-2xl font-bold">
+                          {value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="rounded-lg border border-black/10 p-4">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h3 className="font-bold">Recent orders</h3>
+                      <span className="text-sm font-semibold text-[#143c3a]">
+                        synced
+                      </span>
+                    </div>
+                    <div className="space-y-3">
+                      {[
+                        ["#PK-1924", "COD", "Ready for TCS", "Rs 14,500"],
+                        ["#PK-1925", "JazzCash", "Paid", "Rs 8,900"],
+                        ["#PK-1926", "Raast", "Packing slip", "Rs 22,100"],
+                      ].map((row) => (
+                        <div
+                          key={row[0]}
+                          className="grid grid-cols-4 gap-2 rounded-lg bg-[#f7f4ee] p-3 text-sm"
+                        >
+                          {row.map((cell) => (
+                            <span key={cell}>{cell}</span>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr]">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
+              Architecture
+            </p>
+            <h2 className="mt-3 text-4xl font-bold tracking-normal">
+              Tenant isolation across app, ORM, and database layers.
+            </h2>
+            <p className="mt-4 leading-8 text-[#4f5b58]">
+              Every tenant-owned table carries store_id, backed by application
+              guards, Prisma query scoping, database indexes, audit logs, and
+              operational monitoring.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {architecture.map(([title, text]) => (
+              <div
+                key={title}
+                className="rounded-lg border border-black/10 bg-white p-5"
+              >
+                <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-[#e7ece2] text-[#143c3a]">
+                  {title === "Frontend" && <Globe2 size={20} />}
+                  {title === "Backend" && <Route size={20} />}
+                  {title === "Data" && <Database size={20} />}
+                  {title === "Scale" && <Cloud size={20} />}
+                  {title === "Growth" && <Sparkles size={20} />}
+                  {title === "Trust" && <ShieldCheck size={20} />}
+                </div>
+                <h3 className="text-lg font-bold">{title}</h3>
+                <p className="mt-2 leading-7 text-[#5b625f]">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-black/10 bg-[#143c3a] px-5 py-16 text-white lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
+          <div className="rounded-lg border border-white/15 p-6">
+            <Truck className="text-[#f3b74f]" />
+            <h3 className="mt-5 text-2xl font-bold">Courier abstraction</h3>
+            <p className="mt-3 leading-7 text-white/70">
+              Ship through local courier adapters today and add future delivery
+              partners without rewriting order workflows.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {couriers.map((item) => (
+                <span key={item} className="rounded-lg bg-white/10 px-3 py-2 text-sm">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-lg border border-white/15 p-6">
+            <LockKeyhole className="text-[#f3b74f]" />
+            <h3 className="mt-5 text-2xl font-bold">Enterprise security</h3>
+            <p className="mt-3 leading-7 text-white/70">
+              RBAC, 2FA, rate limiting, webhook signatures, encrypted secrets,
+              WAF rules, automated backups, and activity audit trails.
+            </p>
+          </div>
+          <div className="rounded-lg border border-white/15 p-6">
+            <Megaphone className="text-[#f3b74f]" />
+            <h3 className="mt-5 text-2xl font-bold">Growth monetization</h3>
+            <p className="mt-3 leading-7 text-white/70">
+              Subscriptions, setup fees, transaction add-ons, themes, AI
+              credits, WhatsApp automation, SEO services, agencies, and white
+              label licensing.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="roadmap" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
+              Delivery roadmap
+            </p>
+            <h2 className="mt-3 text-4xl font-bold tracking-normal">
+              Start with the revenue core, then expand into marketplace and AI.
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {roadmap.map((item, index) => (
+              <div
+                key={item}
+                className="flex items-center gap-4 rounded-lg border border-black/10 bg-white p-4"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#143c3a] font-mono font-bold text-white">
+                  {index + 1}
+                </span>
+                <span className="font-semibold">{item}</span>
+                <Check className="ml-auto text-[#50a678]" size={20} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
