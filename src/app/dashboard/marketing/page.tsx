@@ -21,7 +21,7 @@ export default async function MarketingPage() {
     <Panel title="Coupons" action={`${result.data.length} active`}>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[480px] text-left text-sm">
-          <thead className="border-b border-black/10 text-xs uppercase tracking-[0.14em] text-[#6b6f69]">
+          <thead className="border-b border-zinc-200 text-xs uppercase tracking-[0.14em] text-zinc-500">
             <tr>
               <th className="py-3">Code</th>
               <th>Type</th>
@@ -30,7 +30,7 @@ export default async function MarketingPage() {
           </thead>
           <tbody>
             {result.data.map((coupon) => (
-              <tr key={coupon.id} className="border-b border-black/5">
+              <tr key={coupon.id} className="border-b border-zinc-100">
                 <td className="py-4 font-mono font-bold">{coupon.code}</td>
                 <td>{coupon.type}</td>
                 <td className="font-mono">{Number(coupon.value).toLocaleString()}</td>

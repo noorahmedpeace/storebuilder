@@ -23,15 +23,15 @@ export default async function CatalogPage() {
         {result.data.map((category) => (
           <div
             key={category.id}
-            className="flex items-center justify-between rounded-lg border border-black/10 bg-[#f7f4ee] p-4"
+            className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 p-4"
           >
             <div>
               <p className="font-bold">{category.name}</p>
-              <p className="text-sm text-[#68716d]">
+              <p className="text-sm text-zinc-500">
                 {category.children.length} subcategories
               </p>
             </div>
-            <span className="rounded-lg bg-[#e7ece2] px-3 py-1 text-xs font-bold text-[#143c3a]">
+            <span className="rounded-lg bg-zinc-100 px-3 py-1 text-xs font-bold text-[#143c3a]">
               {category._count.products} products
             </span>
           </div>

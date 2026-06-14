@@ -65,7 +65,7 @@ export default async function ThemePage() {
             <Link
               href={`/store/${settings.slug}`}
               target="_blank"
-              className="inline-flex items-center gap-1 rounded-lg bg-[#e7ece2] px-3 py-2 text-sm font-bold text-[#143c3a]"
+              className="inline-flex items-center gap-1 rounded-lg bg-zinc-100 px-3 py-2 text-sm font-bold text-[#143c3a]"
             >
               View store <ExternalLink size={14} />
             </Link>
@@ -85,11 +85,11 @@ export default async function ThemePage() {
               <img
                 src={settings.logoUrl}
                 alt="Store logo"
-                className="size-12 rounded-lg border border-black/10 object-cover"
+                className="size-12 rounded-lg border border-zinc-200 object-cover"
               />
             ) : null}
             <label className="block flex-1">
-              <span className="text-sm font-semibold text-[#4f5b58]">
+              <span className="text-sm font-semibold text-zinc-600">
                 Logo image (optional)
               </span>
               <input
@@ -102,12 +102,12 @@ export default async function ThemePage() {
           </div>
 
           <label className="mt-4 block">
-            <span className="text-sm font-semibold text-[#4f5b58]">Announcement bar</span>
+            <span className="text-sm font-semibold text-zinc-600">Announcement bar</span>
             <input
               name="announcement"
               defaultValue={settings.announcement ?? ""}
               placeholder="Free delivery over Rs 5,000"
-              className="mt-1 h-11 w-full rounded-lg border border-black/15 bg-[#f7f4ee] px-3 outline-none focus:border-[#143c3a]"
+              className="mt-1 h-11 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 outline-none focus:border-zinc-900"
             />
           </label>
 
@@ -122,7 +122,7 @@ export default async function ThemePage() {
             {THEMES.map((theme) => (
               <label
                 key={theme.key}
-                className="cursor-pointer rounded-lg border border-black/15 p-3 text-center text-xs font-semibold transition hover:border-[#143c3a] has-[:checked]:border-[#143c3a] has-[:checked]:bg-[#e7ece2]"
+                className="cursor-pointer rounded-lg border border-zinc-300 p-3 text-center text-xs font-semibold transition hover:border-[#143c3a] has-[:checked]:border-[#143c3a] has-[:checked]:bg-zinc-100"
               >
                 <input
                   type="radio"
@@ -141,7 +141,7 @@ export default async function ThemePage() {
               </label>
             ))}
           </div>
-          <p className="mt-3 text-xs text-[#68716d]">
+          <p className="mt-3 text-xs text-zinc-500">
             Picking a preset does not overwrite your custom colors above — set
             those to match if you want the preset look exactly.
           </p>
@@ -149,7 +149,7 @@ export default async function ThemePage() {
       </div>
 
       <Panel title="Save">
-        <p className="text-sm text-[#4f5b58]">
+        <p className="text-sm text-zinc-600">
           Changes apply instantly to your live storefront at{" "}
           <span className="font-mono">/store/{settings.slug}</span>.
         </p>
@@ -177,12 +177,12 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-sm font-semibold text-[#4f5b58]">{label}</span>
+      <span className="text-sm font-semibold text-zinc-600">{label}</span>
       <input
         name={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className="mt-1 h-11 w-full rounded-lg border border-black/15 bg-[#f7f4ee] px-3 outline-none focus:border-[#143c3a]"
+        className="mt-1 h-11 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 outline-none focus:border-zinc-900"
       />
     </label>
   );
@@ -203,9 +203,9 @@ function ColorField({
         type="color"
         name={name}
         defaultValue={defaultValue}
-        className="h-10 w-14 cursor-pointer rounded border border-black/15 bg-white"
+        className="h-10 w-14 cursor-pointer rounded border border-zinc-300 bg-white"
       />
-      <span className="text-sm font-semibold text-[#4f5b58]">{label}</span>
+      <span className="text-sm font-semibold text-zinc-600">{label}</span>
     </label>
   );
 }

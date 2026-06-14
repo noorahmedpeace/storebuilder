@@ -71,25 +71,25 @@ export default async function ProductsPage() {
             ] as const
           ).map(([name, label, placeholder]) => (
             <label key={name} className="block">
-              <span className="text-sm font-semibold text-[#4f5b58]">{label}</span>
+              <span className="text-sm font-semibold text-zinc-600">{label}</span>
               <input
                 name={name}
                 required
                 placeholder={placeholder}
-                className="mt-1 h-10 w-full rounded-lg border border-black/15 bg-[#f7f4ee] px-3 outline-none focus:border-[#143c3a]"
+                className="mt-1 h-10 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 outline-none focus:border-zinc-900"
               />
             </label>
           ))}
           <label className="block">
-            <span className="text-sm font-semibold text-[#4f5b58]">Description</span>
+            <span className="text-sm font-semibold text-zinc-600">Description</span>
             <textarea
               name="description"
               rows={2}
-              className="mt-1 w-full rounded-lg border border-black/15 bg-[#f7f4ee] px-3 py-2 outline-none focus:border-[#143c3a]"
+              className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 outline-none focus:border-zinc-900"
             />
           </label>
           <label className="block">
-            <span className="text-sm font-semibold text-[#4f5b58]">
+            <span className="text-sm font-semibold text-zinc-600">
               Product image
             </span>
             <input
@@ -123,7 +123,7 @@ export default async function ProductsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="border-b border-black/10 text-xs uppercase tracking-[0.14em] text-[#6b6f69]">
+              <thead className="border-b border-zinc-200 text-xs uppercase tracking-[0.14em] text-zinc-500">
                 <tr>
                   <th className="py-3">Product</th>
                   <th>Price</th>
@@ -135,10 +135,10 @@ export default async function ProductsPage() {
                 {result.data.map((product) => {
                   const isActive = product.status === "active";
                   return (
-                    <tr key={product.id} className="border-b border-black/5">
+                    <tr key={product.id} className="border-b border-zinc-100">
                       <td className="py-3">
                         <span className="block font-bold">{product.title}</span>
-                        <span className="block text-xs text-[#68716d]">
+                        <span className="block text-xs text-zinc-500">
                           {product.category?.name ?? "Uncategorized"}
                         </span>
                       </td>
@@ -148,7 +148,7 @@ export default async function ProductsPage() {
                           : "—"}
                       </td>
                       <td>
-                        <span className="rounded-lg bg-[#e7ece2] px-3 py-1 text-xs font-bold text-[#143c3a]">
+                        <span className="rounded-lg bg-zinc-100 px-3 py-1 text-xs font-bold text-[#143c3a]">
                           {product.status}
                         </span>
                       </td>
@@ -163,7 +163,7 @@ export default async function ProductsPage() {
                             />
                             <button
                               type="submit"
-                              className="rounded-lg border border-black/15 px-3 py-1 text-xs font-semibold transition hover:border-[#143c3a]"
+                              className="rounded-lg border border-zinc-300 px-3 py-1 text-xs font-semibold transition hover:border-[#143c3a]"
                             >
                               {isActive ? "Unpublish" : "Publish"}
                             </button>

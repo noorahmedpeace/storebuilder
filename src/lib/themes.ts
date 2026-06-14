@@ -23,17 +23,21 @@ export type ThemePreset = {
   bg: string;
   /** rounded corners style */
   radius: "rounded-md" | "rounded-lg" | "rounded-2xl" | "rounded-none";
+  /** heading typeface for the storefront */
+  heading: "sans" | "serif";
+  /** uppercase + letter-spacing on headings (editorial feel) */
+  uppercase?: boolean;
 };
 
 export const THEMES: ThemePreset[] = [
-  { key: "modern-retail", name: "Modern Retail", category: "General", brandColor: "#143c3a", accentColor: "#f3b74f", bg: "#fbfaf5", radius: "rounded-lg" },
-  { key: "grocery", name: "Grocery Express", category: "Grocery", brandColor: "#1f7a3d", accentColor: "#f6c445", bg: "#f6faf4", radius: "rounded-2xl" },
-  { key: "electronics", name: "Electro Pro", category: "Electronics", brandColor: "#0f2a52", accentColor: "#2f9be8", bg: "#f4f7fb", radius: "rounded-md" },
-  { key: "perfume", name: "Oud Luxury", category: "Perfume", brandColor: "#143c3a", accentColor: "#c79a4b", bg: "#fbf8f1", radius: "rounded-lg" },
-  { key: "fashion", name: "Fashion Grid", category: "Fashion", brandColor: "#1a1a1a", accentColor: "#e0567f", bg: "#faf7f7", radius: "rounded-none" },
-  { key: "gift", name: "Gift Box", category: "Gifts", brandColor: "#8a2846", accentColor: "#f3a8c0", bg: "#fdf6f8", radius: "rounded-2xl" },
-  { key: "wholesale", name: "Wholesale Ledger", category: "B2B", brandColor: "#22324a", accentColor: "#5aa0d6", bg: "#f5f6f8", radius: "rounded-md" },
-  { key: "luxury", name: "Luxury Noir", category: "Premium", brandColor: "#0d0d0d", accentColor: "#caa15a", bg: "#f7f5f1", radius: "rounded-none" },
+  { key: "modern-retail", name: "Modern Retail", category: "General", brandColor: "#143c3a", accentColor: "#f3b74f", bg: "#fbfaf5", radius: "rounded-lg", heading: "sans" },
+  { key: "grocery", name: "Grocery Express", category: "Grocery", brandColor: "#1f7a3d", accentColor: "#f6c445", bg: "#f6faf4", radius: "rounded-2xl", heading: "sans" },
+  { key: "electronics", name: "Electro Pro", category: "Electronics", brandColor: "#0f2a52", accentColor: "#2f9be8", bg: "#f4f7fb", radius: "rounded-md", heading: "sans" },
+  { key: "perfume", name: "Oud Luxury", category: "Perfume", brandColor: "#143c3a", accentColor: "#c79a4b", bg: "#fbf8f1", radius: "rounded-lg", heading: "serif" },
+  { key: "fashion", name: "Fashion Grid", category: "Fashion", brandColor: "#1a1a1a", accentColor: "#e0567f", bg: "#faf7f7", radius: "rounded-none", heading: "serif", uppercase: true },
+  { key: "gift", name: "Gift Box", category: "Gifts", brandColor: "#8a2846", accentColor: "#f3a8c0", bg: "#fdf6f8", radius: "rounded-2xl", heading: "serif" },
+  { key: "wholesale", name: "Wholesale Ledger", category: "B2B", brandColor: "#22324a", accentColor: "#5aa0d6", bg: "#f5f6f8", radius: "rounded-md", heading: "sans" },
+  { key: "luxury", name: "Luxury Noir", category: "Premium", brandColor: "#0d0d0d", accentColor: "#caa15a", bg: "#f7f5f1", radius: "rounded-none", heading: "serif", uppercase: true },
 ];
 
 export function getTheme(key: string | null | undefined): ThemePreset {

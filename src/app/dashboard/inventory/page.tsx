@@ -50,7 +50,7 @@ export default async function InventoryPage() {
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[680px] text-left text-sm">
-            <thead className="border-b border-black/10 text-xs uppercase tracking-[0.14em] text-[#6b6f69]">
+            <thead className="border-b border-zinc-200 text-xs uppercase tracking-[0.14em] text-zinc-500">
               <tr>
                 <th className="py-3">Product</th>
                 <th>SKU</th>
@@ -63,7 +63,7 @@ export default async function InventoryPage() {
               {result.data.map((item) => {
                 const low = item.quantity <= LOW_STOCK_THRESHOLD;
                 return (
-                  <tr key={item.id} className="border-b border-black/5">
+                  <tr key={item.id} className="border-b border-zinc-100">
                     <td className="py-3 font-bold">{item.variant.product.title}</td>
                     <td className="font-mono text-xs">{item.variant.sku}</td>
                     <td>{item.warehouse.name}</td>
@@ -87,7 +87,7 @@ export default async function InventoryPage() {
                             <input type="hidden" name="delta" value={delta} />
                             <button
                               type="submit"
-                              className="w-10 rounded-lg border border-black/15 py-1 text-xs font-semibold transition hover:border-[#143c3a]"
+                              className="w-10 rounded-lg border border-zinc-300 py-1 text-xs font-semibold transition hover:border-[#143c3a]"
                             >
                               {delta > 0 ? `+${delta}` : delta}
                             </button>

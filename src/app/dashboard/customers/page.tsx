@@ -56,12 +56,12 @@ export default async function CustomersPage() {
             ] as const
           ).map(([name, label, placeholder, required]) => (
             <label key={name} className="block">
-              <span className="text-sm font-semibold text-[#4f5b58]">{label}</span>
+              <span className="text-sm font-semibold text-zinc-600">{label}</span>
               <input
                 name={name}
                 required={required}
                 placeholder={placeholder}
-                className="mt-1 h-10 w-full rounded-lg border border-black/15 bg-[#f7f4ee] px-3 outline-none focus:border-[#143c3a]"
+                className="mt-1 h-10 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 outline-none focus:border-zinc-900"
               />
             </label>
           ))}
@@ -89,7 +89,7 @@ export default async function CustomersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[600px] text-left text-sm">
-              <thead className="border-b border-black/10 text-xs uppercase tracking-[0.14em] text-[#6b6f69]">
+              <thead className="border-b border-zinc-200 text-xs uppercase tracking-[0.14em] text-zinc-500">
                 <tr>
                   <th className="py-3">Name</th>
                   <th>Contact</th>
@@ -100,11 +100,11 @@ export default async function CustomersPage() {
               </thead>
               <tbody>
                 {result.data.map((customer) => (
-                  <tr key={customer.id} className="border-b border-black/5">
+                  <tr key={customer.id} className="border-b border-zinc-100">
                     <td className="py-3 font-bold">{customer.name}</td>
                     <td>{customer.email ?? customer.phone ?? "—"}</td>
                     <td className="font-mono">{customer.orders.length}</td>
-                    <td className="text-xs text-[#68716d]">
+                    <td className="text-xs text-zinc-500">
                       {customer.tags.length ? customer.tags.join(", ") : "—"}
                     </td>
                     <td>

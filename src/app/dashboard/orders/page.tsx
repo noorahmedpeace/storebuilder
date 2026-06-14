@@ -64,15 +64,15 @@ export default async function OrdersPage({
               href={`/dashboard/orders?order=${order.id}`}
               className={`grid gap-3 rounded-lg border p-4 text-sm transition md:grid-cols-4 ${
                 order.id === selectedId
-                  ? "border-[#143c3a] bg-[#e7ece2]"
-                  : "border-black/10 bg-[#f7f4ee] hover:border-[#143c3a]"
+                  ? "border-[#143c3a] bg-zinc-100"
+                  : "border-zinc-200 bg-zinc-50 hover:border-[#143c3a]"
               }`}
             >
               <span className="font-mono font-bold">
                 {order.id.slice(0, 8).toUpperCase()}
               </span>
               <span>{order.customer?.name ?? "Guest"}</span>
-              <span className="text-[#68716d]">{order.status}</span>
+              <span className="text-zinc-500">{order.status}</span>
               <span className="font-mono font-bold">
                 Rs {Number(order.total).toLocaleString()}
               </span>
@@ -86,7 +86,7 @@ export default async function OrdersPage({
           <div className="space-y-4 text-sm">
             <div>
               <p className="font-bold">Customer</p>
-              <p className="text-[#68716d]">{selected.customer?.name ?? "Guest"}</p>
+              <p className="text-zinc-500">{selected.customer?.name ?? "Guest"}</p>
             </div>
 
             <div>
@@ -105,7 +105,7 @@ export default async function OrdersPage({
               </ul>
             </div>
 
-            <div className="flex justify-between border-t border-black/10 pt-2 font-bold">
+            <div className="flex justify-between border-t border-zinc-200 pt-2 font-bold">
               <span>Total</span>
               <span className="font-mono">
                 Rs {Number(selected.total).toLocaleString()}
@@ -114,7 +114,7 @@ export default async function OrdersPage({
 
             <div>
               <p className="font-bold">Payment</p>
-              <p className="text-[#68716d]">
+              <p className="text-zinc-500">
                 {selected.payment
                   ? `${selected.payment.provider} · ${selected.payment.status}`
                   : "Unpaid"}
@@ -123,7 +123,7 @@ export default async function OrdersPage({
 
             <div>
               <p className="font-bold">Shipment</p>
-              <p className="text-[#68716d]">
+              <p className="text-zinc-500">
                 {selected.shipment
                   ? `${selected.shipment.courier} · ${selected.shipment.status}${
                       selected.shipment.trackingNo
@@ -144,7 +144,7 @@ export default async function OrdersPage({
                       <input type="hidden" name="status" value={status} />
                       <button
                         type="submit"
-                        className="rounded-lg border border-black/15 px-3 py-1 text-xs font-semibold transition hover:border-[#143c3a]"
+                        className="rounded-lg border border-zinc-300 px-3 py-1 text-xs font-semibold transition hover:border-[#143c3a]"
                       >
                         {status}
                       </button>
@@ -153,12 +153,12 @@ export default async function OrdersPage({
                 )}
                 {ALL_STATUSES.filter((s) => canTransition(selected.status, s)).length ===
                 0 ? (
-                  <span className="text-xs text-[#68716d]">Terminal status.</span>
+                  <span className="text-xs text-zinc-500">Terminal status.</span>
                 ) : null}
               </div>
             </div>
 
-            <details className="rounded-lg border border-black/10 p-3">
+            <details className="rounded-lg border border-zinc-200 p-3">
               <summary className="cursor-pointer font-bold">Packing slip</summary>
               <div className="mt-3 space-y-1 text-xs">
                 <p className="font-mono">ORDER {selected.id.slice(0, 8).toUpperCase()}</p>

@@ -91,18 +91,18 @@ export function SectionBuilder({
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
-      <div className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">Storefront sections</h2>
           <Link
             href={`/store/${slug}`}
             target="_blank"
-            className="inline-flex items-center gap-1 rounded-lg bg-[#e7ece2] px-3 py-2 text-sm font-bold text-[#143c3a]"
+            className="inline-flex items-center gap-1 rounded-lg bg-zinc-100 px-3 py-2 text-sm font-bold text-[#143c3a]"
           >
             View store <ExternalLink size={14} />
           </Link>
         </div>
-        <p className="mb-4 text-sm text-[#68716d]">
+        <p className="mb-4 text-sm text-zinc-500">
           Drag the handle to reorder. Toggle the eye to show/hide a section on
           your live storefront.
         </p>
@@ -119,8 +119,8 @@ export function SectionBuilder({
                 setDragIndex(null);
               }}
               onDragEnd={() => setDragIndex(null)}
-              className={`rounded-lg border bg-[#f7f4ee] p-3 transition ${
-                dragIndex === i ? "border-[#143c3a] opacity-60" : "border-black/10"
+              className={`rounded-lg border bg-zinc-50 p-3 transition ${
+                dragIndex === i ? "border-[#143c3a] opacity-60" : "border-zinc-200"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -134,7 +134,7 @@ export function SectionBuilder({
                   type="button"
                   onClick={() => toggle(i)}
                   title={section.visible ? "Hide" : "Show"}
-                  className="grid size-8 place-items-center rounded-lg border border-black/15 bg-white"
+                  className="grid size-8 place-items-center rounded-lg border border-zinc-300 bg-white"
                 >
                   {section.visible ? <Eye size={15} /> : <EyeOff size={15} />}
                 </button>
@@ -156,7 +156,7 @@ export function SectionBuilder({
                       value={section.props[field.key] ?? ""}
                       onChange={(e) => setProp(i, field.key, e.target.value)}
                       placeholder={field.label}
-                      className="h-9 w-full rounded-lg border border-black/15 bg-white px-3 text-sm outline-none focus:border-[#143c3a]"
+                      className="h-9 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm outline-none focus:border-zinc-900"
                     />
                   ))}
                 </div>
@@ -164,7 +164,7 @@ export function SectionBuilder({
             </div>
           ))}
           {sections.length === 0 ? (
-            <p className="rounded-lg border border-dashed border-black/15 p-6 text-center text-sm text-[#68716d]">
+            <p className="rounded-lg border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500">
               No sections. Add one from the right.
             </p>
           ) : null}
@@ -172,7 +172,7 @@ export function SectionBuilder({
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <h3 className="mb-3 font-bold">Add section</h3>
           <div className="grid gap-2">
             {ADDABLE_SECTIONS.map((type) => (
@@ -180,7 +180,7 @@ export function SectionBuilder({
                 key={type}
                 type="button"
                 onClick={() => addSection(type)}
-                className="flex items-center gap-2 rounded-lg border border-black/15 bg-[#f7f4ee] px-3 py-2 text-left text-sm font-semibold transition hover:border-[#143c3a]"
+                className="flex items-center gap-2 rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 text-left text-sm font-semibold transition hover:border-[#143c3a]"
               >
                 <Plus size={15} /> {SECTION_LABELS[type]}
               </button>
@@ -188,7 +188,7 @@ export function SectionBuilder({
           </div>
         </div>
 
-        <div className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <button
             type="button"
             onClick={save}

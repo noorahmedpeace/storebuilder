@@ -40,6 +40,7 @@ export default async function StorefrontPage({
   const brand = store.brandColor || theme.brandColor;
   const accent = store.accentColor || theme.accentColor;
   const sections = normalizeLayout(store.layout).filter((s) => s.visible);
+  const head = theme.heading === "serif" ? "font-serif" : "";
 
   return (
     <main className="min-h-screen text-[#171717]" style={{ background: theme.bg }}>
@@ -61,7 +62,7 @@ export default async function StorefrontPage({
                 {store.logoText ?? store.name.slice(0, 2).toUpperCase()}
               </span>
             )}
-            <span className="text-xl font-bold">{store.name}</span>
+            <span className={`text-xl font-bold ${head}`}>{store.name}</span>
           </div>
           {waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`) ? (
             <a
@@ -80,6 +81,7 @@ export default async function StorefrontPage({
           key={section.id}
           section={section}
           store={store}
+          theme={theme}
           brand={brand}
           accent={accent}
         />
@@ -98,15 +100,19 @@ export default async function StorefrontPage({
 function SectionView({
   section,
   store,
+  theme,
   brand,
   accent,
 }: {
   section: Section;
   store: StoreData;
+  theme: ReturnType<typeof getTheme>;
   brand: string;
   accent: string;
 }) {
   const p = section.props ?? {};
+  const head = theme.heading === "serif" ? "font-serif" : "";
+  const upper = theme.uppercase ? "uppercase tracking-wide" : "";
 
   switch (section.type) {
     case "announcement": {
@@ -130,17 +136,27 @@ function SectionView({
         store.tagline ||
         `Discover products from ${store.name}.`;
       return (
-        <section className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
-          <p
-            className="text-sm font-bold uppercase tracking-[0.2em]"
-            style={{ color: accent }}
-          >
-            {store.businessType || "Online store"}
-          </p>
-          <h1 className="mt-3 max-w-3xl text-5xl font-bold leading-[1.05] md:text-6xl">
-            {heading}
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-[#555d59]">{sub}</p>
+        <section className="relative overflow-hidden">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.07]"
+            style={{
+              background: `radial-gradient(60% 80% at 15% 0%, ${brand} 0%, transparent 60%), radial-gradient(50% 70% at 100% 20%, ${accent} 0%, transparent 55%)`,
+            }}
+          />
+          <div className="relative mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+            <p
+              className="text-sm font-bold uppercase tracking-[0.25em]"
+              style={{ color: accent }}
+            >
+              {store.businessType || "Online store"}
+            </p>
+            <h1
+              className={`mt-4 max-w-3xl text-5xl font-bold leading-[1.03] md:text-7xl ${head} ${upper}`}
+            >
+              {heading}
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#555d59]">{sub}</p>
+          </div>
         </section>
       );
     }
@@ -148,9 +164,11 @@ function SectionView({
     case "products":
       return (
         <section className="mx-auto max-w-7xl px-5 pb-16 lg:px-8">
-          <h2 className="mb-7 text-3xl font-bold">{p.title || "Products"}</h2>
+          <h2 className={`mb-7 text-3xl font-bold ${head} ${upper}`}>
+            {p.title || "Products"}
+          </h2>
           {store.products.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-black/15 bg-white/60 p-12 text-center">
+            <div className="rounded-2xl border border-dashed border-black/15 bg-white/60 p-12 text-center">
               <ShoppingBag className="mx-auto" style={{ color: brand }} />
               <p className="mt-3 font-bold">Coming soon</p>
               <p className="mt-1 text-sm text-[#68716d]">
@@ -164,6 +182,7 @@ function SectionView({
                   key={product.id}
                   product={product}
                   store={store}
+                  theme={theme}
                   brand={brand}
                   accent={accent}
                 />
@@ -177,7 +196,9 @@ function SectionView({
       if (!p.heading && !p.body) return null;
       return (
         <section className="mx-auto max-w-3xl px-5 py-12 text-center lg:px-8">
-          {p.heading ? <h2 className="text-3xl font-bold">{p.heading}</h2> : null}
+          {p.heading ? (
+            <h2 className={`text-3xl font-bold ${head} ${upper}`}>{p.heading}</h2>
+          ) : null}
           {p.body ? (
             <p className="mt-4 text-lg leading-8 text-[#555d59]">{p.body}</p>
           ) : null}
@@ -219,11 +240,13 @@ function SectionView({
 function ProductCard({
   product,
   store,
+  theme,
   brand,
   accent,
 }: {
   product: StoreData["products"][number];
   store: StoreData;
+  theme: ReturnType<typeof getTheme>;
   brand: string;
   accent: string;
 }) {
@@ -232,20 +255,25 @@ function ProductCard({
     store.whatsapp,
     `Hi ${store.name}, I'd like to order: ${product.title}`,
   );
+  const head = theme.heading === "serif" ? "font-serif" : "";
   return (
-    <article className="overflow-hidden rounded-lg border border-black/10 bg-white shadow-sm">
-      <div
-        className="aspect-square w-full"
-        style={{
-          background: product.images[0]
-            ? `center/cover no-repeat url(${product.images[0].url})`
-            : `linear-gradient(135deg, ${brand}, ${accent})`,
-        }}
-      />
+    <article
+      className={`group overflow-hidden border border-black/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${theme.radius}`}
+    >
+      <div className="aspect-square w-full overflow-hidden">
+        <div
+          className="h-full w-full transition duration-500 group-hover:scale-105"
+          style={{
+            background: product.images[0]
+              ? `center/cover no-repeat url(${product.images[0].url})`
+              : `linear-gradient(135deg, ${brand}, ${accent})`,
+          }}
+        />
+      </div>
       <div className="p-4">
         <div className="flex items-center justify-between">
           <span
-            className="rounded-lg px-2 py-1 text-xs font-bold text-white"
+            className="rounded-full px-2.5 py-1 text-[11px] font-bold text-white"
             style={{ background: accent }}
           >
             {store.currency}
@@ -254,20 +282,30 @@ function ProductCard({
             <Star size={14} fill="currentColor" /> New
           </span>
         </div>
-        <h3 className="mt-3 font-bold">{product.title}</h3>
+        <h3 className={`mt-3 text-lg font-bold ${head}`}>{product.title}</h3>
         <p className="mt-1 line-clamp-2 min-h-10 text-sm text-[#5d6561]">
           {product.description}
         </p>
         <div className="mt-4 flex items-center justify-between">
-          <span className="font-mono text-lg font-bold">
+          <span className="text-lg font-bold tracking-tight">
             {price !== null ? `${store.currency} ${price.toLocaleString()}` : "—"}
           </span>
-          <span
-            className="rounded-lg px-3 py-2 text-sm font-bold text-white"
-            style={{ background: brand }}
-          >
-            {order ? <a href={order}>Order</a> : "Order"}
-          </span>
+          {order ? (
+            <a
+              href={order}
+              className="rounded-lg px-3.5 py-2 text-sm font-bold text-white transition hover:opacity-90"
+              style={{ background: brand }}
+            >
+              Order
+            </a>
+          ) : (
+            <span
+              className="rounded-lg px-3.5 py-2 text-sm font-bold text-white"
+              style={{ background: brand }}
+            >
+              Order
+            </span>
+          )}
         </div>
       </div>
     </article>
