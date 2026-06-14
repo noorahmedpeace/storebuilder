@@ -226,3 +226,66 @@ export const marketplaceApps = [
   { name: "B2B Price Lists", type: "Wholesale", price: "Rs 8,000/mo" },
   { name: "AI Content Credits", type: "AI", price: "Usage based" },
 ];
+
+export const immersiveScenes = [
+  {
+    title: "Floating template cards",
+    detail: "Hero cards tilt with pointer input and assemble on scroll.",
+  },
+  {
+    title: "3D category icons",
+    detail: "Retail, food, fashion, electronics, grocery, and B2B scenes.",
+  },
+  {
+    title: "Parallax template gallery",
+    detail: "A carousel that previews store themes with depth and motion.",
+  },
+  {
+    title: "Marketplace scene",
+    detail: "Apps, payments, couriers, SEO, and AI modules shown as objects.",
+  },
+];
+
+export const builderModes = [
+  {
+    mode: "Compose",
+    detail: "Drag shelves, cards, product models, lights, blocks, and CTAs into a visual scene.",
+  },
+  {
+    mode: "Code",
+    detail: "Advanced users can edit JSON scene data, animations, object props, and page settings.",
+  },
+  {
+    mode: "Publish",
+    detail: "Export scene JSON and assets into the storefront engine for static or dynamic rendering.",
+  },
+];
+
+export const assetPipeline = [
+  "glTF/GLB models",
+  "Draco geometry compression",
+  "KTX2/Basis textures",
+  "LOD variants",
+  "Lazy-loaded canvases",
+  "HTML and noscript fallbacks",
+];
+
+export const immersiveChecklist = [
+  "SSR all headings, copy, metadata, FAQs, and CTAs for crawlability.",
+  "Load WebGL canvases client-side only with lightweight fallbacks.",
+  "Use aria-label and role img on decorative or meaningful canvases.",
+  "Respect prefers-reduced-motion and provide pause controls.",
+  "Keep initial page payload under strict performance budgets.",
+  "Use structured data for products, FAQs, organization, and breadcrumbs.",
+];
+
+export const immersiveRoadmap = [
+  "Architecture and UX spec",
+  "Asset and UI prototyping",
+  "Hero and category scenes",
+  "3D scene editor core",
+  "Template gallery animations",
+  "Drag-drop state sync",
+  "Export and publish pipeline",
+  "Performance, SEO, and accessibility audit",
+];

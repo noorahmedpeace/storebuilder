@@ -10,6 +10,7 @@ const links = [
   { href: "/operations", label: "Ops" },
   { href: "/commerce", label: "Commerce" },
   { href: "/themes", label: "Themes" },
+  { href: "/immersive-builder", label: "3D Builder" },
   { href: "/marketplace", label: "Apps" },
   { href: "/security", label: "Security" },
 ];
@@ -24,7 +25,7 @@ export function MarketingHeader() {
           </span>
           <span>
             <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-[#54706b]">
-              BazaarOS
+              StoreBuilder
             </span>
             <span className="block text-lg font-bold">Commerce Cloud</span>
           </span>

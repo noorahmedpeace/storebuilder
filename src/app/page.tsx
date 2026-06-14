@@ -95,16 +95,15 @@ export default function Home() {
           <div className="flex flex-col justify-center">
             <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-lg border border-[#c6d1c7] bg-white px-3 py-2 text-sm font-semibold text-[#143c3a]">
               <Sparkles size={16} />
-              Pakistan-first multi-tenant ecommerce SaaS
+              SEO-first online store builder
             </div>
             <h1 className="max-w-3xl text-5xl font-bold leading-[1.02] tracking-normal text-[#111] md:text-6xl">
-              BazaarOS Commerce Cloud
+              StoreBuilder Cloud
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-[#4f5b58]">
-              A production-grade ecommerce operating system for retailers,
-              wholesalers, distributors, franchises, and local brands that need
-              branded stores, payments, delivery, automation, SEO, and AI growth
-              without hiring developers.
+              Create a professional ecommerce website, manage products and
+              orders, accept payments, automate marketing, and grow with AI from
+              one cloud platform built for every business category.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <a
@@ -114,10 +113,10 @@ export default function Home() {
                 Create your store <Store size={17} />
               </a>
               <a
-                href="#dashboards"
+                href="/immersive-builder"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-black/15 bg-white px-5 text-sm font-bold text-[#143c3a] transition hover:border-[#143c3a]"
               >
-                View product preview <BarChart3 size={17} />
+                3D builder plan <BarChart3 size={17} />
               </a>
             </div>
             <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -225,6 +224,47 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/10 bg-[#102321] px-5 py-14 text-white lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f3b74f]">
+              Immersive advantage
+            </p>
+            <h2 className="mt-3 text-4xl font-bold tracking-normal">
+              A 3D store builder that still ranks in search.
+            </h2>
+            <p className="mt-4 max-w-2xl leading-8 text-white/72">
+              Rich 3D template cards, product scenes, and marketplace previews
+              sit above indexable HTML content, structured data, accessible
+              labels, and lightweight fallbacks.
+            </p>
+            <a
+              href="/immersive-builder"
+              className="mt-6 inline-flex h-12 items-center justify-center rounded-lg bg-white px-5 text-sm font-bold text-[#143c3a]"
+            >
+              View immersive builder blueprint
+            </a>
+          </div>
+          <div className="relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[radial-gradient(circle_at_20%_20%,#50b79a,transparent_24%),linear-gradient(135deg,#143c3a,#0a1716)] p-6">
+            <div className="absolute left-[8%] top-[12%] h-28 w-44 rotate-[-10deg] rounded-lg border border-white/20 bg-white/14 shadow-2xl" />
+            <div className="absolute right-[14%] top-[14%] h-36 w-32 rotate-[8deg] rounded-lg border border-white/20 bg-[#f3b74f]/80 shadow-2xl" />
+            <div className="absolute bottom-[18%] left-[22%] h-32 w-56 rotate-[5deg] rounded-lg border border-white/20 bg-white/18 shadow-2xl" />
+            <div className="absolute bottom-[10%] right-[12%] grid size-24 place-items-center rounded-full border border-white/20 bg-[#9fcfc0]/75 font-bold text-[#102321] shadow-2xl">
+              SEO
+            </div>
+            <div className="absolute inset-x-6 bottom-6 rounded-lg border border-white/10 bg-black/25 p-4 backdrop-blur">
+              <p className="font-mono text-xs text-white/60">
+                SSR text + lazy WebGL + accessible fallback
+              </p>
+              <p className="mt-2 text-sm text-white/82">
+                Designed to look premium without hiding content from search
+                engines.
+              </p>
             </div>
           </div>
         </div>

@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BazaarOS Commerce Cloud",
+  title: "StoreBuilder Cloud | Online Store Builder",
   description:
-    "A Pakistan-first multi-tenant ecommerce SaaS platform for stores, payments, delivery, automation, SEO, and AI growth.",
+    "Create an ecommerce website, manage orders, accept payments, automate marketing, and grow with AI from one SEO-first online store builder.",
 };
 
 export default function RootLayout({
