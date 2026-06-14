@@ -28,6 +28,8 @@ async function registerStore(formData: FormData) {
   const accentColor = String(formData.get("accentColor") ?? "").trim();
   const tagline = String(formData.get("tagline") ?? "").trim();
   const logoText = String(formData.get("logoText") ?? "").trim();
+  const fontKey = String(formData.get("fontKey") ?? "").trim();
+  const logoUrl = String(formData.get("logoUrl") ?? "").trim();
 
   if (!ownerName || !email || password.length < 6 || !storeName) {
     redirect("/signup?error=fields");
@@ -57,6 +59,8 @@ async function registerStore(formData: FormData) {
     accentColor: accentColor || undefined,
     tagline: tagline || undefined,
     logoText: logoText || undefined,
+    fontKey: fontKey || undefined,
+    logoUrl: logoUrl || undefined,
   });
 
   if (!result.ok) {

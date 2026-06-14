@@ -13,6 +13,8 @@ type Draft = {
   accentColor?: string;
   tagline?: string;
   logoText?: string;
+  fontKey?: string;
+  logoUrl?: string;
 };
 
 export function DraftFields() {
@@ -70,6 +72,8 @@ export function DraftFields() {
         <input type="hidden" name="accentColor" defaultValue={draft.accentColor ?? ""} />
         <input type="hidden" name="tagline" defaultValue={draft.tagline ?? ""} />
         <input type="hidden" name="logoText" defaultValue={draft.logoText ?? ""} />
+        <input type="hidden" name="fontKey" defaultValue={draft.fontKey ?? ""} />
+        <input type="hidden" name="logoUrl" defaultValue={draft.logoUrl ?? ""} />
       </>
     );
   }

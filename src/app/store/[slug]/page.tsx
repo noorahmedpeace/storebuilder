@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { MessageCircle, ShoppingBag, Star } from "lucide-react";
+import { Check, MessageCircle, ShoppingBag, Star } from "lucide-react";
 import { getStoreBySlug } from "@/lib/repositories/stores";
 import { getTheme } from "@/lib/themes";
+import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
 
 type StoreData = NonNullable<Awaited<ReturnType<typeof getStoreBySlug>>>;
@@ -40,10 +41,13 @@ export default async function StorefrontPage({
   const brand = store.brandColor || theme.brandColor;
   const accent = store.accentColor || theme.accentColor;
   const sections = normalizeLayout(store.layout).filter((s) => s.visible);
-  const head = theme.heading === "serif" ? "font-serif" : "";
+  const font = getFont(store.fontKey ?? theme.defaultFont);
 
   return (
-    <main className="min-h-screen text-[#171717]" style={{ background: theme.bg }}>
+    <main
+      className="min-h-screen text-[#171717]"
+      style={{ background: theme.bg, fontFamily: font.css }}
+    >
       <header className="sticky top-0 z-20 border-b border-black/10 bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
           <div className="flex items-center gap-3">
@@ -62,7 +66,7 @@ export default async function StorefrontPage({
                 {store.logoText ?? store.name.slice(0, 2).toUpperCase()}
               </span>
             )}
-            <span className={`text-xl font-bold ${head}`}>{store.name}</span>
+            <span className="text-xl font-bold">{store.name}</span>
           </div>
           {waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`) ? (
             <a
@@ -111,7 +115,7 @@ function SectionView({
   accent: string;
 }) {
   const p = section.props ?? {};
-  const head = theme.heading === "serif" ? "font-serif" : "";
+  const head = "";
   const upper = theme.uppercase ? "uppercase tracking-wide" : "";
 
   switch (section.type) {
@@ -232,6 +236,98 @@ function SectionView({
       );
     }
 
+    case "features": {
+      const items = (p.items || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (!items.length) return null;
+      return (
+        <section className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+          {p.title ? (
+            <h2 className={`mb-6 text-2xl font-bold ${upper}`}>{p.title}</h2>
+          ) : null}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {items.map((item) => (
+              <div
+                key={item}
+                className="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-4"
+              >
+                <span
+                  className="grid size-9 shrink-0 place-items-center rounded-lg text-white"
+                  style={{ background: brand }}
+                >
+                  <Check size={16} />
+                </span>
+                <span className="font-semibold">{item}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "reviews": {
+      const reviews = [p.r1, p.r2, p.r3]
+        .filter((r): r is string => Boolean(r && r.trim()))
+        .map((r) => {
+          const [name, ...rest] = r.split("—");
+          const quote = rest.join("—").trim();
+          return quote
+            ? { name: name.trim(), quote }
+            : { name: "Customer", quote: name.trim() };
+        });
+      if (!reviews.length) return null;
+      return (
+        <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+          <h2 className={`mb-6 text-3xl font-bold ${upper}`}>
+            {p.title || "What customers say"}
+          </h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {reviews.map((r, i) => (
+              <div key={i} className="rounded-xl border border-black/10 bg-white p-5">
+                <div className="flex gap-0.5" style={{ color: accent }}>
+                  {[0, 1, 2, 3, 4].map((s) => (
+                    <Star key={s} size={14} fill="currentColor" />
+                  ))}
+                </div>
+                <p className="mt-3 leading-7 text-[#444]">“{r.quote}”</p>
+                <p className="mt-3 text-sm font-bold">{r.name}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "faq": {
+      const faqs = [p.q1, p.q2, p.q3]
+        .filter((q): q is string => Boolean(q && q.trim()))
+        .map((q) => {
+          const [question, ...rest] = q.split("|");
+          return { question: question.trim(), answer: rest.join("|").trim() };
+        })
+        .filter((f) => f.question);
+      if (!faqs.length) return null;
+      return (
+        <section className="mx-auto max-w-3xl px-5 py-12 lg:px-8">
+          <h2 className={`mb-6 text-3xl font-bold ${upper}`}>
+            {p.title || "Frequently asked questions"}
+          </h2>
+          <div className="space-y-3">
+            {faqs.map((f, i) => (
+              <details key={i} className="rounded-xl border border-black/10 bg-white p-4">
+                <summary className="cursor-pointer font-bold">{f.question}</summary>
+                {f.answer ? (
+                  <p className="mt-2 leading-7 text-[#555]">{f.answer}</p>
+                ) : null}
+              </details>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     default:
       return null;
   }
@@ -255,7 +351,7 @@ function ProductCard({
     store.whatsapp,
     `Hi ${store.name}, I'd like to order: ${product.title}`,
   );
-  const head = theme.heading === "serif" ? "font-serif" : "";
+  const head = "";
   return (
     <article
       className={`group overflow-hidden border border-black/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${theme.radius}`}

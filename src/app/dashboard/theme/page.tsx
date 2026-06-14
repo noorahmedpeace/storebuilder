@@ -5,6 +5,7 @@ import { EmptyState, Panel } from "@/components/app-shell";
 import { getStoreSettings, updateStoreSettings } from "@/lib/repositories/stores";
 import { getSessionContext, requireStorePermission } from "@/lib/session";
 import { THEMES } from "@/lib/themes";
+import { FONTS } from "@/lib/fonts";
 import { saveUpload } from "@/lib/uploads";
 
 async function saveSettingsAction(formData: FormData) {
@@ -31,6 +32,7 @@ async function saveSettingsAction(formData: FormData) {
     announcement: orNull(str("announcement")),
     heroHeading: orNull(str("heroHeading")),
     heroSubheading: orNull(str("heroSubheading")),
+    fontKey: str("fontKey") || undefined,
     ...(logoUrl ? { logoUrl } : {}),
   });
 
@@ -145,6 +147,29 @@ export default async function ThemePage() {
             Picking a preset does not overwrite your custom colors above — set
             those to match if you want the preset look exactly.
           </p>
+        </Panel>
+
+        <Panel title="Font">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {FONTS.map((f) => (
+              <label
+                key={f.key}
+                className="cursor-pointer rounded-lg border border-zinc-300 p-3 transition hover:border-[#143c3a] has-[:checked]:border-[#143c3a] has-[:checked]:bg-zinc-100"
+              >
+                <input
+                  type="radio"
+                  name="fontKey"
+                  value={f.key}
+                  defaultChecked={(settings.fontKey ?? "inter") === f.key}
+                  className="sr-only"
+                />
+                <span className="block text-lg font-bold" style={{ fontFamily: f.css }}>
+                  {f.label}
+                </span>
+                <span className="text-xs text-zinc-500">{f.category}</span>
+              </label>
+            ))}
+          </div>
         </Panel>
       </div>
 

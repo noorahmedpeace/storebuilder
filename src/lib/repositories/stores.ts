@@ -82,6 +82,8 @@ export type SignupInput = {
   accentColor?: string;
   tagline?: string;
   logoText?: string;
+  logoUrl?: string;
+  fontKey?: string;
 };
 
 export type SignupResult =
@@ -129,6 +131,8 @@ export async function createStoreWithOwner(
           accentColor: input.accentColor || theme.accentColor,
           logoText:
             input.logoText || input.storeName.slice(0, 2).toUpperCase(),
+          logoUrl: input.logoUrl || null,
+          fontKey: input.fontKey || theme.defaultFont,
           tagline: input.tagline || `Welcome to ${input.storeName}`,
           subscription: { create: { plan: "Starter", status: "trialing" } },
           members: { create: { userId: user.id, roleId: ownerRole.id } },
@@ -160,6 +164,7 @@ const STOREFRONT_FIELDS = {
   heroHeading: true,
   heroSubheading: true,
   logoUrl: true,
+  fontKey: true,
   layout: true,
   currency: true,
 } as const;
@@ -185,6 +190,7 @@ export async function getStoreBySlug(slug: string) {
       heroSubheading:
         "A demo storefront powered by StoreBuilder Cloud with products, reviews, WhatsApp checkout, and SEO-ready content.",
       logoUrl: null,
+      fontKey: "playfair",
       layout: null,
       currency: "PKR",
       products: [
@@ -246,6 +252,7 @@ export type StoreSettingsInput = {
   announcement?: string | null;
   heroHeading?: string | null;
   heroSubheading?: string | null;
+  fontKey?: string | null;
 };
 
 export async function updateStoreSettings(
@@ -269,6 +276,7 @@ export async function updateStoreSettings(
       ...(input.heroSubheading !== undefined
         ? { heroSubheading: input.heroSubheading }
         : {}),
+      ...(input.fontKey !== undefined ? { fontKey: input.fontKey } : {}),
     },
   });
 }

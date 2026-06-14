@@ -9,7 +9,10 @@ export type SectionType =
   | "products"
   | "richText"
   | "banner"
-  | "whatsapp";
+  | "whatsapp"
+  | "features"
+  | "reviews"
+  | "faq";
 
 export type Section = {
   id: string;
@@ -25,12 +28,18 @@ export const SECTION_LABELS: Record<SectionType, string> = {
   richText: "Text block",
   banner: "Color banner",
   whatsapp: "WhatsApp CTA",
+  features: "Feature badges",
+  reviews: "Reviews",
+  faq: "FAQ",
 };
 
 /** Section types a merchant can add from the builder palette. */
 export const ADDABLE_SECTIONS: SectionType[] = [
   "richText",
   "banner",
+  "features",
+  "reviews",
+  "faq",
   "whatsapp",
   "products",
 ];
@@ -48,6 +57,22 @@ export const SECTION_FIELDS: Partial<Record<SectionType, { key: string; label: s
   banner: [{ key: "text", label: "Banner text" }],
   products: [{ key: "title", label: "Section title" }],
   whatsapp: [{ key: "text", label: "Button label" }],
+  features: [
+    { key: "title", label: "Title" },
+    { key: "items", label: "Items (comma separated)" },
+  ],
+  reviews: [
+    { key: "title", label: "Title" },
+    { key: "r1", label: "Review 1 (Name — quote)" },
+    { key: "r2", label: "Review 2 (Name — quote)" },
+    { key: "r3", label: "Review 3 (Name — quote)" },
+  ],
+  faq: [
+    { key: "title", label: "Title" },
+    { key: "q1", label: "Q1 (Question | Answer)" },
+    { key: "q2", label: "Q2 (Question | Answer)" },
+    { key: "q3", label: "Q3 (Question | Answer)" },
+  ],
 };
 
 export const DEFAULT_LAYOUT: Section[] = [

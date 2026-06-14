@@ -50,6 +50,7 @@ model Store {
   heroHeading    String?
   heroSubheading String?
   logoUrl        String?
+  fontKey        String?
   layout         Json?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
