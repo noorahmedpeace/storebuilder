@@ -107,7 +107,7 @@ export default function Home() {
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <a
-                href="/signup"
+                href="/create"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#143c3a] px-5 text-sm font-bold text-white transition hover:bg-[#0f2c2a]"
               >
                 Create your store <Store size={17} />

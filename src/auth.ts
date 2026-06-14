@@ -40,11 +40,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!passwordMatches) return null;
 
         const membership = user.memberships[0];
+        const role = user.isSuperAdmin
+          ? "SUPER_ADMIN"
+          : membership?.role?.name ?? "STORE_STAFF";
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: membership?.role?.name ?? "STORE_STAFF",
+          role,
           storeId: membership?.storeId ?? null,
         };
       },

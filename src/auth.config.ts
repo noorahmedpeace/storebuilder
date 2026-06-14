@@ -14,10 +14,19 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request }) {
       const isLoggedIn = Boolean(auth?.user);
+      const role = auth?.user?.role;
       const { pathname } = request.nextUrl;
-      const isProtected =
-        pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
-      if (isProtected) return isLoggedIn;
+
+      // Super-admin console: platform owner only.
+      if (pathname.startsWith("/admin")) {
+        if (!isLoggedIn) return false;
+        if (role !== "SUPER_ADMIN") {
+          return Response.redirect(new URL("/dashboard", request.nextUrl));
+        }
+        return true;
+      }
+
+      if (pathname.startsWith("/dashboard")) return isLoggedIn;
       return true;
     },
     jwt({ token, user }) {

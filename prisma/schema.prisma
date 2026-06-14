@@ -83,6 +83,7 @@ model User {
   name        String
   passwordHash String?
   twoFactorEnabled Boolean  @default(false)
+  isSuperAdmin Boolean      @default(false)
   createdAt   DateTime      @default(now())
   memberships StoreMember[]
 }

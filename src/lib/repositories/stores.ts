@@ -78,6 +78,10 @@ export type SignupInput = {
   storeSlug: string;
   businessType?: string;
   themeKey?: string;
+  brandColor?: string;
+  accentColor?: string;
+  tagline?: string;
+  logoText?: string;
 };
 
 export type SignupResult =
@@ -121,10 +125,11 @@ export async function createStoreWithOwner(
           status: "TRIAL",
           businessType: input.businessType ?? null,
           themeKey: theme.key,
-          brandColor: theme.brandColor,
-          accentColor: theme.accentColor,
-          logoText: input.storeName.slice(0, 2).toUpperCase(),
-          tagline: `Welcome to ${input.storeName}`,
+          brandColor: input.brandColor || theme.brandColor,
+          accentColor: input.accentColor || theme.accentColor,
+          logoText:
+            input.logoText || input.storeName.slice(0, 2).toUpperCase(),
+          tagline: input.tagline || `Welcome to ${input.storeName}`,
           subscription: { create: { plan: "Starter", status: "trialing" } },
           members: { create: { userId: user.id, roleId: ownerRole.id } },
         },

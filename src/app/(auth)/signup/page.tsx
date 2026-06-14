@@ -5,7 +5,7 @@ import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import { isDatabaseConfigured } from "@/lib/db";
 import { createStoreWithOwner } from "@/lib/repositories/stores";
-import { THEMES } from "@/lib/themes";
+import { DraftFields } from "./draft-fields";
 
 export const metadata = { title: "Create your store - StoreBuilder" };
 
@@ -24,6 +24,10 @@ async function registerStore(formData: FormData) {
   const storeName = String(formData.get("storeName") ?? "").trim();
   const businessType = String(formData.get("businessType") ?? "").trim();
   const themeKey = String(formData.get("themeKey") ?? "modern-retail");
+  const brandColor = String(formData.get("brandColor") ?? "").trim();
+  const accentColor = String(formData.get("accentColor") ?? "").trim();
+  const tagline = String(formData.get("tagline") ?? "").trim();
+  const logoText = String(formData.get("logoText") ?? "").trim();
 
   if (!ownerName || !email || password.length < 6 || !storeName) {
     redirect("/signup?error=fields");
@@ -49,6 +53,10 @@ async function registerStore(formData: FormData) {
     storeSlug: storeName,
     businessType,
     themeKey,
+    brandColor: brandColor || undefined,
+    accentColor: accentColor || undefined,
+    tagline: tagline || undefined,
+    logoText: logoText || undefined,
   });
 
   if (!result.ok) {
@@ -87,9 +95,9 @@ export default async function SignupPage({
           </span>
         </Link>
 
-        <h1 className="text-3xl font-bold">Launch your store in minutes</h1>
+        <h1 className="text-3xl font-bold">Create your account to publish</h1>
         <p className="mt-2 text-sm text-[#4f5b58]">
-          No coding needed. Create your account, pick a theme, and start selling.
+          Your design is ready. Sign up to save and publish your store.
         </p>
 
         {error ? (
@@ -99,51 +107,27 @@ export default async function SignupPage({
         ) : null}
 
         <form action={registerStore} className="mt-6 space-y-4">
+          <DraftFields />
           <div className="grid gap-4 sm:grid-cols-2">
             <Field name="ownerName" label="Your name" placeholder="Ali Khan" required />
             <Field name="email" label="Email" type="email" placeholder="ali@email.com" required />
             <Field name="password" label="Password" type="password" placeholder="min 6 characters" required />
-            <Field name="storeName" label="Store name" placeholder="Ali Electronics" required />
-            <Field name="businessType" label="Business type" placeholder="Electronics, Grocery..." />
-          </div>
-
-          <div>
-            <span className="text-sm font-semibold text-[#4f5b58]">Pick a theme</span>
-            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {THEMES.map((theme, i) => (
-                <label
-                  key={theme.key}
-                  className="cursor-pointer rounded-lg border border-black/15 p-3 text-center text-xs font-semibold transition hover:border-[#143c3a] has-[:checked]:border-[#143c3a] has-[:checked]:bg-[#e7ece2]"
-                >
-                  <input
-                    type="radio"
-                    name="themeKey"
-                    value={theme.key}
-                    defaultChecked={i === 0}
-                    className="sr-only"
-                  />
-                  <span
-                    className="mx-auto mb-2 block h-8 w-full rounded"
-                    style={{
-                      background: `linear-gradient(135deg, ${theme.brandColor}, ${theme.accentColor})`,
-                    }}
-                  />
-                  {theme.name}
-                </label>
-              ))}
-            </div>
           </div>
 
           <button
             type="submit"
             className="h-11 w-full rounded-lg bg-[#143c3a] font-semibold text-white transition hover:bg-[#0f2c2a]"
           >
-            Create my store
+            Publish my store
           </button>
         </form>
 
         <p className="mt-4 text-center text-sm text-[#4f5b58]">
-          Already have a store?{" "}
+          Haven&apos;t designed yet?{" "}
+          <Link href="/create" className="font-semibold text-[#143c3a]">
+            Build your store
+          </Link>
+          {" · "}
           <Link href="/login" className="font-semibold text-[#143c3a]">
             Sign in
           </Link>

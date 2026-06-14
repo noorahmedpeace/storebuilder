@@ -47,7 +47,7 @@ export function MarketingHeader() {
             Sign in
           </Link>
           <Link
-            href="/signup"
+            href="/create"
             className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#143c3a] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0f2c2a]"
           >
             Create store <ChevronRight size={16} />

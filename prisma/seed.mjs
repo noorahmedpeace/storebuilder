@@ -57,11 +57,16 @@ async function main() {
     create: { storeId: store.id, userId: owner.id, roleId: roles.STORE_OWNER.id },
   });
 
-  // Platform admin (login: admin@bazaaros.pk / password123) — no store scope.
+  // Platform super admin (login: admin@bazaaros.pk / password123) — owner-only.
   await prisma.user.upsert({
     where: { email: "admin@bazaaros.pk" },
-    update: { passwordHash },
-    create: { email: "admin@bazaaros.pk", name: "Platform Admin", passwordHash },
+    update: { passwordHash, isSuperAdmin: true },
+    create: {
+      email: "admin@bazaaros.pk",
+      name: "Platform Admin",
+      passwordHash,
+      isSuperAdmin: true,
+    },
   });
 
   // --- Category ---
