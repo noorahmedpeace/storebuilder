@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
+import { Prisma } from "@prisma/client";
 import { getDb, isDatabaseConfigured } from "@/lib/db";
 import { stores } from "@/lib/platform-data";
 import { getTheme } from "@/lib/themes";
+import type { Section } from "@/lib/sections";
 
 /** Platform-admin scope: stores ARE the tenants, so these are not storeId-scoped. */
 export async function listStores() {
@@ -152,6 +154,8 @@ const STOREFRONT_FIELDS = {
   announcement: true,
   heroHeading: true,
   heroSubheading: true,
+  logoUrl: true,
+  layout: true,
   currency: true,
 } as const;
 
@@ -185,6 +189,7 @@ export type StoreSettingsInput = {
   name?: string;
   tagline?: string | null;
   logoText?: string | null;
+  logoUrl?: string | null;
   brandColor?: string;
   accentColor?: string;
   themeKey?: string;
@@ -205,6 +210,7 @@ export async function updateStoreSettings(
       ...(input.name !== undefined ? { name: input.name } : {}),
       ...(input.tagline !== undefined ? { tagline: input.tagline } : {}),
       ...(input.logoText !== undefined ? { logoText: input.logoText } : {}),
+      ...(input.logoUrl !== undefined ? { logoUrl: input.logoUrl } : {}),
       ...(input.brandColor !== undefined ? { brandColor: input.brandColor } : {}),
       ...(input.accentColor !== undefined ? { accentColor: input.accentColor } : {}),
       ...(input.themeKey !== undefined ? { themeKey: input.themeKey } : {}),
@@ -215,5 +221,14 @@ export async function updateStoreSettings(
         ? { heroSubheading: input.heroSubheading }
         : {}),
     },
+  });
+}
+
+/** Persists the storefront section layout for a store. */
+export async function updateStoreLayout(storeId: string, layout: Section[]) {
+  const db = getDb();
+  return db.store.update({
+    where: { id: storeId },
+    data: { layout: layout as unknown as Prisma.InputJsonValue },
   });
 }

@@ -1,24 +1,35 @@
 import { revalidatePath } from "next/cache";
 import { EmptyState, Panel } from "@/components/app-shell";
 import {
+  addProductImage,
   createProduct,
   deleteProduct,
   listProducts,
   updateProduct,
 } from "@/lib/repositories/products";
 import { getSessionContext, requireStorePermission } from "@/lib/session";
+import { saveUpload } from "@/lib/uploads";
 
 async function createProductAction(formData: FormData) {
   "use server";
   const storeId = await requireStorePermission("products:write");
+  const title = String(formData.get("title") ?? "");
   try {
-    await createProduct(storeId, {
-      title: String(formData.get("title") ?? ""),
+    const product = await createProduct(storeId, {
+      title,
       slug: String(formData.get("slug") ?? ""),
       sku: String(formData.get("sku") ?? ""),
       price: String(formData.get("price") ?? "0"),
       description: String(formData.get("description") ?? ""),
     });
+
+    const image = formData.get("image");
+    if (image instanceof File && image.size > 0) {
+      const upload = await saveUpload(image, storeId);
+      if (upload.ok) {
+        await addProductImage(storeId, product.id, upload.url, title);
+      }
+    }
   } catch (error) {
     console.error("Create product failed", error);
     return;
@@ -75,6 +86,17 @@ export default async function ProductsPage() {
               name="description"
               rows={2}
               className="mt-1 w-full rounded-lg border border-black/15 bg-[#f7f4ee] px-3 py-2 outline-none focus:border-[#143c3a]"
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm font-semibold text-[#4f5b58]">
+              Product image
+            </span>
+            <input
+              type="file"
+              name="image"
+              accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+              className="mt-1 w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#143c3a] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
             />
           </label>
           <button

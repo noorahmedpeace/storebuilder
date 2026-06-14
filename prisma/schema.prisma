@@ -49,6 +49,8 @@ model Store {
   announcement   String?
   heroHeading    String?
   heroSubheading String?
+  logoUrl        String?
+  layout         Json?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   domains     Domain[]

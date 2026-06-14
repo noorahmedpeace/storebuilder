@@ -134,3 +134,22 @@ export async function deleteProduct(storeId: string, id: string) {
   });
   return result.count > 0;
 }
+
+/** Attaches an image to a product, tenant-scoped. Returns null if not owned. */
+export async function addProductImage(
+  storeId: string,
+  productId: string,
+  url: string,
+  alt?: string,
+) {
+  const db = getDb();
+  const product = await db.product.findFirst({
+    where: tenantWhere(storeId, { id: productId }),
+    select: { id: true },
+  });
+  if (!product) return null;
+
+  return db.productImage.create({
+    data: { productId: product.id, url, alt: alt ?? null },
+  });
+}

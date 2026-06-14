@@ -5,12 +5,20 @@ import { EmptyState, Panel } from "@/components/app-shell";
 import { getStoreSettings, updateStoreSettings } from "@/lib/repositories/stores";
 import { getSessionContext, requireStorePermission } from "@/lib/session";
 import { THEMES } from "@/lib/themes";
+import { saveUpload } from "@/lib/uploads";
 
 async function saveSettingsAction(formData: FormData) {
   "use server";
   const storeId = await requireStorePermission("store:write");
   const str = (k: string) => String(formData.get(k) ?? "").trim();
   const orNull = (v: string) => (v === "" ? null : v);
+
+  let logoUrl: string | undefined;
+  const logo = formData.get("logo");
+  if (logo instanceof File && logo.size > 0) {
+    const upload = await saveUpload(logo, storeId);
+    if (upload.ok) logoUrl = upload.url;
+  }
 
   await updateStoreSettings(storeId, {
     name: str("name") || undefined,
@@ -23,6 +31,7 @@ async function saveSettingsAction(formData: FormData) {
     announcement: orNull(str("announcement")),
     heroHeading: orNull(str("heroHeading")),
     heroSubheading: orNull(str("heroSubheading")),
+    ...(logoUrl ? { logoUrl } : {}),
   });
 
   const slug = str("slug");
@@ -70,6 +79,28 @@ export default async function ThemePage() {
             <Field name="heroHeading" label="Hero heading" defaultValue={settings.heroHeading ?? ""} />
             <Field name="heroSubheading" label="Hero subheading" defaultValue={settings.heroSubheading ?? ""} />
           </div>
+          <div className="mt-4 flex items-center gap-3">
+            {settings.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={settings.logoUrl}
+                alt="Store logo"
+                className="size-12 rounded-lg border border-black/10 object-cover"
+              />
+            ) : null}
+            <label className="block flex-1">
+              <span className="text-sm font-semibold text-[#4f5b58]">
+                Logo image (optional)
+              </span>
+              <input
+                type="file"
+                name="logo"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+                className="mt-1 w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#143c3a] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+              />
+            </label>
+          </div>
+
           <label className="mt-4 block">
             <span className="text-sm font-semibold text-[#4f5b58]">Announcement bar</span>
             <input

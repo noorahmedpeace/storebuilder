@@ -36,6 +36,9 @@ yarn-error.log*
 # local embedded postgres data
 /.pgdata
 
+# local uploaded media (use R2/S3 in production)
+/public/uploads
+
 # vercel
 .vercel
 
