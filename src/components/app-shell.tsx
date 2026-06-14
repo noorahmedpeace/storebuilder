@@ -23,15 +23,17 @@ export function MarketingHeader() {
           <span className="grid size-10 place-items-center rounded-lg bg-[#143c3a] text-white">
             <ShoppingBag size={20} />
           </span>
-          <span>
+          <span className="leading-none">
             <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-[#54706b]">
               StoreBuilder
             </span>
-            <span className="block text-lg font-bold">Commerce Cloud</span>
+            <span className="font-display block text-lg font-bold">
+              Commerce Cloud
+            </span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-4 text-sm font-medium text-[#4f5b58] xl:flex">
+        <nav className="hidden items-center gap-4 text-sm font-semibold text-[#4f5b58] xl:flex">
           {links.map((link) => (
             <Link key={link.href} href={link.href}>
               {link.label}
@@ -77,7 +79,7 @@ export function PageShell({
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
             {eyebrow}
           </p>
-          <h1 className="mt-3 text-4xl font-bold tracking-normal md:text-5xl">
+          <h1 className="font-display mt-3 text-4xl font-bold tracking-normal md:text-5xl">
             {title}
           </h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-[#4f5b58]">

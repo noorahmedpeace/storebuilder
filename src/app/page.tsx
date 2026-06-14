@@ -110,10 +110,10 @@ export default function Home() {
               <Sparkles size={16} />
               SEO-first online store builder
             </div>
-            <h1 className="max-w-3xl text-5xl font-bold leading-[1.02] tracking-normal text-[#111] md:text-6xl">
+            <h1 className="font-display max-w-3xl text-5xl font-bold leading-[0.98] tracking-normal text-[#101514] md:text-7xl">
               StoreBuilder Cloud
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#4f5b58]">
+            <p className="mt-5 max-w-2xl text-lg font-medium leading-8 text-[#4f5b58]">
               Create a professional ecommerce website, manage products and
               orders, accept payments, automate marketing, and grow with AI from
               one cloud platform built for every business category.
