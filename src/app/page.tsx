@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { MarketingHeader } from "@/components/app-shell";
 import { ImmersiveShowcase } from "@/components/immersive-showcase";
+import { IntegrationMotionShowcase } from "@/components/integration-motion-showcase";
 
 const stats = [
   { label: "Target stores", value: "1,000+" },
@@ -162,23 +163,7 @@ export default function Home() {
               View immersive builder blueprint
             </a>
           </div>
-          <div className="relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[radial-gradient(circle_at_20%_20%,#50b79a,transparent_24%),linear-gradient(135deg,#143c3a,#0a1716)] p-6">
-            <div className="absolute left-[8%] top-[12%] h-28 w-44 rotate-[-10deg] rounded-lg border border-white/20 bg-white/14 shadow-2xl" />
-            <div className="absolute right-[14%] top-[14%] h-36 w-32 rotate-[8deg] rounded-lg border border-white/20 bg-[#f3b74f]/80 shadow-2xl" />
-            <div className="absolute bottom-[18%] left-[22%] h-32 w-56 rotate-[5deg] rounded-lg border border-white/20 bg-white/18 shadow-2xl" />
-            <div className="absolute bottom-[10%] right-[12%] grid size-24 place-items-center rounded-full border border-white/20 bg-[#9fcfc0]/75 font-bold text-[#102321] shadow-2xl">
-              SEO
-            </div>
-            <div className="absolute inset-x-6 bottom-6 rounded-lg border border-white/10 bg-black/25 p-4 backdrop-blur">
-              <p className="font-mono text-xs text-white/60">
-                SSR text + lazy WebGL + accessible fallback
-              </p>
-              <p className="mt-2 text-sm text-white/82">
-                Designed to look premium without hiding content from search
-                engines.
-              </p>
-            </div>
-          </div>
+          <IntegrationMotionShowcase />
         </div>
       </section>
 
