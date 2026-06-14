@@ -119,24 +119,25 @@ export default function Home() {
                 3D builder plan <BarChart3 size={17} />
               </a>
             </div>
-            <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {stats.map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-lg border border-black/10 bg-white p-4"
-                >
-                  <p className="font-mono text-xl font-bold text-[#143c3a]">
-                    {item.value}
-                  </p>
-                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-[#6b6f69]">
-                    {item.label}
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
 
           <ImmersiveShowcase />
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:col-span-2">
+            {stats.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-lg border border-black/10 bg-white p-4"
+              >
+                <p className="font-mono text-xl font-bold text-[#143c3a]">
+                  {item.value}
+                </p>
+                <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-[#6b6f69]">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
