@@ -93,7 +93,7 @@ export default function Home() {
 
       <section className="relative overflow-hidden border-b border-black/10 bg-[#f7f4ee]">
         <video
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className="absolute inset-0 h-full w-full object-cover opacity-100"
           src="/media/ambient-hero-background.mp4"
           autoPlay
           muted
@@ -102,8 +102,8 @@ export default function Home() {
           preload="metadata"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4ee]/95 via-[#f7f4ee]/78 to-[#f7f4ee]/58" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ee]/80 via-transparent to-[#f7f4ee]/92" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4ee]/92 via-[#f7f4ee]/48 to-[#f7f4ee]/8" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ee]/45 via-transparent to-[#f7f4ee]/70" />
         <div className="relative z-10 mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-16">
           <div className="flex flex-col justify-center">
             <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-lg border border-[#c6d1c7] bg-white px-3 py-2 text-sm font-semibold text-[#143c3a]">
