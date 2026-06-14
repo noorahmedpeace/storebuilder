@@ -1,6 +1,7 @@
 import { Bot, FileSearch, Link2, Megaphone, RefreshCcw, Workflow } from "lucide-react";
 import Link from "next/link";
 import { PageShell, Panel } from "@/components/app-shell";
+import { AiMotionShowcase } from "@/components/ai-motion-showcase";
 import { aiJobs, automations, seoAudits } from "@/lib/platform-data";
 
 const seoSchema = [
@@ -29,6 +30,33 @@ export default function GrowthPage() {
       title="SEO, AI content, and automation for every merchant."
       description="This is the growth layer from the PDF: metadata, sitemaps, schema, audits, AI content credits, WhatsApp/email campaigns, abandoned carts, post-purchase flows, and autonomous campaign generation."
     >
+      <div className="mb-6 grid gap-6 xl:grid-cols-[0.9fr_1.1fr] xl:items-center">
+        <Panel title="Autonomous AI builder" action="Motion preview">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              "Product descriptions",
+              "SEO metadata",
+              "Campaign ideas",
+              "WhatsApp replies",
+              "Analytics insights",
+              "Theme suggestions",
+            ].map((item) => (
+              <div
+                key={item}
+                className="rounded-lg border border-black/10 bg-[#f7f4ee] p-4 text-sm font-bold text-[#143c3a]"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 leading-8 text-[#5d6561]">
+            Merchants can turn a business goal into store content, SEO tasks,
+            customer replies, and campaign workflows from one assistant.
+          </p>
+        </Panel>
+        <AiMotionShowcase />
+      </div>
+
       <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <Panel title="SEO audit center" action="Schema ready">
           <div className="space-y-3">
