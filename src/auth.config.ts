@@ -12,21 +12,9 @@ export const authConfig = {
   pages: { signIn: "/login" },
   providers: [],
   callbacks: {
-    authorized({ auth, request }) {
-      const isLoggedIn = Boolean(auth?.user);
-      const role = auth?.user?.role;
-      const { pathname } = request.nextUrl;
-
-      // Super-admin console: platform owner only.
-      if (pathname.startsWith("/admin")) {
-        if (!isLoggedIn) return false;
-        if (role !== "SUPER_ADMIN") {
-          return Response.redirect(new URL("/dashboard", request.nextUrl));
-        }
-        return true;
-      }
-
-      if (pathname.startsWith("/dashboard")) return isLoggedIn;
+    // Route protection + custom-domain routing live in middleware.ts (it wraps
+    // auth() with a function), so this callback simply allows the request.
+    authorized() {
       return true;
     },
     jwt({ token, user }) {

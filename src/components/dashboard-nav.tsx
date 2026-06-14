@@ -6,6 +6,7 @@ import {
   BadgePercent,
   Boxes,
   FolderTree,
+  Globe,
   LayoutDashboard,
   LayoutTemplate,
   Package,
@@ -27,6 +28,7 @@ export const NAV: NavItem[] = [
   { href: "/dashboard/marketing", label: "Marketing", icon: BadgePercent },
   { href: "/dashboard/theme", label: "Theme", icon: Palette },
   { href: "/dashboard/builder", label: "Builder", icon: LayoutTemplate },
+  { href: "/dashboard/domains", label: "Domains", icon: Globe },
 ];
 
 function useActive() {
