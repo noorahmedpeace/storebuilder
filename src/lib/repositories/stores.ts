@@ -161,6 +161,50 @@ const STOREFRONT_FIELDS = {
 
 /** Public storefront data: a store by slug + its active products. */
 export async function getStoreBySlug(slug: string) {
+  if (!isDatabaseConfigured()) {
+    if (slug !== "oud-reserve") return null;
+
+    return {
+      id: "demo_store",
+      name: "Oud Reserve",
+      slug: "oud-reserve",
+      businessType: "Luxury fragrance",
+      tagline: "Premium oud perfumes for modern gifting.",
+      logoText: "OR",
+      brandColor: "#143c3a",
+      accentColor: "#d6a747",
+      themeKey: "luxury-store",
+      whatsapp: "923001234567",
+      announcement: "Free delivery over Rs 10,000. WhatsApp support available.",
+      heroHeading: "Luxury oud perfumes for modern gifting.",
+      heroSubheading:
+        "A demo storefront powered by StoreBuilder Cloud with products, reviews, WhatsApp checkout, and SEO-ready content.",
+      logoUrl: null,
+      layout: null,
+      currency: "PKR",
+      products: [
+        {
+          id: "demo_oud_noir",
+          title: "Oud Reserve Noir",
+          slug: "oud-reserve-noir",
+          description: "Smoky oud, amber, saffron, and soft musk.",
+          status: "active",
+          variants: [{ id: "var_oud_noir", price: new Prisma.Decimal("8900") }],
+          images: [{ id: "img_oud_noir", url: "", alt: "Oud Reserve Noir" }],
+        },
+        {
+          id: "demo_amber",
+          title: "Amber Silk Attar",
+          slug: "amber-silk-attar",
+          description: "Warm amber oil with a clean everyday finish.",
+          status: "active",
+          variants: [{ id: "var_amber", price: new Prisma.Decimal("5400") }],
+          images: [{ id: "img_amber", url: "", alt: "Amber Silk Attar" }],
+        },
+      ],
+    };
+  }
+
   const db = getDb();
   return db.store.findUnique({
     where: { slug },

@@ -3,10 +3,11 @@ import { redirect } from "next/navigation";
 import { ShoppingBag } from "lucide-react";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
+import { isDatabaseConfigured } from "@/lib/db";
 import { createStoreWithOwner } from "@/lib/repositories/stores";
 import { THEMES } from "@/lib/themes";
 
-export const metadata = { title: "Create your store - BazaarOS" };
+export const metadata = { title: "Create your store - StoreBuilder" };
 
 const ERRORS: Record<string, string> = {
   email: "That email is already registered. Try signing in.",
@@ -26,6 +27,18 @@ async function registerStore(formData: FormData) {
 
   if (!ownerName || !email || password.length < 6 || !storeName) {
     redirect("/signup?error=fields");
+  }
+
+  if (!isDatabaseConfigured()) {
+    const demoSlug = storeName
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 40);
+    redirect(`/signup/demo?store=${encodeURIComponent(storeName)}&slug=${demoSlug || "demo-store"}`);
   }
 
   const result = await createStoreWithOwner({
@@ -68,7 +81,7 @@ export default async function SignupPage({
           </span>
           <span>
             <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-[#54706b]">
-              BazaarOS
+              StoreBuilder
             </span>
             <span className="block text-lg font-bold">Commerce Cloud</span>
           </span>

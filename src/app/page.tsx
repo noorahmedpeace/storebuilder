@@ -1,5 +1,4 @@
 import {
-  Activity,
   BarChart3,
   Bot,
   Boxes,
@@ -24,6 +23,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { MarketingHeader } from "@/components/app-shell";
+import { ImmersiveShowcase } from "@/components/immersive-showcase";
 
 const stats = [
   { label: "Target stores", value: "1,000+" },
@@ -136,96 +136,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="rounded-lg border border-black/10 bg-[#102321] p-4 shadow-2xl">
-              <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-4">
-                <div>
-                  <p className="text-sm font-semibold text-[#9fcfc0]">
-                    Super Admin
-                  </p>
-                  <h2 className="text-2xl font-bold text-white">
-                    Platform health
-                  </h2>
-                </div>
-                <span className="rounded-lg bg-[#f3b74f] px-3 py-2 text-sm font-bold text-[#1d1b16]">
-                  Live
-                </span>
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-3">
-                {[
-                  ["MRR", "Rs 8.4M", "+18%"],
-                  ["Active stores", "1,284", "+64"],
-                  ["AI cost", "Rs 92k", "-7%"],
-                ].map(([label, value, trend]) => (
-                  <div
-                    key={label}
-                    className="rounded-lg border border-white/10 bg-white/[0.06] p-4"
-                  >
-                    <p className="text-sm text-white/60">{label}</p>
-                    <p className="mt-2 font-mono text-2xl font-bold text-white">
-                      {value}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-[#9fcfc0]">
-                      {trend} this month
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                <div className="rounded-lg border border-white/10 bg-white/[0.06] p-4">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="font-semibold text-white">Revenue stream</h3>
-                    <Activity className="text-[#9fcfc0]" size={18} />
-                  </div>
-                  <div className="space-y-3">
-                    {[
-                      ["Subscriptions", "78%"],
-                      ["Transaction add-ons", "54%"],
-                      ["Premium themes", "32%"],
-                      ["WhatsApp automation", "46%"],
-                    ].map(([label, width]) => (
-                      <div key={label}>
-                        <div className="mb-1 flex justify-between text-sm text-white/70">
-                          <span>{label}</span>
-                          <span>{width}</span>
-                        </div>
-                        <div className="h-2 rounded-full bg-white/10">
-                          <div
-                            className="h-2 rounded-full bg-[#50b79a]"
-                            style={{ width }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-white/10 bg-[#f7f4ee] p-4 text-[#171717]">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-[#54706b]">
-                        Storefront
-                      </p>
-                      <h3 className="text-xl font-bold">Perfume Brand</h3>
-                    </div>
-                    <PackageCheck className="text-[#143c3a]" />
-                  </div>
-                  <div className="mt-5 rounded-lg bg-white p-4">
-                    <div className="aspect-[4/3] rounded-lg bg-[linear-gradient(135deg,#143c3a,#d6a747_58%,#f7f4ee)]" />
-                    <p className="mt-4 text-sm font-bold">
-                      Oud Reserve Collection
-                    </p>
-                    <p className="mt-1 text-sm text-[#69716d]">
-                      Reviews, inventory, variants, SEO schema, WhatsApp order
-                      intent.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ImmersiveShowcase />
         </div>
       </section>
 
