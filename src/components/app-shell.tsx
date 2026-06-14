@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, ShoppingBag } from "lucide-react";
+import { ChevronRight, ShoppingBag, TrendingDown, TrendingUp } from "lucide-react";
 
 const links = [
   { href: "/", label: "Home" },
@@ -98,13 +98,23 @@ export function MetricCard({
   value: string;
   change: string;
 }) {
+  const trimmed = change.trim();
+  const positive = trimmed.startsWith("+");
+  const negative = trimmed.startsWith("-");
   return (
-    <div className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
-      <p className="text-sm font-medium text-[#68716d]">{label}</p>
-      <p className="mt-2 font-mono text-3xl font-bold text-[#143c3a]">
+    <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:border-zinc-300">
+      <p className="text-sm font-medium text-zinc-500">{label}</p>
+      <p className="mt-2 text-3xl font-bold tracking-tight text-zinc-900">
         {value}
       </p>
-      <p className="mt-2 text-sm font-semibold text-[#4d8b70]">{change}</p>
+      <p
+        className={`mt-1.5 flex items-center gap-1 text-sm font-medium ${
+          positive ? "text-emerald-600" : negative ? "text-red-600" : "text-zinc-400"
+        }`}
+      >
+        {positive ? <TrendingUp size={14} /> : negative ? <TrendingDown size={14} /> : null}
+        {change}
+      </p>
     </div>
   );
 }
@@ -117,9 +127,9 @@ export function EmptyState({
   description: string;
 }) {
   return (
-    <div className="rounded-lg border border-dashed border-black/15 bg-[#f7f4ee] p-8 text-center">
-      <p className="font-bold text-[#143c3a]">{title}</p>
-      <p className="mx-auto mt-2 max-w-md text-sm text-[#68716d]">{description}</p>
+    <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-10 text-center">
+      <p className="font-semibold text-zinc-900">{title}</p>
+      <p className="mx-auto mt-1.5 max-w-md text-sm text-zinc-500">{description}</p>
     </div>
   );
 }
@@ -134,14 +144,16 @@ export function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+    <section className="rounded-xl border border-zinc-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
       <div className="mb-5 flex items-center justify-between gap-4">
-        <h2 className="text-xl font-bold">{title}</h2>
-        {action ? (
-          <span className="rounded-lg bg-[#e7ece2] px-3 py-2 text-sm font-bold text-[#143c3a]">
+        <h2 className="text-base font-semibold text-zinc-900">{title}</h2>
+        {typeof action === "string" ? (
+          <span className="rounded-lg bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">
             {action}
           </span>
-        ) : null}
+        ) : (
+          action ?? null
+        )}
       </div>
       {children}
     </section>

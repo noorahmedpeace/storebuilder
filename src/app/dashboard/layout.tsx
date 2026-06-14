@@ -1,19 +1,13 @@
 import Link from "next/link";
-import { MarketingHeader } from "@/components/app-shell";
+import { ExternalLink, LogOut, Store } from "lucide-react";
 import { signOut } from "@/auth";
+import { getStoreSettings } from "@/lib/repositories/stores";
 import { getSessionContext } from "@/lib/session";
-
-const moduleLinks = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/products", label: "Products" },
-  { href: "/dashboard/orders", label: "Orders" },
-  { href: "/dashboard/inventory", label: "Inventory" },
-  { href: "/dashboard/customers", label: "Customers" },
-  { href: "/dashboard/catalog", label: "Catalog" },
-  { href: "/dashboard/marketing", label: "Marketing" },
-  { href: "/dashboard/theme", label: "Theme & storefront" },
-  { href: "/dashboard/builder", label: "Section builder" },
-];
+import {
+  CurrentSection,
+  DashboardMobileNav,
+  DashboardNav,
+} from "@/components/dashboard-nav";
 
 export default async function DashboardLayout({
   children,
@@ -21,21 +15,38 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await getSessionContext();
+  const settings = session.storeId
+    ? await getStoreSettings(session.storeId)
+    : null;
+  const initials = (session.name ?? "Store")
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
-    <main className="min-h-screen bg-[#f7f4ee] text-[#171717]">
-      <MarketingHeader />
-      <div className="mx-auto max-w-7xl px-5 py-8 lg:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
-              Merchant Dashboard
-            </p>
-            <h1 className="mt-2 text-3xl font-bold">
-              {session.name ? `${session.name}'s workspace` : "Store workspace"}
-            </h1>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+      <div className="mx-auto flex max-w-[1600px]">
+        {/* Sidebar (desktop) */}
+        <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-zinc-200 bg-white lg:flex">
+          <div className="flex h-16 items-center gap-2.5 border-b border-zinc-200 px-5">
+            <span className="grid size-8 place-items-center rounded-lg bg-[#143c3a] text-white">
+              <Store size={16} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+                BazaarOS
+              </p>
+              <p className="truncate text-sm font-semibold leading-none">
+                {settings?.name ?? session.name ?? "Workspace"}
+              </p>
+            </div>
           </div>
-          {session.userId ? (
+
+          <DashboardNav />
+
+          <div className="mt-auto border-t border-zinc-200 p-3">
             <form
               action={async () => {
                 "use server";
@@ -44,28 +55,48 @@ export default async function DashboardLayout({
             >
               <button
                 type="submit"
-                className="h-10 rounded-lg border border-black/15 bg-white px-4 text-sm font-semibold transition hover:border-[#143c3a]"
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
               >
+                <LogOut size={17} className="text-zinc-400" />
                 Sign out
               </button>
             </form>
-          ) : null}
+          </div>
+        </aside>
+
+        {/* Main column */}
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-zinc-200 bg-white/80 px-5 backdrop-blur lg:px-8">
+            <div className="flex items-center gap-2 lg:hidden">
+              <span className="grid size-8 place-items-center rounded-lg bg-[#143c3a] text-white">
+                <Store size={16} />
+              </span>
+              <span className="text-sm font-bold">BazaarOS</span>
+            </div>
+            <div className="hidden lg:block">
+              <CurrentSection />
+            </div>
+            <div className="flex items-center gap-3">
+              {settings?.slug ? (
+                <Link
+                  href={`/store/${settings.slug}`}
+                  target="_blank"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50"
+                >
+                  View store <ExternalLink size={14} />
+                </Link>
+              ) : null}
+              <span className="grid size-9 place-items-center rounded-full bg-[#143c3a] text-xs font-bold text-white">
+                {initials}
+              </span>
+            </div>
+          </header>
+
+          <DashboardMobileNav />
+
+          <main className="flex-1 p-5 lg:p-8">{children}</main>
         </div>
-
-        <nav className="mt-6 flex flex-wrap gap-2 border-b border-black/10 pb-3 text-sm font-semibold text-[#4f5b58]">
-          {moduleLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-lg px-3 py-2 transition hover:bg-[#e7ece2] hover:text-[#143c3a]"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="mt-6">{children}</div>
       </div>
-    </main>
+    </div>
   );
 }

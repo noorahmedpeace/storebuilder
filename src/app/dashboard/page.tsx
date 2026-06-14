@@ -59,13 +59,16 @@ export default async function MerchantOverviewPage() {
               <Link
                 key={card.href}
                 href={card.href}
-                className="flex items-center justify-between rounded-lg border border-black/10 bg-[#f7f4ee] p-4 transition hover:border-[#143c3a]"
+                className="group flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 hover:shadow-sm"
               >
                 <span>
-                  <span className="block font-bold">{card.label}</span>
-                  <span className="block text-sm text-[#68716d]">{card.hint}</span>
+                  <span className="block font-semibold text-zinc-900">{card.label}</span>
+                  <span className="block text-sm text-zinc-500">{card.hint}</span>
                 </span>
-                <ArrowRight size={18} className="text-[#143c3a]" />
+                <ArrowRight
+                  size={18}
+                  className="text-zinc-400 transition group-hover:translate-x-0.5 group-hover:text-[#143c3a]"
+                />
               </Link>
             ))}
           </div>
@@ -90,7 +93,7 @@ export default async function MerchantOverviewPage() {
               {automation.steps.map((step) => (
                 <div
                   key={step}
-                  className="rounded-lg border border-black/10 bg-[#f7f4ee] px-4 py-3 text-sm font-semibold"
+                  className="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-medium text-zinc-700"
                 >
                   {step}
                 </div>
