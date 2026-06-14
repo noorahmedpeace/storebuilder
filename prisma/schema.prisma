@@ -64,6 +64,18 @@ model Store {
   coupons     Coupon[]
   auditLogs   AuditLog[]
   subscription Subscription?
+  newsletterSubscribers NewsletterSubscriber[]
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  storeId   String
+  email     String
+  createdAt DateTime @default(now())
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, email])
+  @@index([storeId])
 }
 
 model Domain {

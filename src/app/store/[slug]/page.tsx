@@ -5,6 +5,15 @@ import { getStoreBySlug } from "@/lib/repositories/stores";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
+import { Countdown } from "./countdown";
+import { NewsletterForm } from "./newsletter-form";
+
+function youtubeId(url: string): string | null {
+  const m = url.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/,
+  );
+  return m ? m[1] : null;
+}
 
 type StoreData = NonNullable<Awaited<ReturnType<typeof getStoreBySlug>>>;
 
@@ -327,6 +336,77 @@ function SectionView({
         </section>
       );
     }
+
+    case "imageBanner": {
+      if (!p.imageUrl) return null;
+      return (
+        <section className="relative">
+          <div
+            className="flex min-h-[280px] items-center justify-center px-5 py-16 text-center md:min-h-[360px]"
+            style={{
+              background: `linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.35)), center/cover no-repeat url(${p.imageUrl})`,
+            }}
+          >
+            <div className="max-w-2xl text-white">
+              {p.heading ? (
+                <h2 className={`text-4xl font-bold md:text-5xl ${upper}`}>
+                  {p.heading}
+                </h2>
+              ) : null}
+              {p.text ? <p className="mt-3 text-lg text-white/85">{p.text}</p> : null}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    case "video": {
+      if (!p.url) return null;
+      const yt = youtubeId(p.url);
+      return (
+        <section className="mx-auto max-w-5xl px-5 py-12 lg:px-8">
+          {p.title ? (
+            <h2 className={`mb-6 text-3xl font-bold ${upper}`}>{p.title}</h2>
+          ) : null}
+          <div className="overflow-hidden rounded-2xl border border-black/10 bg-black">
+            {yt ? (
+              <iframe
+                className="aspect-video w-full"
+                src={`https://www.youtube.com/embed/${yt}`}
+                title={p.title || "Video"}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <video controls className="aspect-video w-full" src={p.url} />
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    case "countdown": {
+      if (!p.endsAt) return null;
+      return (
+        <Countdown
+          endsAt={p.endsAt}
+          title={p.title}
+          brand={brand}
+          accent={accent}
+        />
+      );
+    }
+
+    case "newsletter":
+      return (
+        <NewsletterForm
+          storeId={store.id}
+          title={p.title}
+          text={p.text}
+          buttonLabel={p.buttonLabel}
+          brand={brand}
+        />
+      );
 
     default:
       return null;

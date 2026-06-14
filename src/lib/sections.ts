@@ -12,7 +12,11 @@ export type SectionType =
   | "whatsapp"
   | "features"
   | "reviews"
-  | "faq";
+  | "faq"
+  | "imageBanner"
+  | "video"
+  | "countdown"
+  | "newsletter";
 
 export type Section = {
   id: string;
@@ -31,15 +35,23 @@ export const SECTION_LABELS: Record<SectionType, string> = {
   features: "Feature badges",
   reviews: "Reviews",
   faq: "FAQ",
+  imageBanner: "Image banner",
+  video: "Video",
+  countdown: "Countdown",
+  newsletter: "Newsletter",
 };
 
 /** Section types a merchant can add from the builder palette. */
 export const ADDABLE_SECTIONS: SectionType[] = [
   "richText",
   "banner",
+  "imageBanner",
+  "video",
+  "countdown",
   "features",
   "reviews",
   "faq",
+  "newsletter",
   "whatsapp",
   "products",
 ];
@@ -72,6 +84,24 @@ export const SECTION_FIELDS: Partial<Record<SectionType, { key: string; label: s
     { key: "q1", label: "Q1 (Question | Answer)" },
     { key: "q2", label: "Q2 (Question | Answer)" },
     { key: "q3", label: "Q3 (Question | Answer)" },
+  ],
+  imageBanner: [
+    { key: "imageUrl", label: "Image URL" },
+    { key: "heading", label: "Heading" },
+    { key: "text", label: "Subtext" },
+  ],
+  video: [
+    { key: "url", label: "Video URL (YouTube or .mp4)" },
+    { key: "title", label: "Title" },
+  ],
+  countdown: [
+    { key: "title", label: "Title" },
+    { key: "endsAt", label: "Ends at (YYYY-MM-DD or ISO)" },
+  ],
+  newsletter: [
+    { key: "title", label: "Title" },
+    { key: "text", label: "Subtext" },
+    { key: "buttonLabel", label: "Button label" },
   ],
 };
 
