@@ -1,19 +1,15 @@
+import { AutoplayVideo } from "@/components/autoplay-video";
+
 export function ImmersiveShowcase() {
   return (
     <section
       aria-label="3D ecommerce store builder video preview"
       className="float-panel pulse-ring relative min-h-[300px] overflow-hidden rounded-lg border border-white/10 bg-[#102321] shadow-2xl sm:min-h-[380px] lg:min-h-[430px]"
     >
-      <video
+      <AutoplayVideo
         className="absolute inset-0 h-full w-full object-cover"
         src="/media/storebuilder-hero.mp4"
-        poster="/media/storebuilder-hero-poster.png"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-label="Animated 3D ecommerce website template cards orbiting with app cubes."
+        label="Animated 3D ecommerce website template cards orbiting with app cubes."
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#102321]/10 via-transparent to-[#102321]/30" />
       <div className="pointer-events-none absolute left-4 top-4 z-10 sm:left-5 sm:top-5">

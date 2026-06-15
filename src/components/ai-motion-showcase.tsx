@@ -1,18 +1,15 @@
+import { AutoplayVideo } from "@/components/autoplay-video";
+
 export function AiMotionShowcase() {
   return (
     <section
       aria-label="3D AI ecommerce store builder video preview"
       className="relative min-h-[360px] overflow-hidden rounded-lg border border-black/10 bg-[#102321] shadow-xl"
     >
-      <video
+      <AutoplayVideo
         className="absolute inset-0 h-full w-full object-cover"
         src="/media/ai-store-builder.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-label="Animated 3D AI ecommerce store builder assistant scene."
+        label="Animated 3D AI ecommerce store builder assistant scene."
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#102321]/5 via-transparent to-[#102321]/35" />
       <div className="pointer-events-none absolute left-5 top-5 z-10">

@@ -23,6 +23,7 @@ import {
   Workflow,
 } from "lucide-react";
 import type { CSSProperties } from "react";
+import { AutoplayVideo } from "@/components/autoplay-video";
 import { MarketingHeader } from "@/components/app-shell";
 import { ImmersiveShowcase } from "@/components/immersive-showcase";
 import { IntegrationMotionShowcase } from "@/components/integration-motion-showcase";
@@ -110,15 +111,10 @@ export default function Home() {
       <MarketingHeader />
 
       <section className="relative overflow-hidden border-b border-black/10 bg-[#f7f4ee]">
-        <video
+        <AutoplayVideo
           className="ambient-video absolute inset-0 h-full w-full object-cover opacity-100"
           src="/media/ambient-hero-background.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
+          hidden
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4ee]/92 via-[#f7f4ee]/48 to-[#f7f4ee]/8" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ee]/45 via-transparent to-[#f7f4ee]/70" />

@@ -1,18 +1,15 @@
+import { AutoplayVideo } from "@/components/autoplay-video";
+
 export function IntegrationMotionShowcase() {
   return (
     <section
       aria-label="3D ecommerce marketplace integrations video preview"
       className="float-panel relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[#0d1d1b] shadow-2xl"
     >
-      <video
+      <AutoplayVideo
         className="absolute inset-0 h-full w-full object-cover"
         src="/media/marketplace-integrations.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-label="Animated 3D marketplace integration cards for ecommerce apps."
+        label="Animated 3D marketplace integration cards for ecommerce apps."
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#102321]/5 via-transparent to-[#102321]/35" />
       <div className="pointer-events-none absolute inset-x-5 bottom-5 z-10 rounded-lg border border-white/10 bg-black/30 p-4 text-white backdrop-blur">
