@@ -4,7 +4,7 @@ export function ImmersiveShowcase() {
   return (
     <section
       aria-label="3D ecommerce store builder video preview"
-      className="float-panel pulse-ring relative min-h-[300px] overflow-hidden rounded-lg border border-white/10 bg-[#102321] shadow-2xl sm:min-h-[380px] lg:min-h-[430px]"
+      className="pulse-ring relative min-h-[300px] overflow-hidden rounded-lg border border-white/10 bg-[#102321] shadow-2xl sm:min-h-[380px] lg:min-h-[430px]"
     >
       <AutoplayVideo
         className="absolute inset-0 h-full w-full object-cover"
