@@ -1,5 +1,7 @@
-import { Check, MessageCircle, ShoppingBag, Star } from "lucide-react";
+import Link from "next/link";
+import { Check, MessageCircle, ShoppingBag, ShoppingCart, Star } from "lucide-react";
 import { getStoreBySlug } from "@/lib/repositories/stores";
+import { AddToCart } from "./add-to-cart";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
@@ -26,7 +28,13 @@ function waLink(whatsapp: string | null, text: string) {
   return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
 }
 
-export function Storefront({ store }: { store: StoreData }) {
+export function Storefront({
+  store,
+  cartCount = 0,
+}: {
+  store: StoreData;
+  cartCount?: number;
+}) {
   const theme = getTheme(store.themeKey);
   const brand = store.brandColor || theme.brandColor;
   const accent = store.accentColor || theme.accentColor;
@@ -58,15 +66,32 @@ export function Storefront({ store }: { store: StoreData }) {
             )}
             <span className="text-xl font-bold">{store.name}</span>
           </div>
-          {waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`) ? (
-            <a
-              href={waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`)!}
-              className="inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-bold text-white"
+          <div className="flex items-center gap-2">
+            {waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`) ? (
+              <a
+                href={waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`)!}
+                className="hidden h-10 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-bold sm:inline-flex"
+                style={{ color: brand }}
+              >
+                <MessageCircle size={16} /> WhatsApp
+              </a>
+            ) : null}
+            <Link
+              href={`/store/${store.slug}/cart`}
+              className="relative inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-bold text-white"
               style={{ background: brand }}
             >
-              <MessageCircle size={16} /> Order on WhatsApp
-            </a>
-          ) : null}
+              <ShoppingCart size={16} /> Cart
+              {cartCount > 0 ? (
+                <span
+                  className="ml-1 grid min-w-5 place-items-center rounded-full bg-white px-1.5 text-xs font-bold"
+                  style={{ color: brand }}
+                >
+                  {cartCount}
+                </span>
+              ) : null}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -409,7 +434,10 @@ function ProductCard({
       max={6}
       className={`group overflow-hidden border border-black/10 bg-white shadow-sm transition-shadow duration-300 hover:shadow-2xl ${theme.radius}`}
     >
-      <div className="aspect-square w-full overflow-hidden">
+      <Link
+        href={`/store/${store.slug}/product/${product.slug}`}
+        className="block aspect-square w-full overflow-hidden"
+      >
         <div
           className="h-full w-full transition duration-500 group-hover:scale-105"
           style={{
@@ -418,7 +446,7 @@ function ProductCard({
               : `linear-gradient(135deg, ${brand}, ${accent})`,
           }}
         />
-      </div>
+      </Link>
       <div className="p-4">
         <div className="flex items-center justify-between">
           <span
@@ -431,30 +459,35 @@ function ProductCard({
             <Star size={14} fill="currentColor" /> New
           </span>
         </div>
-        <h3 className={`mt-3 text-lg font-bold ${head}`}>{product.title}</h3>
+        <Link href={`/store/${store.slug}/product/${product.slug}`}>
+          <h3 className={`mt-3 text-lg font-bold hover:underline ${head}`}>
+            {product.title}
+          </h3>
+        </Link>
         <p className="mt-1 line-clamp-2 min-h-10 text-sm text-[#5d6561]">
           {product.description}
         </p>
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between gap-2">
           <span className="text-lg font-bold tracking-tight">
             {price !== null ? `${store.currency} ${price.toLocaleString()}` : "—"}
           </span>
-          {order ? (
+          {product.variants[0] ? (
+            <AddToCart
+              storeId={store.id}
+              slug={store.slug}
+              variantId={product.variants[0].id}
+              brand={brand}
+              label="Add"
+            />
+          ) : order ? (
             <a
               href={order}
-              className="rounded-lg px-3.5 py-2 text-sm font-bold text-white transition hover:opacity-90"
-              style={{ background: brand }}
-            >
-              Order
-            </a>
-          ) : (
-            <span
               className="rounded-lg px-3.5 py-2 text-sm font-bold text-white"
               style={{ background: brand }}
             >
               Order
-            </span>
-          )}
+            </a>
+          ) : null}
         </div>
       </div>
     </TiltCard>

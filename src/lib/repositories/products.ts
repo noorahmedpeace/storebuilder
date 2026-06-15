@@ -62,6 +62,19 @@ const productInclude = {
   images: true,
 } as const;
 
+/** Active product by slug for the public storefront (with all images). */
+export async function getProductBySlug(storeId: string, slug: string) {
+  const db = getDb();
+  return db.product.findFirst({
+    where: tenantWhere(storeId, { slug, status: "active" }),
+    include: {
+      variants: { orderBy: { sku: "asc" } },
+      images: { orderBy: { position: "asc" } },
+      category: true,
+    },
+  });
+}
+
 /** Single product, tenant-scoped. Returns null if not owned by the store. */
 export async function getProduct(storeId: string, id: string) {
   const db = getDb();

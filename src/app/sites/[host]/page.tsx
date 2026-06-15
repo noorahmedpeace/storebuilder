@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStoreByDomain } from "@/lib/repositories/domains";
+import { getCartCount } from "@/lib/repositories/cart";
 import { Storefront } from "@/components/storefront/storefront";
 
 export async function generateMetadata({
@@ -24,5 +25,6 @@ export default async function DomainStorefrontPage({
   const { host } = await params;
   const store = await getStoreByDomain(decodeURIComponent(host));
   if (!store) notFound();
-  return <Storefront store={store} />;
+  const cartCount = await getCartCount(store.id);
+  return <Storefront store={store} cartCount={cartCount} />;
 }
