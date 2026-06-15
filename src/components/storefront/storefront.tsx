@@ -119,6 +119,7 @@ export function Storefront({
             <Link href={`/store/${store.slug}`}>Home</Link>
             <Link href={`/store/${store.slug}/about`}>About</Link>
             <Link href={`/store/${store.slug}/contact`}>Contact</Link>
+            <Link href={`/store/${store.slug}/track`}>Track order</Link>
             <Link href={`/store/${store.slug}/cart`}>Cart</Link>
             <Link href={`/store/${store.slug}/policies/privacy`}>Privacy</Link>
             <Link href={`/store/${store.slug}/policies/terms`}>Terms</Link>

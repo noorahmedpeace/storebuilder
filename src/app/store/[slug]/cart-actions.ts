@@ -7,7 +7,7 @@ import {
   removeCartItem,
   updateCartItem,
 } from "@/lib/repositories/cart";
-import { createOrderFromCart } from "@/lib/repositories/checkout";
+import { createOrderFromCart, getOrderForStore } from "@/lib/repositories/checkout";
 
 export async function addToCartAction(
   storeId: string,
@@ -37,6 +37,19 @@ export async function removeItemAction(formData: FormData) {
     String(formData.get("itemId") ?? ""),
   );
   revalidatePath(`/store/${slug}/cart`);
+}
+
+export async function reorderAction(formData: FormData) {
+  const storeId = String(formData.get("storeId") ?? "");
+  const slug = String(formData.get("slug") ?? "");
+  const orderId = String(formData.get("orderId") ?? "");
+  const order = await getOrderForStore(storeId, orderId);
+  if (order) {
+    for (const item of order.items) {
+      await addToCart(storeId, item.variantId, item.quantity);
+    }
+  }
+  redirect(`/store/${slug}/cart`);
 }
 
 export async function checkoutAction(formData: FormData) {

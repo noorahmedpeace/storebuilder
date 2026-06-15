@@ -6,6 +6,7 @@ import { getOrderForStore } from "@/lib/repositories/checkout";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { StoreHeader } from "@/components/storefront/store-header";
+import { reorderAction } from "../../cart-actions";
 
 export const metadata = { title: "Order confirmed" };
 
@@ -68,13 +69,30 @@ export default async function OrderConfirmationPage({
             </p>
           ) : null}
 
-          <Link
-            href={`/store/${store.slug}`}
-            className="mt-7 inline-block rounded-lg px-6 py-3 text-sm font-bold text-white"
-            style={{ background: brand }}
-          >
-            Continue shopping
-          </Link>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={`/store/${store.slug}`}
+              className="rounded-lg px-6 py-3 text-sm font-bold text-white"
+              style={{ background: brand }}
+            >
+              Continue shopping
+            </Link>
+            <Link
+              href={`/store/${store.slug}/track?phone=${encodeURIComponent(order.customerPhone ?? "")}`}
+              className="rounded-lg border border-black/15 bg-white px-6 py-3 text-sm font-bold"
+              style={{ color: brand }}
+            >
+              Track order
+            </Link>
+            <form action={reorderAction}>
+              <input type="hidden" name="storeId" value={store.id} />
+              <input type="hidden" name="slug" value={store.slug} />
+              <input type="hidden" name="orderId" value={order.id} />
+              <button className="rounded-lg border border-black/15 bg-white px-6 py-3 text-sm font-bold" style={{ color: brand }}>
+                Reorder
+              </button>
+            </form>
+          </div>
         </div>
       </section>
     </main>

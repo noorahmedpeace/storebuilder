@@ -113,3 +113,16 @@ export async function getOrderForStore(storeId: string, orderId: string) {
     include: { items: { include: { variant: { include: { product: true } } } } },
   });
 }
+
+/** Customer order tracking: orders placed with a given phone number. */
+export async function findOrdersByPhone(storeId: string, phone: string) {
+  const db = getDb();
+  const digits = phone.replace(/[^0-9]/g, "");
+  if (digits.length < 6) return [];
+  return db.order.findMany({
+    where: { storeId, customerPhone: { contains: digits.slice(-9) } },
+    include: { items: { include: { variant: { include: { product: true } } } } },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
+}
