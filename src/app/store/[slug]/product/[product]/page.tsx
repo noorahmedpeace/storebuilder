@@ -9,6 +9,7 @@ import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { AddToCart } from "@/components/storefront/add-to-cart";
+import { ProductJsonLd } from "@/components/storefront/json-ld";
 
 function waLink(whatsapp: string | null, text: string) {
   if (!whatsapp) return null;
@@ -57,6 +58,14 @@ export default async function ProductPage({
 
   return (
     <main className="min-h-screen text-[#171717]" style={{ background: theme.bg, fontFamily: font.css }}>
+      <ProductJsonLd
+        name={product.title}
+        description={product.description}
+        image={product.images[0]?.url}
+        price={price}
+        currency={store.currency}
+        storeName={store.name}
+      />
       <StoreHeader store={store} brand={brand} cartCount={cartCount} />
 
       <section className="mx-auto max-w-6xl px-5 py-10 lg:px-8">
@@ -89,9 +98,13 @@ export default async function ProductPage({
 
           <div className="flex flex-col">
             {product.category ? (
-              <p className="text-sm font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>
+              <Link
+                href={`/store/${store.slug}/category/${product.category.slug}`}
+                className="text-sm font-bold uppercase tracking-[0.2em] hover:underline"
+                style={{ color: accent }}
+              >
                 {product.category.name}
-              </p>
+              </Link>
             ) : null}
             <h1 className="mt-2 text-4xl font-bold leading-tight md:text-5xl">{product.title}</h1>
             <p className="mt-4 font-mono text-3xl font-bold" style={{ color: brand }}>

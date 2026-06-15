@@ -6,6 +6,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
+import { AnimatedHeadline } from "@/components/motion/animated-headline";
 
 const primaryLinks = [
   { href: "/", label: "Home" },
@@ -131,8 +132,8 @@ export function PageShell({
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
             {eyebrow}
           </p>
-          <h1 className="font-display mt-3 text-4xl font-bold tracking-normal md:text-5xl">
-            {title}
+          <h1 className="kinetic-heading font-display mt-3 text-4xl font-bold tracking-normal md:text-5xl">
+            <AnimatedHeadline text={title} />
           </h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-[#4f5b58]">
             {description}

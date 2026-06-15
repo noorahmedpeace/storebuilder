@@ -1,6 +1,22 @@
 import { getDb, isDatabaseConfigured } from "@/lib/db";
 import { tenantWhere } from "./tenant";
 
+/** Public storefront: a category by slug + its active products. */
+export async function getStorefrontCategory(storeId: string, slug: string) {
+  const db = getDb();
+  return db.category.findFirst({
+    where: tenantWhere(storeId, { slug }),
+    include: {
+      products: {
+        where: { status: "active" },
+        include: { variants: { take: 1 }, images: { take: 1 } },
+        orderBy: { createdAt: "desc" },
+        take: 48,
+      },
+    },
+  });
+}
+
 /** Owned by the Catalog vertical (Wave 2): categories & collections. */
 export async function listCategories(storeId: string) {
   if (!isDatabaseConfigured()) {

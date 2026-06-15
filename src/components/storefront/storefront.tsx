@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Check, MessageCircle, ShoppingBag, ShoppingCart, Star } from "lucide-react";
 import { getStoreBySlug } from "@/lib/repositories/stores";
 import { AddToCart } from "./add-to-cart";
+import { StoreJsonLd } from "./json-ld";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
@@ -46,6 +47,7 @@ export function Storefront({
       className="min-h-screen text-[#171717]"
       style={{ background: theme.bg, fontFamily: font.css }}
     >
+      <StoreJsonLd name={store.name} description={store.tagline} logoUrl={store.logoUrl} />
       <header className="sticky top-0 z-20 border-b border-black/10 bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
           <div className="flex items-center gap-3">

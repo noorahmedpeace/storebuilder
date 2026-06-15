@@ -125,7 +125,7 @@ export default function Home() {
               SEO-first online store builder
             </div>
             <h1
-              className="motion-reveal font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
+              className="motion-reveal kinetic-heading font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
               style={{ "--delay": "90ms" } as CSSProperties}
             >
               <AnimatedHeadline text="StoreBuilder Cloud" />
@@ -199,8 +199,8 @@ export default function Home() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f3b74f]">
               Immersive advantage
             </p>
-            <h2 className="mt-3 text-4xl font-bold tracking-normal">
-              A 3D store builder that still ranks in search.
+            <h2 className="kinetic-heading mt-3 text-4xl font-bold tracking-normal">
+              <AnimatedHeadline text="A 3D store builder that still ranks in search." />
             </h2>
             <p className="mt-4 max-w-2xl leading-8 text-white/72">
               Rich 3D template cards, product scenes, and marketplace previews
@@ -230,8 +230,8 @@ export default function Home() {
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
             Complete platform
           </p>
-          <h2 className="mt-3 text-4xl font-bold tracking-normal">
-            Built as commerce infrastructure, not a website builder.
+          <h2 className="kinetic-heading mt-3 text-4xl font-bold tracking-normal">
+            <AnimatedHeadline text="Built as commerce infrastructure, not a website builder." />
           </h2>
         </div>
         <div className="mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -261,8 +261,8 @@ export default function Home() {
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
                 Merchant workspace
               </p>
-              <h2 className="mt-3 text-4xl font-bold tracking-normal">
-                Every business gets its own admin panel and branded storefront.
+              <h2 className="kinetic-heading mt-3 text-4xl font-bold tracking-normal">
+                <AnimatedHeadline text="Every business gets its own admin panel and branded storefront." />
               </h2>
               <p className="mt-4 leading-8 text-[#4f5b58]">
                 The merchant experience focuses on daily operations: catalog,
@@ -364,8 +364,8 @@ export default function Home() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
               Architecture
             </p>
-            <h2 className="mt-3 text-4xl font-bold tracking-normal">
-              Tenant isolation across app, ORM, and database layers.
+            <h2 className="kinetic-heading mt-3 text-4xl font-bold tracking-normal">
+              <AnimatedHeadline text="Tenant isolation across app, ORM, and database layers." />
             </h2>
             <p className="mt-4 leading-8 text-[#4f5b58]">
               Every tenant-owned table carries store_id, backed by application
@@ -446,8 +446,8 @@ export default function Home() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
               Delivery roadmap
             </p>
-            <h2 className="mt-3 text-4xl font-bold tracking-normal">
-              Start with the revenue core, then expand into marketplace and AI.
+            <h2 className="kinetic-heading mt-3 text-4xl font-bold tracking-normal">
+              <AnimatedHeadline text="Start with the revenue core, then expand into marketplace and AI." />
             </h2>
           </div>
           <div className="space-y-3">

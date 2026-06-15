@@ -218,6 +218,62 @@ h3,
   color: transparent;
 }
 
+.kinetic-heading {
+  position: relative;
+}
+
+.kinetic-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.14em;
+  width: min(6.5ch, 44%);
+  height: 0.09em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #143c3a, #50b79a, #f3b74f);
+  transform-origin: left center;
+  animation: heading-bar-bounce 3.8s ease-in-out infinite;
+}
+
+.headline-word-inner {
+  background-image: linear-gradient(
+    120deg,
+    currentColor 0%,
+    currentColor 42%,
+    #38786f 52%,
+    currentColor 64%
+  );
+  background-size: 260% 100%;
+  background-position: 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.kinetic-heading:hover .headline-word-inner {
+  animation: heading-shine 900ms ease forwards;
+}
+
+@keyframes heading-shine {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -160% 0;
+  }
+}
+
+@keyframes heading-bar-bounce {
+  0%,
+  100% {
+    transform: scaleX(0.48);
+    opacity: 0.38;
+  }
+  45% {
+    transform: scaleX(1);
+    opacity: 0.95;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .aurora-layer {
     animation: none;
