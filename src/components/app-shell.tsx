@@ -3,94 +3,110 @@ import {
   ChevronRight,
   Menu,
   ShoppingBag,
-  Sparkles,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
 
-const links = [
+const primaryLinks = [
   { href: "/", label: "Home" },
-  { href: "/admin", label: "Super Admin" },
   { href: "/dashboard", label: "Merchant" },
   { href: "/store/oud-reserve", label: "Storefront" },
   { href: "/growth", label: "Growth" },
-  { href: "/operations", label: "Ops" },
+  { href: "/immersive-builder", label: "3D Builder" },
+];
+
+const secondaryLinks = [
+  { href: "/admin", label: "Super Admin" },
+  { href: "/operations", label: "Operations" },
   { href: "/commerce", label: "Commerce" },
   { href: "/themes", label: "Themes" },
-  { href: "/immersive-builder", label: "3D Builder" },
   { href: "/marketplace", label: "Apps" },
   { href: "/security", label: "Security" },
 ];
 
+const allLinks = [...primaryLinks, ...secondaryLinks];
+
 export function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-black/5 bg-[#f7f4ee]/70 backdrop-blur-xl">
-      <div className="mx-auto max-w-7xl px-4 py-3 lg:px-8">
-        <div className="flex items-center justify-between rounded-xl border border-black/10 bg-white/72 px-3 py-2 shadow-[0_18px_60px_rgba(20,60,58,0.10)] backdrop-blur-xl lg:px-4">
-        <Link href="/" className="group flex items-center gap-3">
-          <span className="relative grid size-10 place-items-center overflow-hidden rounded-lg bg-[#143c3a] text-white shadow-lg shadow-[#143c3a]/20">
-            <span className="absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.24),transparent)] opacity-0 transition group-hover:translate-x-full group-hover:opacity-100" />
-            <ShoppingBag size={20} className="relative" />
-          </span>
-          <span className="leading-none">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.24em] text-[#54706b]">
-              StoreBuilder
+    <header className="sticky top-0 z-30 bg-[#f7f4ee]/86 px-3 py-3 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg border border-[#143c3a]/20 bg-[#102321] px-3 text-white shadow-[0_20px_70px_rgba(16,35,33,0.22)] lg:grid-cols-[1fr_auto_1fr] lg:px-4">
+          <Link href="/" className="group flex min-w-0 items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md border border-white/14 bg-white/10 text-[#d4fff1] transition group-hover:bg-[#d4fff1] group-hover:text-[#102321]">
+              <ShoppingBag size={19} />
             </span>
-            <span className="font-display block text-base font-extrabold text-[#101514] sm:text-lg">
-              Commerce Cloud
+            <span className="min-w-0 leading-none">
+              <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-[#9fcfc0]">
+                StoreBuilder
+              </span>
+              <span className="font-display mt-1 block truncate text-base font-extrabold text-white sm:text-lg">
+                Commerce Cloud
+              </span>
             </span>
-          </span>
-        </Link>
-
-        <nav className="hidden items-center rounded-lg border border-black/5 bg-[#f7f4ee]/72 p-1 text-sm font-bold text-[#4f5b58] xl:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-3 py-2 transition hover:bg-white hover:text-[#143c3a] hover:shadow-sm"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <span className="hidden h-10 items-center gap-2 rounded-lg border border-[#c6d1c7] bg-[#f7f4ee]/75 px-3 text-xs font-bold uppercase tracking-[0.16em] text-[#143c3a] lg:inline-flex">
-            <Sparkles size={14} />
-            Live
-          </span>
-          <Link
-            href="/login"
-            className="hidden h-10 items-center rounded-lg border border-black/10 bg-white/80 px-4 text-sm font-bold text-[#143c3a] transition hover:border-[#143c3a] hover:bg-white sm:inline-flex"
-          >
-            Sign in
           </Link>
-          <Link
-            href="/create"
-            className="magnetic-button inline-flex h-10 items-center gap-2 rounded-lg bg-[#143c3a] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#0f2c2a]"
-          >
-            Create store <ChevronRight size={16} />
-          </Link>
-          <button
-            type="button"
-            aria-label="Open navigation"
-            className="grid size-10 place-items-center rounded-lg border border-black/10 bg-white/80 text-[#143c3a] xl:hidden"
-          >
-            <Menu size={18} />
-          </button>
-        </div>
-        </div>
-        <nav className="mt-2 flex gap-2 overflow-x-auto pb-1 text-sm font-bold text-[#4f5b58] xl:hidden">
-          {links.map((link) => (
+
+          <nav className="hidden items-center gap-1 rounded-md border border-white/10 bg-black/18 p-1 text-sm font-bold text-white/70 lg:flex">
+            {primaryLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-[6px] px-3 py-2 transition hover:bg-white hover:text-[#102321]"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <details className="group relative">
+              <summary className="cursor-pointer list-none rounded-[6px] px-3 py-2 transition hover:bg-white hover:text-[#102321]">
+                More
+              </summary>
+              <div className="absolute right-0 top-11 w-52 rounded-lg border border-white/10 bg-[#102321] p-2 shadow-2xl">
+                {secondaryLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block rounded-md px-3 py-2 text-white/76 transition hover:bg-white hover:text-[#102321]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </details>
+          </nav>
+
+          <div className="ml-auto flex items-center justify-end gap-2">
             <Link
-              key={link.href}
-              href={link.href}
-              className="shrink-0 rounded-lg border border-black/10 bg-white/72 px-3 py-2 backdrop-blur transition hover:border-[#143c3a] hover:text-[#143c3a]"
+              href="/login"
+              className="hidden h-10 items-center rounded-md border border-white/14 px-4 text-sm font-bold text-white/82 transition hover:bg-white hover:text-[#102321] sm:inline-flex"
             >
-              {link.label}
+              Sign in
             </Link>
-          ))}
-        </nav>
+            <Link
+              href="/create"
+              className="magnetic-button inline-flex h-10 items-center gap-2 rounded-md bg-[#d4fff1] px-4 text-sm font-extrabold text-[#102321] shadow-sm transition hover:bg-white"
+            >
+              Create store <ChevronRight size={16} />
+            </Link>
+            <details className="relative lg:hidden">
+              <summary
+                aria-label="Open navigation"
+                className="grid size-10 cursor-pointer list-none place-items-center rounded-md border border-white/14 bg-white/10 text-white"
+              >
+                <Menu size={18} />
+              </summary>
+              <nav className="absolute right-0 top-12 z-40 grid w-64 gap-1 rounded-lg border border-white/12 bg-[#102321] p-2 shadow-2xl">
+                {allLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="rounded-md px-3 py-2 text-sm font-bold text-white/78 transition hover:bg-white hover:text-[#102321]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </details>
+          </div>
+        </div>
       </div>
     </header>
   );
