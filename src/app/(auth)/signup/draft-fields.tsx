@@ -15,6 +15,7 @@ type Draft = {
   logoText?: string;
   fontKey?: string;
   logoUrl?: string;
+  layout?: unknown;
 };
 
 export function DraftFields() {
@@ -74,6 +75,11 @@ export function DraftFields() {
         <input type="hidden" name="logoText" defaultValue={draft.logoText ?? ""} />
         <input type="hidden" name="fontKey" defaultValue={draft.fontKey ?? ""} />
         <input type="hidden" name="logoUrl" defaultValue={draft.logoUrl ?? ""} />
+        <input
+          type="hidden"
+          name="layout"
+          defaultValue={draft.layout ? JSON.stringify(draft.layout) : ""}
+        />
       </>
     );
   }

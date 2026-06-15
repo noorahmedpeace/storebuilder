@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { getDb, isDatabaseConfigured } from "@/lib/db";
 import { stores } from "@/lib/platform-data";
 import { getTheme } from "@/lib/themes";
+import { normalizeLayout } from "@/lib/sections";
 import type { Section } from "@/lib/sections";
 
 /** Platform-admin scope: stores ARE the tenants, so these are not storeId-scoped. */
@@ -84,6 +85,7 @@ export type SignupInput = {
   logoText?: string;
   logoUrl?: string;
   fontKey?: string;
+  layout?: unknown;
 };
 
 export type SignupResult =
@@ -133,6 +135,9 @@ export async function createStoreWithOwner(
             input.logoText || input.storeName.slice(0, 2).toUpperCase(),
           logoUrl: input.logoUrl || null,
           fontKey: input.fontKey || theme.defaultFont,
+          ...(input.layout
+            ? { layout: normalizeLayout(input.layout) as unknown as Prisma.InputJsonValue }
+            : {}),
           tagline: input.tagline || `Welcome to ${input.storeName}`,
           subscription: { create: { plan: "Starter", status: "trialing" } },
           members: { create: { userId: user.id, roleId: ownerRole.id } },

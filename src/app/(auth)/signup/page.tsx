@@ -30,6 +30,15 @@ async function registerStore(formData: FormData) {
   const logoText = String(formData.get("logoText") ?? "").trim();
   const fontKey = String(formData.get("fontKey") ?? "").trim();
   const logoUrl = String(formData.get("logoUrl") ?? "").trim();
+  const layoutRaw = String(formData.get("layout") ?? "").trim();
+  let layout: unknown;
+  if (layoutRaw) {
+    try {
+      layout = JSON.parse(layoutRaw);
+    } catch {
+      layout = undefined;
+    }
+  }
 
   if (!ownerName || !email || password.length < 6 || !storeName) {
     redirect("/signup?error=fields");
@@ -61,6 +70,7 @@ async function registerStore(formData: FormData) {
     logoText: logoText || undefined,
     fontKey: fontKey || undefined,
     logoUrl: logoUrl || undefined,
+    layout,
   });
 
   if (!result.ok) {

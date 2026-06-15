@@ -3,11 +3,41 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ShoppingBag, Star } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  EyeOff,
+  Plus,
+  ShoppingBag,
+  Star,
+  Trash2,
+} from "lucide-react";
 import { THEMES, getTheme } from "@/lib/themes";
 import { FONTS, getFont } from "@/lib/fonts";
+import {
+  ADDABLE_SECTIONS,
+  DEFAULT_LAYOUT,
+  SECTION_FIELDS,
+  SECTION_LABELS,
+  type Section,
+  type SectionType,
+} from "@/lib/sections";
 
 const DRAFT_KEY = "storebuilder_draft";
+
+let counter = 0;
+const newId = () => `s-${Date.now()}-${counter++}`;
+
+type Ctx = {
+  name: string;
+  businessType: string;
+  tagline: string;
+  brand: string;
+  accent: string;
+  radius: string;
+};
 
 export default function CreatePage() {
   const router = useRouter();
@@ -20,6 +50,8 @@ export default function CreatePage() {
   const [fontKey, setFontKey] = useState<string>(THEMES[0].defaultFont);
   const [logoUrl, setLogoUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [sections, setSections] = useState<Section[]>(DEFAULT_LAYOUT);
+  const [tab, setTab] = useState<"design" | "sections">("design");
 
   const theme = useMemo(() => getTheme(themeKey), [themeKey]);
   const font = useMemo(() => getFont(fontKey), [fontKey]);
@@ -34,6 +66,25 @@ export default function CreatePage() {
     setFontKey(t.defaultFont);
   }
 
+  // --- section ops ---
+  const move = (i: number, d: -1 | 1) =>
+    setSections((prev) => {
+      const next = [...prev];
+      const j = i + d;
+      if (j < 0 || j >= next.length) return prev;
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+  const toggle = (i: number) =>
+    setSections((prev) => prev.map((s, idx) => (idx === i ? { ...s, visible: !s.visible } : s)));
+  const remove = (i: number) => setSections((prev) => prev.filter((_, idx) => idx !== i));
+  const add = (type: SectionType) =>
+    setSections((prev) => [...prev, { id: newId(), type, visible: true, props: {} }]);
+  const setProp = (i: number, key: string, value: string) =>
+    setSections((prev) =>
+      prev.map((s, idx) => (idx === i ? { ...s, props: { ...s.props, [key]: value } } : s)),
+    );
+
   async function onLogo(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -42,10 +93,7 @@ export default function CreatePage() {
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/uploads", { method: "POST", body: fd });
-      if (res.ok) {
-        const json = await res.json();
-        setLogoUrl(json.url);
-      }
+      if (res.ok) setLogoUrl((await res.json()).url);
     } finally {
       setUploading(false);
     }
@@ -62,10 +110,13 @@ export default function CreatePage() {
       logoText,
       fontKey,
       logoUrl,
+      layout: sections,
     };
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
     router.push("/signup");
   }
+
+  const ctx: Ctx = { name, businessType, tagline, brand: brandColor, accent: accentColor, radius: theme.radius };
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
@@ -78,100 +129,52 @@ export default function CreatePage() {
         </Link>
         <div className="flex items-center gap-3 text-sm">
           <span className="hidden text-zinc-500 sm:inline">
-            No account needed yet — build first, sign up to publish.
+            Build first — sign up only when you publish.
           </span>
-          <Link href="/login" className="font-semibold text-[#143c3a]">
-            Sign in
-          </Link>
+          <Link href="/login" className="font-semibold text-[#143c3a]">Sign in</Link>
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
         {/* Controls */}
         <div className="space-y-5">
           <div>
             <h1 className="text-2xl font-bold">Build your store</h1>
-            <p className="mt-1 text-sm text-zinc-500">
-              Pick a theme and customize. You&apos;ll only sign up when you
-              publish.
-            </p>
+            <p className="mt-1 text-sm text-zinc-500">Design the look and lay out your page. Live preview on the right.</p>
           </div>
 
-          <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5">
-            <Field label="Store name" value={storeName} onChange={setStoreName} placeholder="Ali Electronics" />
-            <Field label="Business type" value={businessType} onChange={setBusinessType} placeholder="Electronics, Grocery, Perfume..." />
-            <Field label="Tagline" value={tagline} onChange={setTagline} placeholder="Best deals in town" />
-            <div>
-              <span className="text-sm font-semibold text-zinc-600">Logo (optional)</span>
-              <div className="mt-1 flex items-center gap-3">
-                {logoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={logoUrl} alt="logo" className="size-10 rounded-lg border border-zinc-200 object-cover" />
-                ) : null}
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
-                  onChange={onLogo}
-                  className="w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#143c3a] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
-                />
-              </div>
-              {uploading ? <p className="mt-1 text-xs text-zinc-500">Uploading…</p> : null}
-            </div>
+          <div className="flex gap-2 rounded-lg border border-zinc-200 bg-white p-1">
+            {(["design", "sections"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold capitalize transition ${
+                  tab === t ? "bg-[#143c3a] text-white" : "text-zinc-600 hover:bg-zinc-100"
+                }`}
+              >
+                {t === "design" ? "Design" : "Page sections"}
+              </button>
+            ))}
           </div>
 
-          <div className="rounded-xl border border-zinc-200 bg-white p-5">
-            <p className="mb-3 text-sm font-semibold text-zinc-700">Theme</p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {THEMES.map((t) => (
-                <button
-                  key={t.key}
-                  type="button"
-                  onClick={() => pickTheme(t.key)}
-                  className={`rounded-lg border p-2 text-center text-xs font-semibold transition ${
-                    themeKey === t.key
-                      ? "border-[#143c3a] ring-1 ring-[#143c3a]"
-                      : "border-zinc-200 hover:border-zinc-300"
-                  }`}
-                >
-                  <span
-                    className="mb-1.5 block h-7 w-full rounded"
-                    style={{ background: `linear-gradient(135deg, ${t.brandColor}, ${t.accentColor})` }}
-                  />
-                  {t.name}
-                </button>
-              ))}
-            </div>
-            <div className="mt-4 flex flex-wrap gap-5">
-              <ColorField label="Brand color" value={brandColor} onChange={setBrandColor} />
-              <ColorField label="Accent color" value={accentColor} onChange={setAccentColor} />
-            </div>
-          </div>
-
-          <div className="rounded-xl border border-zinc-200 bg-white p-5">
-            <p className="mb-3 text-sm font-semibold text-zinc-700">Font</p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {FONTS.map((f) => (
-                <button
-                  key={f.key}
-                  type="button"
-                  onClick={() => setFontKey(f.key)}
-                  className={`rounded-lg border p-2 text-left transition ${
-                    fontKey === f.key
-                      ? "border-[#143c3a] ring-1 ring-[#143c3a]"
-                      : "border-zinc-200 hover:border-zinc-300"
-                  }`}
-                >
-                  <span className="block text-base font-bold" style={{ fontFamily: f.css }}>
-                    {f.label}
-                  </span>
-                  <span className="text-[11px] text-zinc-500">{f.category}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          {tab === "design" ? (
+            <DesignTab
+              {...{ storeName, setStoreName, businessType, setBusinessType, tagline, setTagline,
+                logoUrl, onLogo, uploading, themeKey, pickTheme, brandColor, setBrandColor,
+                accentColor, setAccentColor, fontKey, setFontKey }}
+            />
+          ) : (
+            <SectionsTab
+              sections={sections}
+              onMove={move}
+              onToggle={toggle}
+              onRemove={remove}
+              onAdd={add}
+              onSetProp={setProp}
+            />
+          )}
 
           <button
-            type="button"
             onClick={publish}
             className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#143c3a] font-semibold text-white transition hover:bg-[#0f2c2a]"
           >
@@ -181,16 +184,11 @@ export default function CreatePage() {
 
         {/* Live preview */}
         <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-zinc-400">
-            Live preview
-          </p>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-zinc-400">Live preview</p>
           <div
             className="overflow-hidden rounded-2xl border border-zinc-200 shadow-sm"
-            style={{ fontFamily: font.css }}
+            style={{ fontFamily: font.css, background: theme.bg }}
           >
-            <div className="px-4 py-1.5 text-center text-xs font-semibold text-white" style={{ background: brandColor }}>
-              {tagline.trim() || "Free delivery this week"}
-            </div>
             <div className="flex items-center justify-between border-b border-black/10 bg-white px-4 py-3">
               <div className="flex items-center gap-2">
                 {logoUrl ? (
@@ -203,36 +201,12 @@ export default function CreatePage() {
                 )}
                 <span className="font-bold">{name}</span>
               </div>
-              <span className="rounded-lg px-3 py-1.5 text-xs font-bold text-white" style={{ background: brandColor }}>
-                Order
-              </span>
+              <span className="rounded-lg px-3 py-1.5 text-xs font-bold text-white" style={{ background: brandColor }}>Cart</span>
             </div>
-            <div style={{ background: theme.bg }}>
-              <div className="px-6 py-10">
-                <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: accentColor }}>
-                  {businessType.trim() || "Online store"}
-                </p>
-                <h2 className={`mt-2 text-3xl font-bold leading-tight ${theme.uppercase ? "uppercase tracking-wide" : ""}`}>
-                  {tagline.trim() || `Welcome to ${name}`}
-                </h2>
-              </div>
-              <div className="grid grid-cols-2 gap-3 px-6 pb-8 sm:grid-cols-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className={`overflow-hidden border border-black/10 bg-white ${theme.radius}`}>
-                    <div className="aspect-square w-full" style={{ background: `linear-gradient(135deg, ${brandColor}, ${accentColor})` }} />
-                    <div className="p-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="rounded-full px-2 py-0.5 text-[10px] font-bold text-white" style={{ background: accentColor }}>
-                          PKR
-                        </span>
-                        <Star size={11} style={{ color: accentColor }} fill="currentColor" />
-                      </div>
-                      <p className="mt-1.5 text-sm font-bold">Product {i}</p>
-                      <p className="text-xs font-bold">Rs {(i * 1500).toLocaleString()}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="max-h-[70vh] overflow-y-auto">
+              {sections.filter((s) => s.visible).map((s) => (
+                <PreviewSection key={s.id} section={s} ctx={ctx} />
+              ))}
             </div>
           </div>
         </div>
@@ -241,47 +215,236 @@ export default function CreatePage() {
   );
 }
 
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
+/* ---------------- Design tab ---------------- */
+function DesignTab(p: {
+  storeName: string; setStoreName: (v: string) => void;
+  businessType: string; setBusinessType: (v: string) => void;
+  tagline: string; setTagline: (v: string) => void;
+  logoUrl: string; onLogo: (e: React.ChangeEvent<HTMLInputElement>) => void; uploading: boolean;
+  themeKey: string; pickTheme: (k: string) => void;
+  brandColor: string; setBrandColor: (v: string) => void;
+  accentColor: string; setAccentColor: (v: string) => void;
+  fontKey: string; setFontKey: (v: string) => void;
 }) {
+  return (
+    <>
+      <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5">
+        <TextField label="Store name" value={p.storeName} onChange={p.setStoreName} placeholder="Ali Electronics" />
+        <TextField label="Business type" value={p.businessType} onChange={p.setBusinessType} placeholder="Electronics, Grocery, Perfume..." />
+        <TextField label="Tagline" value={p.tagline} onChange={p.setTagline} placeholder="Best deals in town" />
+        <div>
+          <span className="text-sm font-semibold text-zinc-600">Logo (optional)</span>
+          <div className="mt-1 flex items-center gap-3">
+            {p.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={p.logoUrl} alt="logo" className="size-10 rounded-lg border border-zinc-200 object-cover" />
+            ) : null}
+            <input type="file" accept="image/*" onChange={p.onLogo}
+              className="w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#143c3a] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
+          </div>
+          {p.uploading ? <p className="mt-1 text-xs text-zinc-500">Uploading…</p> : null}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-zinc-200 bg-white p-5">
+        <p className="mb-3 text-sm font-semibold text-zinc-700">Theme</p>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {THEMES.map((t) => (
+            <button key={t.key} onClick={() => p.pickTheme(t.key)}
+              className={`rounded-lg border p-2 text-center text-xs font-semibold transition ${
+                p.themeKey === t.key ? "border-[#143c3a] ring-1 ring-[#143c3a]" : "border-zinc-200 hover:border-zinc-300"
+              }`}>
+              <span className="mb-1.5 block h-7 w-full rounded" style={{ background: `linear-gradient(135deg, ${t.brandColor}, ${t.accentColor})` }} />
+              {t.name}
+            </button>
+          ))}
+        </div>
+        <div className="mt-4 flex flex-wrap gap-5">
+          <ColorField label="Brand color" value={p.brandColor} onChange={p.setBrandColor} />
+          <ColorField label="Accent color" value={p.accentColor} onChange={p.setAccentColor} />
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-zinc-200 bg-white p-5">
+        <p className="mb-3 text-sm font-semibold text-zinc-700">Font</p>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {FONTS.map((f) => (
+            <button key={f.key} onClick={() => p.setFontKey(f.key)}
+              className={`rounded-lg border p-2 text-left transition ${
+                p.fontKey === f.key ? "border-[#143c3a] ring-1 ring-[#143c3a]" : "border-zinc-200 hover:border-zinc-300"
+              }`}>
+              <span className="block text-base font-bold" style={{ fontFamily: f.css }}>{f.label}</span>
+              <span className="text-[11px] text-zinc-500">{f.category}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ---------------- Sections tab ---------------- */
+function SectionsTab({
+  sections, onMove, onToggle, onRemove, onAdd, onSetProp,
+}: {
+  sections: Section[];
+  onMove: (i: number, d: -1 | 1) => void;
+  onToggle: (i: number) => void;
+  onRemove: (i: number) => void;
+  onAdd: (t: SectionType) => void;
+  onSetProp: (i: number, key: string, value: string) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
+        <p className="mb-3 text-sm font-semibold text-zinc-700">Your page sections</p>
+        <div className="space-y-2">
+          {sections.map((s, i) => (
+            <div key={s.id} className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+              <div className="flex items-center gap-2">
+                <span className="flex-1 text-sm font-bold">{SECTION_LABELS[s.type]}</span>
+                <button onClick={() => onMove(i, -1)} className="grid size-7 place-items-center rounded border border-zinc-200 bg-white" title="Up"><ChevronUp size={14} /></button>
+                <button onClick={() => onMove(i, 1)} className="grid size-7 place-items-center rounded border border-zinc-200 bg-white" title="Down"><ChevronDown size={14} /></button>
+                <button onClick={() => onToggle(i)} className="grid size-7 place-items-center rounded border border-zinc-200 bg-white" title={s.visible ? "Hide" : "Show"}>{s.visible ? <Eye size={14} /> : <EyeOff size={14} />}</button>
+                <button onClick={() => onRemove(i)} className="grid size-7 place-items-center rounded border border-[#a23b3b]/40 text-[#a23b3b]" title="Remove"><Trash2 size={14} /></button>
+              </div>
+              {SECTION_FIELDS[s.type] ? (
+                <div className="mt-2 grid gap-2">
+                  {SECTION_FIELDS[s.type]!.map((f) => (
+                    <input key={f.key} value={s.props[f.key] ?? ""} onChange={(e) => onSetProp(i, f.key, e.target.value)}
+                      placeholder={f.label}
+                      className="h-9 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm outline-none focus:border-zinc-900" />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
+        <p className="mb-3 text-sm font-semibold text-zinc-700">Add a section</p>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {ADDABLE_SECTIONS.map((t) => (
+            <button key={t} onClick={() => onAdd(t)}
+              className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-left text-sm font-semibold transition hover:border-[#143c3a]">
+              <Plus size={14} /> {SECTION_LABELS[t]}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Preview section renderer ---------------- */
+function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
+  const p = section.props ?? {};
+  switch (section.type) {
+    case "announcement":
+      return <div className="px-4 py-1.5 text-center text-xs font-semibold text-white" style={{ background: ctx.brand }}>{p.text || `Welcome to ${ctx.name}`}</div>;
+    case "hero":
+      return (
+        <div className="px-6 py-10">
+          <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: ctx.accent }}>{ctx.businessType || "Online store"}</p>
+          <h2 className="mt-2 text-3xl font-bold leading-tight">{p.heading || ctx.tagline || `Welcome to ${ctx.name}`}</h2>
+          {p.subheading ? <p className="mt-2 text-sm text-[#555]">{p.subheading}</p> : null}
+        </div>
+      );
+    case "products":
+      return (
+        <div className="px-6 pb-6">
+          <p className="mb-3 text-lg font-bold">{p.title || "Products"}</p>
+          <div className="grid grid-cols-3 gap-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className={`overflow-hidden border border-black/10 bg-white ${ctx.radius}`}>
+                <div className="aspect-square w-full" style={{ background: `linear-gradient(135deg, ${ctx.brand}, ${ctx.accent})` }} />
+                <div className="p-2"><p className="text-xs font-bold">Product {i}</p><p className="text-xs">Rs {(i * 1500).toLocaleString()}</p></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    case "richText":
+      return (
+        <div className="px-6 py-8 text-center">
+          {p.heading ? <h3 className="text-2xl font-bold">{p.heading}</h3> : null}
+          {p.body ? <p className="mt-2 text-sm text-[#555]">{p.body}</p> : null}
+        </div>
+      );
+    case "banner":
+      return <div className="px-6 py-6 text-center text-lg font-bold text-white" style={{ background: ctx.accent }}>{p.text || "Special offer"}</div>;
+    case "features": {
+      const items = (p.items || "Fast delivery, Cash on delivery, Easy returns").split(",").map((s) => s.trim()).filter(Boolean);
+      return (
+        <div className="px-6 py-6">
+          {p.title ? <p className="mb-3 font-bold">{p.title}</p> : null}
+          <div className="grid grid-cols-2 gap-2">
+            {items.slice(0, 4).map((it) => (
+              <div key={it} className="rounded-lg border border-black/10 bg-white px-3 py-2 text-xs font-semibold">✓ {it}</div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    case "reviews":
+      return (
+        <div className="px-6 py-6">
+          <p className="mb-3 font-bold">{p.title || "What customers say"}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {[p.r1 || "Ayesha — Great quality!", p.r2 || "Bilal — Fast delivery"].map((r, i) => (
+              <div key={i} className="rounded-lg border border-black/10 bg-white p-3">
+                <div className="flex gap-0.5" style={{ color: ctx.accent }}>{[0,1,2,3,4].map((s) => <Star key={s} size={11} fill="currentColor" />)}</div>
+                <p className="mt-1 text-xs text-[#555]">{r}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    case "faq":
+      return (
+        <div className="px-6 py-6">
+          <p className="mb-2 font-bold">{p.title || "FAQ"}</p>
+          {[p.q1 || "Do you deliver? | Yes", p.q2].filter(Boolean).map((q, i) => (
+            <div key={i} className="border-b border-black/10 py-2 text-sm font-semibold">{(q || "").split("|")[0]}</div>
+          ))}
+        </div>
+      );
+    case "whatsapp":
+      return <div className="px-6 py-6 text-center"><span className="inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white" style={{ background: ctx.brand }}>{p.text || "Order on WhatsApp"}</span></div>;
+    case "imageBanner":
+      return (
+        <div className="flex min-h-32 items-center justify-center px-6 py-8 text-center text-white"
+          style={{ background: p.imageUrl ? `linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)), center/cover url(${p.imageUrl})` : `linear-gradient(135deg, ${ctx.brand}, ${ctx.accent})` }}>
+          <p className="text-xl font-bold">{p.heading || "Banner heading"}</p>
+        </div>
+      );
+    case "countdown":
+      return <div className="px-6 py-6 text-center"><p className="font-bold">{p.title || "Sale ends soon"}</p><div className="mt-2 flex justify-center gap-2">{["00","12","45","30"].map((n,i) => <span key={i} className="rounded px-2 py-1 text-sm font-bold text-white" style={{ background: i===0?ctx.brand:ctx.accent }}>{n}</span>)}</div></div>;
+    case "video":
+      return <div className="px-6 py-6"><div className="aspect-video w-full rounded-lg bg-black/80 grid place-items-center text-white text-sm">▶ {p.title || "Video"}</div></div>;
+    case "newsletter":
+      return <div className="px-6 py-6 text-center"><p className="font-bold">{p.title || "Get 10% off"}</p><div className="mx-auto mt-2 flex max-w-xs gap-1"><span className="h-9 flex-1 rounded-lg border border-black/15 bg-white" /><span className="rounded-lg px-3 text-xs font-bold text-white grid place-items-center" style={{ background: ctx.brand }}>Join</span></div></div>;
+    default:
+      return null;
+  }
+}
+
+/* ---------------- field helpers ---------------- */
+function TextField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <label className="block">
       <span className="text-sm font-semibold text-zinc-600">{label}</span>
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="mt-1 h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 outline-none focus:border-zinc-900"
-      />
+      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
+        className="mt-1 h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 outline-none focus:border-zinc-900" />
     </label>
   );
 }
 
-function ColorField({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
+function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
     <label className="flex items-center gap-2">
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-9 w-12 cursor-pointer rounded border border-zinc-300"
-      />
+      <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="h-9 w-12 cursor-pointer rounded border border-zinc-300" />
       <span className="text-sm font-semibold text-zinc-600">{label}</span>
     </label>
   );
