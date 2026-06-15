@@ -3,6 +3,10 @@ import { getStoreBySlug } from "@/lib/repositories/stores";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
+import { Reveal } from "@/components/motion/reveal";
+import { TiltCard } from "@/components/motion/tilt-card";
+import { AnimatedHeadline } from "@/components/motion/animated-headline";
+import { Aurora } from "@/components/motion/aurora";
 import { Countdown } from "./countdown";
 import { NewsletterForm } from "./newsletter-form";
 
@@ -67,14 +71,15 @@ export function Storefront({ store }: { store: StoreData }) {
       </header>
 
       {sections.map((section) => (
-        <SectionView
-          key={section.id}
-          section={section}
-          store={store}
-          theme={theme}
-          brand={brand}
-          accent={accent}
-        />
+        <Reveal key={section.id}>
+          <SectionView
+            section={section}
+            store={store}
+            theme={theme}
+            brand={brand}
+            accent={accent}
+          />
+        </Reveal>
       ))}
 
       <footer className="px-5 py-10 text-white lg:px-8" style={{ background: brand }}>
@@ -127,12 +132,7 @@ function SectionView({
         `Discover products from ${store.name}.`;
       return (
         <section className="relative overflow-hidden">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.07]"
-            style={{
-              background: `radial-gradient(60% 80% at 15% 0%, ${brand} 0%, transparent 60%), radial-gradient(50% 70% at 100% 20%, ${accent} 0%, transparent 55%)`,
-            }}
-          />
+          <Aurora from={accent} via={brand} to={accent} className="opacity-40" />
           <div className="relative mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
             <p
               className="text-sm font-bold uppercase tracking-[0.25em]"
@@ -143,7 +143,7 @@ function SectionView({
             <h1
               className={`mt-4 max-w-3xl text-5xl font-bold leading-[1.03] md:text-7xl ${head} ${upper}`}
             >
-              {heading}
+              <AnimatedHeadline text={heading} />
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[#555d59]">{sub}</p>
           </div>
@@ -405,8 +405,9 @@ function ProductCard({
   );
   const head = "";
   return (
-    <article
-      className={`group overflow-hidden border border-black/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${theme.radius}`}
+    <TiltCard
+      max={6}
+      className={`group overflow-hidden border border-black/10 bg-white shadow-sm transition-shadow duration-300 hover:shadow-2xl ${theme.radius}`}
     >
       <div className="aspect-square w-full overflow-hidden">
         <div
@@ -456,6 +457,6 @@ function ProductCard({
           )}
         </div>
       </div>
-    </article>
+    </TiltCard>
   );
 }

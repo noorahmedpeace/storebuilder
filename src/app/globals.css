@@ -36,3 +36,204 @@ h3,
   background: #143c3a;
   color: #ffffff;
 }
+
+@keyframes ambient-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(1.5%, -1.2%, 0) scale(1.035);
+  }
+}
+
+@keyframes float-panel {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(0.35deg);
+  }
+}
+
+@keyframes shine-sweep {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(20, 60, 58, 0);
+  }
+  50% {
+    box-shadow: 0 0 42px 0 rgba(80, 183, 154, 0.24);
+  }
+}
+
+.ambient-video {
+  animation: ambient-drift 18s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.motion-reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  transition:
+    opacity 700ms ease,
+    transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.motion-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.float-panel {
+  animation: float-panel 7s ease-in-out infinite;
+}
+
+.premium-surface {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 260ms ease,
+    border-color 260ms ease,
+    box-shadow 260ms ease,
+    background 260ms ease;
+}
+
+.premium-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.52) 42%,
+    transparent 62%
+  );
+  opacity: 0;
+  transform: translateX(-120%) skewX(-18deg);
+  pointer-events: none;
+}
+
+.premium-surface:hover {
+  transform: translateY(-6px);
+  border-color: rgba(20, 60, 58, 0.28);
+  box-shadow: 0 24px 60px rgba(20, 60, 58, 0.14);
+}
+
+.premium-surface:hover::before {
+  opacity: 1;
+  animation: shine-sweep 900ms ease;
+}
+
+.magnetic-button {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.magnetic-button::after {
+  content: "";
+  position: absolute;
+  inset: -40% auto -40% -30%;
+  width: 45%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.36),
+    transparent
+  );
+  transform: translateX(-120%) skewX(-18deg);
+}
+
+.magnetic-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(20, 60, 58, 0.18);
+}
+
+.magnetic-button:hover::after {
+  animation: shine-sweep 850ms ease;
+}
+
+.motion-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 28s linear infinite;
+}
+
+.motion-marquee:hover {
+  animation-play-state: paused;
+}
+
+.pulse-ring {
+  animation: soft-pulse 4.8s ease-in-out infinite;
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(-8%, -6%, 0) rotate(0deg) scale(1.2);
+  }
+  50% {
+    transform: translate3d(8%, 6%, 0) rotate(180deg) scale(1.45);
+  }
+  100% {
+    transform: translate3d(-8%, -6%, 0) rotate(360deg) scale(1.2);
+  }
+}
+
+.aurora-layer {
+  position: absolute;
+  inset: -30%;
+  filter: blur(70px);
+  opacity: 0.55;
+  pointer-events: none;
+  animation: aurora-drift 22s linear infinite;
+  will-change: transform;
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-layer {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .motion-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

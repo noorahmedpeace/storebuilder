@@ -2,7 +2,7 @@ export function IntegrationMotionShowcase() {
   return (
     <section
       aria-label="3D ecommerce marketplace integrations video preview"
-      className="relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[#0d1d1b] shadow-2xl"
+      className="float-panel relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[#0d1d1b] shadow-2xl"
     >
       <video
         className="absolute inset-0 h-full w-full object-cover"

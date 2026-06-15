@@ -22,9 +22,15 @@ import {
   Users,
   Workflow,
 } from "lucide-react";
+import type { CSSProperties } from "react";
 import { MarketingHeader } from "@/components/app-shell";
 import { ImmersiveShowcase } from "@/components/immersive-showcase";
 import { IntegrationMotionShowcase } from "@/components/integration-motion-showcase";
+import { MotionHydrator } from "@/components/motion-hydrator";
+import { AnimatedHeadline } from "@/components/motion/animated-headline";
+import { Magnetic } from "@/components/motion/magnetic";
+import { Marquee } from "@/components/motion/marquee";
+import { TiltCard } from "@/components/motion/tilt-card";
 
 const stats = [
   { label: "Target stores", value: "1,000+" },
@@ -85,15 +91,27 @@ const roadmap = [
 
 const payments = ["COD", "EasyPaisa", "JazzCash", "Raast", "Stripe"];
 const couriers = ["Leopards", "TCS", "Call Courier", "Trax"];
+const motionRail = [
+  "Storefronts",
+  "Payments",
+  "Themes",
+  "AI content",
+  "SEO",
+  "Courier flows",
+  "Analytics",
+  "Marketplace apps",
+  "Automation",
+];
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f4ee] text-[#171717]">
+      <MotionHydrator />
       <MarketingHeader />
 
       <section className="relative overflow-hidden border-b border-black/10 bg-[#f7f4ee]">
         <video
-          className="absolute inset-0 h-full w-full object-cover opacity-100"
+          className="ambient-video absolute inset-0 h-full w-full object-cover opacity-100"
           src="/media/ambient-hero-background.mp4"
           autoPlay
           muted
@@ -106,41 +124,62 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ee]/45 via-transparent to-[#f7f4ee]/70" />
         <div className="relative z-10 mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-16">
           <div className="flex flex-col justify-center">
-            <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-lg border border-[#c6d1c7] bg-white px-3 py-2 text-sm font-semibold text-[#143c3a]">
+            <div className="motion-reveal mb-5 inline-flex w-fit items-center gap-2 rounded-lg border border-[#c6d1c7] bg-white/82 px-3 py-2 text-sm font-semibold text-[#143c3a] shadow-sm backdrop-blur">
               <Sparkles size={16} />
               SEO-first online store builder
             </div>
-            <h1 className="font-display max-w-3xl text-5xl font-bold leading-[0.98] tracking-normal text-[#101514] md:text-7xl">
-              StoreBuilder Cloud
+            <h1
+              className="motion-reveal font-display max-w-3xl text-5xl font-bold leading-[0.98] tracking-normal text-[#101514] md:text-7xl"
+              style={{ "--delay": "90ms" } as CSSProperties}
+            >
+              <AnimatedHeadline text="StoreBuilder Cloud" />
             </h1>
-            <p className="mt-5 max-w-2xl text-lg font-medium leading-8 text-[#4f5b58]">
+            <p
+              className="motion-reveal mt-5 max-w-2xl text-lg font-medium leading-8 text-[#4f5b58]"
+              style={{ "--delay": "160ms" } as CSSProperties}
+            >
               Create a professional ecommerce website, manage products and
               orders, accept payments, automate marketing, and grow with AI from
               one cloud platform built for every business category.
             </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="/create"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#143c3a] px-5 text-sm font-bold text-white transition hover:bg-[#0f2c2a]"
-              >
-                Create your store <Store size={17} />
-              </a>
-              <a
-                href="/immersive-builder"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-black/15 bg-white px-5 text-sm font-bold text-[#143c3a] transition hover:border-[#143c3a]"
-              >
-                3D builder plan <BarChart3 size={17} />
-              </a>
+            <div
+              className="motion-reveal mt-7 flex flex-col gap-3 sm:flex-row"
+              style={{ "--delay": "240ms" } as CSSProperties}
+            >
+              <Magnetic>
+                <a
+                  href="/create"
+                  className="magnetic-button inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#143c3a] px-5 text-sm font-bold text-white transition hover:bg-[#0f2c2a]"
+                >
+                  Create your store <Store size={17} />
+                </a>
+              </Magnetic>
+              <Magnetic strength={0.22}>
+                <a
+                  href="/immersive-builder"
+                  className="magnetic-button inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-black/15 bg-white/86 px-5 text-sm font-bold text-[#143c3a] backdrop-blur transition hover:border-[#143c3a]"
+                >
+                  3D builder plan <BarChart3 size={17} />
+                </a>
+              </Magnetic>
             </div>
           </div>
 
-          <ImmersiveShowcase />
+          <div
+            className="motion-reveal"
+            style={{ "--delay": "180ms" } as CSSProperties}
+          >
+            <TiltCard max={4}>
+              <ImmersiveShowcase />
+            </TiltCard>
+          </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:col-span-2">
-            {stats.map((item) => (
+            {stats.map((item, index) => (
               <div
                 key={item.label}
-                className="rounded-lg border border-black/10 bg-white p-4"
+                className="motion-reveal premium-surface rounded-lg border border-black/10 bg-white/86 p-4 shadow-sm backdrop-blur"
+                style={{ "--delay": `${120 + index * 70}ms` } as CSSProperties}
               >
                 <p className="font-mono text-xl font-bold text-[#143c3a]">
                   {item.value}
@@ -151,12 +190,16 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <Marquee
+            items={motionRail}
+            className="motion-reveal rounded-lg border border-black/10 bg-white/64 py-3 backdrop-blur lg:col-span-2"
+          />
         </div>
       </section>
 
       <section className="border-b border-black/10 bg-[#102321] px-5 py-14 text-white lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
+          <div className="motion-reveal">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f3b74f]">
               Immersive advantage
             </p>
@@ -175,12 +218,19 @@ export default function Home() {
               View immersive builder blueprint
             </a>
           </div>
-          <IntegrationMotionShowcase />
+          <div
+            className="motion-reveal"
+            style={{ "--delay": "140ms" } as CSSProperties}
+          >
+            <TiltCard max={3}>
+              <IntegrationMotionShowcase />
+            </TiltCard>
+          </div>
         </div>
       </section>
 
       <section id="platform" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <div className="max-w-3xl">
+        <div className="motion-reveal max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
             Complete platform
           </p>
@@ -189,15 +239,18 @@ export default function Home() {
           </h2>
         </div>
         <div className="mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {modules.map((item) => (
-            <article
+          {modules.map((item, index) => (
+            <TiltCard
               key={item.title}
-              className="rounded-lg border border-black/10 bg-white p-6 shadow-sm"
+              className="motion-reveal premium-surface rounded-lg border border-black/10 bg-white p-6 shadow-sm"
+              style={{ "--delay": `${index * 70}ms` } as CSSProperties}
             >
+              <article>
               <item.icon className="text-[#143c3a]" size={26} />
               <h3 className="mt-5 text-xl font-bold">{item.title}</h3>
               <p className="mt-3 leading-7 text-[#5b625f]">{item.text}</p>
             </article>
+            </TiltCard>
           ))}
         </div>
       </section>
@@ -208,7 +261,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
+            <div className="motion-reveal">
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
                 Merchant workspace
               </p>
@@ -232,7 +285,10 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-black/10 bg-white p-4 shadow-xl">
+            <div
+              className="motion-reveal premium-surface rounded-lg border border-black/10 bg-white p-4 shadow-xl"
+              style={{ "--delay": "120ms" } as CSSProperties}
+            >
               <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
                 <aside className="rounded-lg bg-[#143c3a] p-4 text-white">
                   <p className="text-sm font-semibold text-white/60">
@@ -308,7 +364,7 @@ export default function Home() {
 
       <section id="architecture" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-          <div>
+          <div className="motion-reveal">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
               Architecture
             </p>
@@ -323,10 +379,11 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {architecture.map(([title, text]) => (
+            {architecture.map(([title, text], index) => (
               <div
                 key={title}
-                className="rounded-lg border border-black/10 bg-white p-5"
+                className="motion-reveal premium-surface rounded-lg border border-black/10 bg-white p-5"
+                style={{ "--delay": `${index * 70}ms` } as CSSProperties}
               >
                 <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-[#e7ece2] text-[#143c3a]">
                   {title === "Frontend" && <Globe2 size={20} />}
@@ -346,7 +403,7 @@ export default function Home() {
 
       <section className="border-y border-black/10 bg-[#143c3a] px-5 py-16 text-white lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
-          <div className="rounded-lg border border-white/15 p-6">
+          <div className="motion-reveal premium-surface rounded-lg border border-white/15 p-6">
             <Truck className="text-[#f3b74f]" />
             <h3 className="mt-5 text-2xl font-bold">Courier abstraction</h3>
             <p className="mt-3 leading-7 text-white/70">
@@ -361,7 +418,10 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="rounded-lg border border-white/15 p-6">
+          <div
+            className="motion-reveal premium-surface rounded-lg border border-white/15 p-6"
+            style={{ "--delay": "90ms" } as CSSProperties}
+          >
             <LockKeyhole className="text-[#f3b74f]" />
             <h3 className="mt-5 text-2xl font-bold">Enterprise security</h3>
             <p className="mt-3 leading-7 text-white/70">
@@ -369,7 +429,10 @@ export default function Home() {
               WAF rules, automated backups, and activity audit trails.
             </p>
           </div>
-          <div className="rounded-lg border border-white/15 p-6">
+          <div
+            className="motion-reveal premium-surface rounded-lg border border-white/15 p-6"
+            style={{ "--delay": "180ms" } as CSSProperties}
+          >
             <Megaphone className="text-[#f3b74f]" />
             <h3 className="mt-5 text-2xl font-bold">Growth monetization</h3>
             <p className="mt-3 leading-7 text-white/70">
@@ -383,7 +446,7 @@ export default function Home() {
 
       <section id="roadmap" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
-          <div>
+          <div className="motion-reveal">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
               Delivery roadmap
             </p>
@@ -395,7 +458,8 @@ export default function Home() {
             {roadmap.map((item, index) => (
               <div
                 key={item}
-                className="flex items-center gap-4 rounded-lg border border-black/10 bg-white p-4"
+                className="motion-reveal premium-surface flex items-center gap-4 rounded-lg border border-black/10 bg-white p-4"
+                style={{ "--delay": `${index * 80}ms` } as CSSProperties}
               >
                 <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#143c3a] font-mono font-bold text-white">
                   {index + 1}
