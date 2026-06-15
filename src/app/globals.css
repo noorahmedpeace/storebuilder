@@ -9,7 +9,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-jakarta), var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-outfit), var(--font-jakarta), var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
 }
 
@@ -28,7 +28,7 @@ h1,
 h2,
 h3,
   .font-display {
-  font-family: var(--font-jakarta), var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-outfit), var(--font-jakarta), var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: 0;
 }
 
@@ -230,27 +230,42 @@ h3,
   width: min(6.5ch, 44%);
   height: 0.09em;
   border-radius: 999px;
-  background: linear-gradient(90deg, #143c3a, #50b79a, #f3b74f);
+  background: linear-gradient(90deg, #143c3a, #50b79a, #f3b74f, #143c3a);
+  background-size: 220% 100%;
   transform-origin: left center;
-  animation: heading-bar-bounce 3.8s ease-in-out infinite;
+  animation:
+    heading-bar-bounce 3.8s ease-in-out infinite,
+    heading-gradient-flow 5.5s ease-in-out infinite;
 }
 
 .headline-word-inner {
   background-image: linear-gradient(
     120deg,
-    currentColor 0%,
-    currentColor 42%,
-    #38786f 52%,
-    currentColor 64%
+    #081311 0%,
+    #102321 30%,
+    #2f766c 48%,
+    #b8842e 58%,
+    #102321 72%,
+    #081311 100%
   );
-  background-size: 260% 100%;
+  background-size: 320% 100%;
   background-position: 0 0;
   background-clip: text;
   -webkit-background-clip: text;
+  color: transparent;
+  animation: heading-shine 5.2s ease-in-out infinite;
 }
 
-.kinetic-heading:hover .headline-word-inner {
-  animation: heading-shine 900ms ease forwards;
+.text-white .headline-word-inner,
+.bg-\[\#102321\] .headline-word-inner {
+  background-image: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #d4fff1 38%,
+    #f3b74f 52%,
+    #ffffff 68%,
+    #d4fff1 100%
+  );
 }
 
 @keyframes heading-shine {
@@ -258,7 +273,17 @@ h3,
     background-position: 0 0;
   }
   to {
-    background-position: -160% 0;
+    background-position: -220% 0;
+  }
+}
+
+@keyframes heading-gradient-flow {
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 0;
   }
 }
 

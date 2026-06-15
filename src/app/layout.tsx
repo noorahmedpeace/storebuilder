@@ -6,6 +6,7 @@ import {
   Lora,
   Manrope,
   Montserrat,
+  Outfit,
   Playfair_Display,
   Poppins,
   Plus_Jakarta_Sans,
@@ -44,6 +45,11 @@ const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
 });
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 const sora = Sora({
   variable: "--font-sora",
   subsets: ["latin"],
@@ -59,6 +65,7 @@ const fontVars = [
   montserrat,
   manrope,
   plusJakarta,
+  outfit,
   sora,
   spaceGrotesk,
   playfair,
