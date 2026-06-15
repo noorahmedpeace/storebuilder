@@ -33,6 +33,7 @@ async function saveSettingsAction(formData: FormData) {
     heroHeading: orNull(str("heroHeading")),
     heroSubheading: orNull(str("heroSubheading")),
     fontKey: str("fontKey") || undefined,
+    aboutText: orNull(str("aboutText")),
     ...(logoUrl ? { logoUrl } : {}),
   });
 
@@ -102,6 +103,17 @@ export default async function ThemePage() {
               />
             </label>
           </div>
+
+          <label className="mt-4 block">
+            <span className="text-sm font-semibold text-zinc-600">About text (shown on your About page)</span>
+            <textarea
+              name="aboutText"
+              defaultValue={settings.aboutText ?? ""}
+              rows={3}
+              placeholder="Tell customers who you are, your experience, and why to trust you."
+              className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 outline-none focus:border-zinc-900"
+            />
+          </label>
 
           <label className="mt-4 block">
             <span className="text-sm font-semibold text-zinc-600">Announcement bar</span>

@@ -110,9 +110,19 @@ export function Storefront({
       ))}
 
       <footer className="px-5 py-10 text-white lg:px-8" style={{ background: brand }}>
-        <div className="mx-auto max-w-7xl">
-          <p className="text-2xl font-bold">{store.name}</p>
-          <p className="mt-2 text-white/70">Powered by StoreBuilder Cloud.</p>
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p className="text-2xl font-bold">{store.name}</p>
+            <p className="mt-2 text-white/70">Powered by StoreBuilder Cloud.</p>
+          </div>
+          <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-white/85">
+            <Link href={`/store/${store.slug}`}>Home</Link>
+            <Link href={`/store/${store.slug}/about`}>About</Link>
+            <Link href={`/store/${store.slug}/contact`}>Contact</Link>
+            <Link href={`/store/${store.slug}/cart`}>Cart</Link>
+            <Link href={`/store/${store.slug}/policies/privacy`}>Privacy</Link>
+            <Link href={`/store/${store.slug}/policies/terms`}>Terms</Link>
+          </nav>
         </div>
       </footer>
     </main>

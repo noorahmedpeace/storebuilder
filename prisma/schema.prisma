@@ -49,6 +49,7 @@ model Store {
   announcement   String?
   heroHeading    String?
   heroSubheading String?
+  aboutText      String?
   logoUrl        String?
   fontKey        String?
   layout         Json?
@@ -66,6 +67,21 @@ model Store {
   subscription Subscription?
   newsletterSubscribers NewsletterSubscriber[]
   carts       Cart[]
+  leads       Lead[]
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  storeId   String
+  name      String
+  phone     String
+  email     String?
+  message   String?
+  kind      String   @default("contact")
+  createdAt DateTime @default(now())
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
 }
 
 model NewsletterSubscriber {

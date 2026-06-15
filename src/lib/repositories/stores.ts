@@ -163,6 +163,7 @@ const STOREFRONT_FIELDS = {
   announcement: true,
   heroHeading: true,
   heroSubheading: true,
+  aboutText: true,
   logoUrl: true,
   fontKey: true,
   layout: true,
@@ -191,6 +192,7 @@ export async function getStoreBySlug(slug: string) {
         "A demo storefront powered by StoreBuilder Cloud with products, reviews, WhatsApp checkout, and SEO-ready content.",
       logoUrl: null,
       fontKey: "playfair",
+      aboutText: null,
       layout: null,
       currency: "PKR",
       products: [
@@ -252,6 +254,7 @@ export type StoreSettingsInput = {
   announcement?: string | null;
   heroHeading?: string | null;
   heroSubheading?: string | null;
+  aboutText?: string | null;
   fontKey?: string | null;
 };
 
@@ -277,6 +280,7 @@ export async function updateStoreSettings(
         ? { heroSubheading: input.heroSubheading }
         : {}),
       ...(input.fontKey !== undefined ? { fontKey: input.fontKey } : {}),
+      ...(input.aboutText !== undefined ? { aboutText: input.aboutText } : {}),
     },
   });
 }
