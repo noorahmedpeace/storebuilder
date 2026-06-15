@@ -134,8 +134,16 @@ export default async function ProductPage({
               ) : null}
             </div>
 
+            <Link
+              href={`/store/${store.slug}/quote?product=${encodeURIComponent(product.title)}`}
+              className="mt-4 inline-block text-sm font-semibold hover:underline"
+              style={{ color: brand }}
+            >
+              Buying in bulk? Request a wholesale quote →
+            </Link>
+
             {variant ? (
-              <p className="mt-4 text-xs text-[#68716d]">SKU: {variant.sku}</p>
+              <p className="mt-3 text-xs text-[#68716d]">SKU: {variant.sku}</p>
             ) : null}
           </div>
         </div>

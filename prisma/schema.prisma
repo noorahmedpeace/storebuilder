@@ -52,6 +52,8 @@ model Store {
   aboutText      String?
   logoUrl        String?
   fontKey        String?
+  gaId           String?
+  clarityId      String?
   layout         Json?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt

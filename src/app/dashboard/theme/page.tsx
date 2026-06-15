@@ -34,6 +34,8 @@ async function saveSettingsAction(formData: FormData) {
     heroSubheading: orNull(str("heroSubheading")),
     fontKey: str("fontKey") || undefined,
     aboutText: orNull(str("aboutText")),
+    gaId: orNull(str("gaId")),
+    clarityId: orNull(str("clarityId")),
     ...(logoUrl ? { logoUrl } : {}),
   });
 
@@ -182,6 +184,32 @@ export default async function ThemePage() {
               </label>
             ))}
           </div>
+        </Panel>
+
+        <Panel title="Analytics (your own IDs)">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="text-sm font-semibold text-zinc-600">Google Analytics ID</span>
+              <input
+                name="gaId"
+                defaultValue={settings.gaId ?? ""}
+                placeholder="G-XXXXXXXXXX"
+                className="mt-1 h-11 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 outline-none focus:border-zinc-900"
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-semibold text-zinc-600">Microsoft Clarity ID</span>
+              <input
+                name="clarityId"
+                defaultValue={settings.clarityId ?? ""}
+                placeholder="abcdefghij"
+                className="mt-1 h-11 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 outline-none focus:border-zinc-900"
+              />
+            </label>
+          </div>
+          <p className="mt-2 text-xs text-zinc-500">
+            Paste your own GA4 / Clarity IDs to track your storefront traffic.
+          </p>
         </Panel>
       </div>
 

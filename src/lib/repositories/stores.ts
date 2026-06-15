@@ -166,6 +166,8 @@ const STOREFRONT_FIELDS = {
   aboutText: true,
   logoUrl: true,
   fontKey: true,
+  gaId: true,
+  clarityId: true,
   layout: true,
   currency: true,
 } as const;
@@ -193,6 +195,8 @@ export async function getStoreBySlug(slug: string) {
       logoUrl: null,
       fontKey: "playfair",
       aboutText: null,
+      gaId: null,
+      clarityId: null,
       layout: null,
       currency: "PKR",
       products: [
@@ -256,6 +260,8 @@ export type StoreSettingsInput = {
   heroSubheading?: string | null;
   aboutText?: string | null;
   fontKey?: string | null;
+  gaId?: string | null;
+  clarityId?: string | null;
 };
 
 export async function updateStoreSettings(
@@ -281,6 +287,8 @@ export async function updateStoreSettings(
         : {}),
       ...(input.fontKey !== undefined ? { fontKey: input.fontKey } : {}),
       ...(input.aboutText !== undefined ? { aboutText: input.aboutText } : {}),
+      ...(input.gaId !== undefined ? { gaId: input.gaId } : {}),
+      ...(input.clarityId !== undefined ? { clarityId: input.clarityId } : {}),
     },
   });
 }

@@ -1,5 +1,6 @@
 import { getStoreBySlug } from "@/lib/repositories/stores";
 import { FloatingWhatsApp } from "@/components/storefront/floating-whatsapp";
+import { StoreAnalytics } from "@/components/storefront/store-analytics";
 
 export default async function StoreLayout({
   children,
@@ -14,7 +15,10 @@ export default async function StoreLayout({
     <>
       {children}
       {store ? (
-        <FloatingWhatsApp whatsapp={store.whatsapp} storeName={store.name} />
+        <>
+          <FloatingWhatsApp whatsapp={store.whatsapp} storeName={store.name} />
+          <StoreAnalytics gaId={store.gaId} clarityId={store.clarityId} />
+        </>
       ) : null}
     </>
   );
