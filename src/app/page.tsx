@@ -125,13 +125,13 @@ export default function Home() {
               SEO-first online store builder
             </div>
             <h1
-              className="motion-reveal font-display max-w-3xl text-4xl font-extrabold leading-[1.04] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-7xl"
+              className="motion-reveal font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
               style={{ "--delay": "90ms" } as CSSProperties}
             >
               <AnimatedHeadline text="StoreBuilder Cloud" />
             </h1>
             <p
-              className="motion-reveal mt-5 max-w-2xl text-lg font-medium leading-8 text-[#4f5b58]"
+              className="motion-reveal mt-5 max-w-2xl text-lg font-semibold leading-8 text-[#4f5b58]"
               style={{ "--delay": "160ms" } as CSSProperties}
             >
               Create a professional ecommerce website, manage products and

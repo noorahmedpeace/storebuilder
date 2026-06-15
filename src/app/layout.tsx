@@ -4,9 +4,11 @@ import {
   Geist_Mono,
   Inter,
   Lora,
+  Manrope,
   Montserrat,
   Playfair_Display,
   Poppins,
+  Plus_Jakarta_Sans,
   Sora,
   Space_Grotesk,
 } from "next/font/google";
@@ -32,6 +34,16 @@ const poppins = Poppins({
   weight: ["400", "600", "700"],
 });
 const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"] });
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 const sora = Sora({
   variable: "--font-sora",
   subsets: ["latin"],
@@ -41,7 +53,17 @@ const spaceGrotesk = Space_Grotesk({ variable: "--font-space", subsets: ["latin"
 const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"] });
 const lora = Lora({ variable: "--font-lora", subsets: ["latin"] });
 
-const fontVars = [inter, poppins, montserrat, sora, spaceGrotesk, playfair, lora]
+const fontVars = [
+  inter,
+  poppins,
+  montserrat,
+  manrope,
+  plusJakarta,
+  sora,
+  spaceGrotesk,
+  playfair,
+  lora,
+]
   .map((f) => f.variable)
   .join(" ");
 

@@ -39,13 +39,13 @@ export function MarketingHeader() {
               <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-[#9fcfc0]">
                 StoreBuilder
               </span>
-              <span className="font-display mt-1 block truncate text-base font-extrabold text-white sm:text-lg">
+              <span className="font-display mt-1 block truncate text-base font-bold text-white sm:text-lg">
                 Commerce Cloud
               </span>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-md border border-white/10 bg-black/18 p-1 text-sm font-bold text-white/70 lg:flex">
+          <nav className="hidden items-center gap-1 rounded-md border border-white/10 bg-black/18 p-1 text-sm font-semibold text-white/70 lg:flex">
             {primaryLinks.map((link) => (
               <Link
                 key={link.href}
@@ -76,13 +76,13 @@ export function MarketingHeader() {
           <div className="ml-auto flex items-center justify-end gap-2">
             <Link
               href="/login"
-              className="hidden h-10 items-center rounded-md border border-white/14 px-4 text-sm font-bold text-white/82 transition hover:bg-white hover:text-[#102321] sm:inline-flex"
+              className="hidden h-10 items-center rounded-md border border-white/14 px-4 text-sm font-semibold text-white/82 transition hover:bg-white hover:text-[#102321] sm:inline-flex"
             >
               Sign in
             </Link>
             <Link
               href="/create"
-              className="magnetic-button inline-flex h-10 items-center gap-2 rounded-md bg-[#d4fff1] px-4 text-sm font-extrabold text-[#102321] shadow-sm transition hover:bg-white"
+              className="magnetic-button inline-flex h-10 items-center gap-2 rounded-md bg-[#d4fff1] px-4 text-sm font-bold text-[#102321] shadow-sm transition hover:bg-white"
             >
               Create store <ChevronRight size={16} />
             </Link>
