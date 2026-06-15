@@ -125,7 +125,7 @@ export default function Home() {
               SEO-first online store builder
             </div>
             <h1
-              className="motion-reveal kinetic-heading font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
+              className="kinetic-heading font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
               style={{ "--delay": "90ms" } as CSSProperties}
             >
               <AnimatedHeadline text="StoreBuilder Cloud" />
@@ -195,7 +195,7 @@ export default function Home() {
 
       <section className="border-b border-black/10 bg-[#102321] px-5 py-14 text-white lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="motion-reveal">
+          <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f3b74f]">
               Immersive advantage
             </p>
@@ -226,7 +226,7 @@ export default function Home() {
       </section>
 
       <section id="platform" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <div className="motion-reveal max-w-3xl">
+        <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
             Complete platform
           </p>
@@ -257,7 +257,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-            <div className="motion-reveal">
+            <div>
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
                 Merchant workspace
               </p>
@@ -360,7 +360,7 @@ export default function Home() {
 
       <section id="architecture" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-          <div className="motion-reveal">
+          <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
               Architecture
             </p>
@@ -442,7 +442,7 @@ export default function Home() {
 
       <section id="roadmap" className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
-          <div className="motion-reveal">
+          <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9a6128]">
               Delivery roadmap
             </p>
