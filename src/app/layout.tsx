@@ -7,6 +7,7 @@ import {
   Montserrat,
   Playfair_Display,
   Poppins,
+  Sora,
   Space_Grotesk,
 } from "next/font/google";
 import "lenis/dist/lenis.css";
@@ -31,11 +32,16 @@ const poppins = Poppins({
   weight: ["400", "600", "700"],
 });
 const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"] });
+const sora = Sora({
+  variable: "--font-sora",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 const spaceGrotesk = Space_Grotesk({ variable: "--font-space", subsets: ["latin"] });
 const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"] });
 const lora = Lora({ variable: "--font-lora", subsets: ["latin"] });
 
-const fontVars = [inter, poppins, montserrat, spaceGrotesk, playfair, lora]
+const fontVars = [inter, poppins, montserrat, sora, spaceGrotesk, playfair, lora]
   .map((f) => f.variable)
   .join(" ");
 

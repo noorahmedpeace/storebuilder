@@ -122,14 +122,14 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4ee]/92 via-[#f7f4ee]/48 to-[#f7f4ee]/8" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ee]/45 via-transparent to-[#f7f4ee]/70" />
-        <div className="relative z-10 mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-16">
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 py-10 md:grid-cols-[0.86fr_1.14fr] md:items-center lg:gap-10 lg:px-8 lg:py-16">
           <div className="flex flex-col justify-center">
             <div className="motion-reveal mb-5 inline-flex w-fit items-center gap-2 rounded-lg border border-[#c6d1c7] bg-white/82 px-3 py-2 text-sm font-semibold text-[#143c3a] shadow-sm backdrop-blur">
               <Sparkles size={16} />
               SEO-first online store builder
             </div>
             <h1
-              className="motion-reveal font-display max-w-3xl text-5xl font-bold leading-[0.98] tracking-normal text-[#101514] md:text-7xl"
+              className="motion-reveal font-display max-w-3xl text-4xl font-extrabold leading-[1.04] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-7xl"
               style={{ "--delay": "90ms" } as CSSProperties}
             >
               <AnimatedHeadline text="StoreBuilder Cloud" />
@@ -166,7 +166,7 @@ export default function Home() {
           </div>
 
           <div
-            className="motion-reveal"
+            className="motion-reveal order-2 -mx-1 md:order-none md:mx-0"
             style={{ "--delay": "180ms" } as CSSProperties}
           >
             <TiltCard max={4}>
@@ -174,7 +174,7 @@ export default function Home() {
             </TiltCard>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:col-span-2">
+          <div className="order-3 grid grid-cols-2 gap-3 sm:grid-cols-4 md:col-span-2">
             {stats.map((item, index) => (
               <div
                 key={item.label}
@@ -192,7 +192,7 @@ export default function Home() {
           </div>
           <Marquee
             items={motionRail}
-            className="motion-reveal rounded-lg border border-black/10 bg-white/64 py-3 backdrop-blur lg:col-span-2"
+            className="motion-reveal order-4 rounded-lg border border-black/10 bg-white/64 py-3 backdrop-blur md:col-span-2"
           />
         </div>
       </section>
