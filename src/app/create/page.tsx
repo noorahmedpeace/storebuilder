@@ -479,6 +479,65 @@ function TemplatesTab({
   );
 }
 
+/* ---------------- Auto-rotating slideshow (builder preview) ---------------- */
+function SliderPreview({
+  imgs,
+  brand,
+  accent,
+  caption,
+}: {
+  imgs: string[];
+  brand: string;
+  accent: string;
+  caption?: string;
+}) {
+  const [i, setI] = useState(0);
+
+  useEffect(() => {
+    if (imgs.length <= 1) return;
+    const id = setInterval(() => setI((p) => (p + 1) % imgs.length), 2500);
+    return () => clearInterval(id);
+  }, [imgs.length]);
+
+  if (!imgs.length) {
+    return (
+      <div
+        className="aspect-[3/1] w-full"
+        style={{ background: `linear-gradient(135deg, ${brand}, ${accent})` }}
+      />
+    );
+  }
+
+  const cur = i % imgs.length;
+  return (
+    <div className="relative aspect-[3/1] w-full overflow-hidden">
+      {imgs.map((src, idx) => (
+        <div
+          key={idx}
+          className="absolute inset-0 transition-opacity duration-700"
+          style={{ opacity: idx === cur ? 1 : 0, background: `center/cover no-repeat url(${src})` }}
+        />
+      ))}
+      {caption ? (
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-3 text-sm font-bold text-white">
+          {caption}
+        </div>
+      ) : null}
+      {imgs.length > 1 ? (
+        <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1">
+          {imgs.map((_, idx) => (
+            <span
+              key={idx}
+              className="size-1.5 rounded-full"
+              style={{ background: idx === cur ? "#fff" : "rgba(255,255,255,0.5)" }}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 /* ---------------- Preview section renderer ---------------- */
 function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
   const p = section.props ?? {};
@@ -586,8 +645,8 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
     case "newsletter":
       return <div className="px-6 py-6 text-center"><p className="font-bold">{p.title || "Get 10% off"}</p><div className="mx-auto mt-2 flex max-w-xs gap-1"><span className="h-9 flex-1 rounded-lg border border-black/15 bg-white" /><span className="rounded-lg px-3 text-xs font-bold text-white grid place-items-center" style={{ background: ctx.brand }}>Join</span></div></div>;
     case "slider": {
-      const imgs = [p.image1, p.image2, p.image3].filter(Boolean);
-      return <div className="aspect-[3/1] w-full" style={{ background: imgs[0] ? `center/cover no-repeat url(${imgs[0]})` : `linear-gradient(135deg, ${ctx.brand}, ${ctx.accent})` }} />;
+      const imgs = [p.image1, p.image2, p.image3].filter(Boolean) as string[];
+      return <SliderPreview imgs={imgs} brand={ctx.brand} accent={ctx.accent} caption={p.caption} />;
     }
     case "gallery": {
       const imgs = ["g1","g2","g3","g4","g5","g6"].map((k) => p[k]).filter(Boolean);
