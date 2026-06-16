@@ -24,6 +24,7 @@ export function AutoplayVideo({
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
+    video.loop = true;
     video.playbackRate = 1;
     video.load();
 
@@ -38,13 +39,30 @@ export function AutoplayVideo({
       });
     };
 
+    const restart = () => {
+      if (Number.isFinite(video.duration) && video.duration > 0) {
+        video.currentTime = 0.01;
+      } else {
+        video.currentTime = 0;
+      }
+      play();
+    };
+
     const retry = window.setInterval(() => {
       if (video.paused || video.ended) play();
-    }, 1600);
+      if (
+        Number.isFinite(video.duration) &&
+        video.duration > 0 &&
+        video.currentTime >= video.duration - 0.2
+      ) {
+        restart();
+      }
+    }, 500);
 
     play();
     video.addEventListener("canplay", play);
     video.addEventListener("loadeddata", play);
+    video.addEventListener("ended", restart);
     video.addEventListener("pause", play);
     window.addEventListener("scroll", play, { passive: true });
     window.addEventListener("pointerdown", play);
@@ -55,6 +73,7 @@ export function AutoplayVideo({
       window.clearInterval(retry);
       video.removeEventListener("canplay", play);
       video.removeEventListener("loadeddata", play);
+      video.removeEventListener("ended", restart);
       video.removeEventListener("pause", play);
       window.removeEventListener("scroll", play);
       window.removeEventListener("pointerdown", play);
