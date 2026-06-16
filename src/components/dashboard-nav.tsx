@@ -7,6 +7,7 @@ import {
   Boxes,
   FolderTree,
   Globe,
+  Camera,
   Inbox,
   LayoutDashboard,
   LayoutTemplate,
@@ -22,6 +23,7 @@ type NavItem = { href: string; label: string; icon: LucideIcon; exact?: boolean 
 export const NAV: NavItem[] = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/products", label: "Products", icon: Package },
+  { href: "/dashboard/photo-studio", label: "Photo Studio", icon: Camera },
   { href: "/dashboard/orders", label: "Orders", icon: ShoppingCart },
   { href: "/dashboard/inventory", label: "Inventory", icon: Boxes },
   { href: "/dashboard/customers", label: "Customers", icon: Users },
