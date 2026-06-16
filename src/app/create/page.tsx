@@ -75,6 +75,7 @@ export default function CreatePage() {
   const [tab, setTab] = useState<"templates" | "design" | "sections">("templates");
   const previewRef = useRef<HTMLDivElement>(null);
   const [scrollTick, setScrollTick] = useState(0);
+  const [lastAddedId, setLastAddedId] = useState<string>("");
 
   // When a section is added, scroll the live preview to it so the change is visible.
   useEffect(() => {
@@ -122,7 +123,9 @@ export default function CreatePage() {
     setSections((prev) => prev.map((s, idx) => (idx === i ? { ...s, visible: !s.visible } : s)));
   const remove = (i: number) => setSections((prev) => prev.filter((_, idx) => idx !== i));
   const add = (type: SectionType) => {
-    setSections((prev) => [...prev, { id: newId(), type, visible: true, props: {} }]);
+    const id = newId();
+    setSections((prev) => [...prev, { id, type, visible: true, props: {} }]);
+    setLastAddedId(id);
     setScrollTick((n) => n + 1);
   };
   const setProp = (i: number, key: string, value: string) =>
@@ -252,9 +255,25 @@ export default function CreatePage() {
               <span className="rounded-lg px-3 py-1.5 text-xs font-bold text-white" style={{ background: brandColor }}>Cart</span>
             </div>
             <div ref={previewRef} className="max-h-[70vh] overflow-y-auto scroll-smooth">
-              {sections.filter((s) => s.visible).map((s) => (
-                <PreviewSection key={s.id} section={s} ctx={ctx} />
-              ))}
+              {sections.filter((s) => s.visible).map((s) => {
+                const isNew = s.id === lastAddedId;
+                return (
+                  <div
+                    key={s.id}
+                    className={`relative ${isNew ? "ring-2 ring-inset ring-[#143c3a]" : ""}`}
+                  >
+                    <span
+                      className={`pointer-events-none absolute left-2 top-2 z-10 rounded-md px-2 py-0.5 text-[10px] font-bold shadow-sm ${
+                        isNew ? "bg-[#143c3a] text-white" : "bg-black/55 text-white"
+                      }`}
+                    >
+                      {SECTION_LABELS[s.type]}
+                      {isNew ? " · just added" : ""}
+                    </span>
+                    <PreviewSection section={s} ctx={ctx} />
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
