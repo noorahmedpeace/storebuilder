@@ -71,7 +71,7 @@ async function fileToCompressedDataUrl(file: File, maxDim = 1100, quality = 0.82
   }
 }
 
-const previewProducts = [
+export const previewProducts = [
   {
     name: "Aura Headphones",
     price: "Rs 8,900",
@@ -89,7 +89,7 @@ const previewProducts = [
   },
 ];
 
-type Ctx = {
+export type Ctx = {
   name: string;
   businessType: string;
   tagline: string;
@@ -230,7 +230,7 @@ export default function CreatePage() {
     }
   }
 
-  function publish() {
+  function saveDraft() {
     const draft = {
       storeName: storeName.trim() || "My Store",
       businessType: businessType.trim(),
@@ -267,7 +267,16 @@ export default function CreatePage() {
         /* give up on persisting the draft; still navigate */
       }
     }
+  }
+
+  function publish() {
+    saveDraft();
     router.push("/signup");
+  }
+
+  function previewStore() {
+    saveDraft();
+    window.open("/preview", "_blank");
   }
 
   const ctx: Ctx = { name, businessType, tagline, brand: brandColor, accent: accentColor, radius: theme.radius };
@@ -359,12 +368,20 @@ export default function CreatePage() {
             ) : null}
           </div>
 
-          <button
-            onClick={publish}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#143c3a] font-semibold text-white transition hover:bg-[#0f2c2a]"
-          >
-            Publish my store <ArrowRight size={18} />
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={previewStore}
+              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-lg border border-[#143c3a]/30 font-semibold text-[#143c3a] transition hover:bg-[#143c3a]/5"
+            >
+              <Eye size={18} /> Preview
+            </button>
+            <button
+              onClick={publish}
+              className="flex h-12 flex-[1.4] items-center justify-center gap-2 rounded-lg bg-[#143c3a] font-semibold text-white transition hover:bg-[#0f2c2a]"
+            >
+              Publish my store <ArrowRight size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Live preview (sticky so it stays in view while editing) */}
@@ -609,7 +626,7 @@ function TemplatesTab({
 }
 
 /* ---------------- Auto-rotating slideshow (builder preview) ---------------- */
-function SliderPreview({
+export function SliderPreview({
   imgs,
   brand,
   accent,
@@ -674,7 +691,7 @@ function SliderPreview({
 /** Tap-to-edit text, in place. Uses contentEditable so the typography stays
  *  exactly as rendered. Saves on blur; external value changes are synced in
  *  only while the node isn't being edited. */
-function EditableText({
+export function EditableText({
   value,
   placeholder,
   onSave,
@@ -719,7 +736,7 @@ function EditableText({
 
 /** An image area in the builder preview: shows the photo, or a clear
  *  "add a photo here" placeholder. Clickable when `onPick` is given. */
-function MediaBox({
+export function MediaBox({
   src,
   brand,
   accent,
@@ -753,10 +770,10 @@ function MediaBox({
   );
 }
 
-type Editor = { set: (key: string, value: string) => void; pick: (key: string) => void };
+export type Editor = { set: (key: string, value: string) => void; pick: (key: string) => void };
 
 /** Dashed "+ Add ..." button shown inside editable sections. */
-function AddBtn({ onClick, label }: { onClick: () => void; label: string }) {
+export function AddBtn({ onClick, label }: { onClick: () => void; label: string }) {
   return (
     <button
       type="button"
@@ -769,7 +786,7 @@ function AddBtn({ onClick, label }: { onClick: () => void; label: string }) {
 }
 
 /* ---------------- Preview section renderer ---------------- */
-function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?: Editor }) {
+export function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?: Editor }) {
   const p = section.props ?? {};
   // text helper: editable when `ed` is present, plain text otherwise
   const T = (key: string, current: string, placeholder: string, area = false, className = "") =>

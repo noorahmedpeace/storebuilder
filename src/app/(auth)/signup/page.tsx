@@ -141,10 +141,10 @@ export default async function SignupPage({
         </div>
 
         <Link
-          href="/store/oud-reserve"
+          href="/preview"
           className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#143c3a]/30 font-semibold text-[#143c3a] transition hover:bg-[#143c3a]/5"
         >
-          <Store size={16} /> See a live demo store (no sign-up)
+          <Store size={16} /> Preview the store I built (no sign-up)
         </Link>
 
         <p className="mt-4 text-center text-sm text-[#4f5b58]">
