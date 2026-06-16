@@ -32,6 +32,45 @@ const DRAFT_KEY = "storebuilder_draft";
 let counter = 0;
 const newId = () => `s-${Date.now()}-${counter++}`;
 
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("decode failed"));
+    img.src = src;
+  });
+}
+
+/** Downscale + compress an uploaded image so the draft stays small enough for
+ *  sessionStorage and the published layout JSON doesn't balloon. */
+async function fileToCompressedDataUrl(file: File, maxDim = 1100, quality = 0.82): Promise<string> {
+  const dataUrl = await readAsDataUrl(file);
+  try {
+    const img = await loadImage(dataUrl);
+    const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+    const w = Math.max(1, Math.round(img.width * scale));
+    const h = Math.max(1, Math.round(img.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const cx = canvas.getContext("2d");
+    if (!cx) return dataUrl;
+    cx.drawImage(img, 0, 0, w, h);
+    return canvas.toDataURL("image/jpeg", quality);
+  } catch {
+    return dataUrl;
+  }
+}
+
 const previewProducts = [
   {
     name: "Aura Headphones",
@@ -148,12 +187,7 @@ export default function CreatePage() {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      });
+      const dataUrl = await fileToCompressedDataUrl(file);
       setProp(i, key, dataUrl);
       try {
         const fd = new FormData();
@@ -177,12 +211,7 @@ export default function CreatePage() {
     try {
       // Instant local preview (also the fallback on serverless hosts where the
       // filesystem write fails), then swap in the hosted URL if upload works.
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      });
+      const dataUrl = await fileToCompressedDataUrl(file, 400, 0.85);
       setLogoUrl(dataUrl);
       try {
         const fd = new FormData();
@@ -214,7 +243,29 @@ export default function CreatePage() {
       templateKey,
       layout: sections,
     };
-    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // Draft too big for sessionStorage (large images). Drop inline data-URL
+      // images so publishing still works; merchant can re-add photos after signup.
+      try {
+        const slimLayout = sections.map((s) => ({
+          ...s,
+          props: Object.fromEntries(
+            Object.entries(s.props).filter(
+              ([, v]) => !(typeof v === "string" && v.startsWith("data:")),
+            ),
+          ),
+        }));
+        const slimLogo = logoUrl.startsWith("data:") ? "" : logoUrl;
+        sessionStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({ ...draft, logoUrl: slimLogo, layout: slimLayout }),
+        );
+      } catch {
+        /* give up on persisting the draft; still navigate */
+      }
+    }
     router.push("/signup");
   }
 
