@@ -25,6 +25,7 @@ import {
   type SectionType,
 } from "@/lib/sections";
 import { SectionFieldInput } from "@/components/storefront/section-field-input";
+import { STARTER_TEMPLATES, type StarterTemplate } from "@/lib/templates";
 
 const DRAFT_KEY = "storebuilder_draft";
 
@@ -70,7 +71,8 @@ export default function CreatePage() {
   const [logoUrl, setLogoUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [sections, setSections] = useState<Section[]>(DEFAULT_LAYOUT);
-  const [tab, setTab] = useState<"design" | "sections">("design");
+  const [templateKey, setTemplateKey] = useState<string>("");
+  const [tab, setTab] = useState<"templates" | "design" | "sections">("templates");
 
   const theme = useMemo(() => getTheme(themeKey), [themeKey]);
   const font = useMemo(() => getFont(fontKey), [fontKey]);
@@ -83,6 +85,19 @@ export default function CreatePage() {
     setBrandColor(t.brandColor);
     setAccentColor(t.accentColor);
     setFontKey(t.defaultFont);
+  }
+
+  function applyTemplate(t: StarterTemplate) {
+    setTemplateKey(t.key);
+    setThemeKey(t.themeKey);
+    setBrandColor(t.brandColor);
+    setAccentColor(t.accentColor);
+    setFontKey(t.fontKey);
+    if (!businessType.trim()) setBusinessType(t.businessType);
+    if (!tagline.trim()) setTagline(t.tagline);
+    // deep-clone so later edits don't mutate the shared template constant
+    setSections(t.layout.map((sec) => ({ ...sec, props: { ...sec.props } })));
+    setTab("design");
   }
 
   // --- section ops ---
@@ -129,6 +144,7 @@ export default function CreatePage() {
       logoText,
       fontKey,
       logoUrl,
+      templateKey,
       layout: sections,
     };
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
@@ -163,7 +179,7 @@ export default function CreatePage() {
           </div>
 
           <div className="flex gap-2 rounded-lg border border-zinc-200 bg-white p-1">
-            {(["design", "sections"] as const).map((t) => (
+            {(["templates", "design", "sections"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -171,12 +187,14 @@ export default function CreatePage() {
                   tab === t ? "bg-[#143c3a] text-white" : "text-zinc-600 hover:bg-zinc-100"
                 }`}
               >
-                {t === "design" ? "Design" : "Page sections"}
+                {t === "design" ? "Design" : t === "sections" ? "Page sections" : "Templates"}
               </button>
             ))}
           </div>
 
-          {tab === "design" ? (
+          {tab === "templates" ? (
+            <TemplatesTab activeKey={templateKey} onPick={applyTemplate} />
+          ) : tab === "design" ? (
             <DesignTab
               {...{ storeName, setStoreName, businessType, setBusinessType, tagline, setTagline,
                 logoUrl, onLogo, uploading, themeKey, pickTheme, brandColor, setBrandColor,
@@ -354,6 +372,55 @@ function SectionsTab({
             </button>
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Templates tab ---------------- */
+function TemplatesTab({
+  activeKey,
+  onPick,
+}: {
+  activeKey: string;
+  onPick: (t: StarterTemplate) => void;
+}) {
+  return (
+    <div className="rounded-xl border border-zinc-200 bg-white p-5">
+      <p className="text-sm font-semibold text-zinc-700">Start from a template</p>
+      <p className="mt-1 text-xs text-zinc-500">
+        Pick a ready-made store — colours, fonts and a full homepage are filled in.
+        You can change everything afterwards.
+      </p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        {STARTER_TEMPLATES.map((t) => {
+          const active = activeKey === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => onPick(t)}
+              className={`group rounded-xl border p-4 text-left transition ${
+                active
+                  ? "border-[#143c3a] ring-1 ring-[#143c3a]"
+                  : "border-zinc-200 hover:border-zinc-400"
+              }`}
+            >
+              <span
+                className="flex h-20 w-full items-center justify-center rounded-lg text-3xl"
+                style={{
+                  background: `linear-gradient(135deg, ${t.brandColor}, ${t.accentColor})`,
+                }}
+              >
+                {t.emoji}
+              </span>
+              <p className="mt-3 text-sm font-bold">{t.name}</p>
+              <p className="mt-1 text-xs leading-5 text-zinc-500">{t.description}</p>
+              <span className="mt-2 inline-block text-xs font-semibold text-[#143c3a]">
+                {active ? "✓ Applied" : "Use this template →"}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
