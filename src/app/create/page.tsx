@@ -84,6 +84,13 @@ export default function CreatePage() {
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [scrollTick]);
 
+  // The "just added" highlight fades on its own after a moment.
+  useEffect(() => {
+    if (!lastAddedId) return;
+    const t = setTimeout(() => setLastAddedId(""), 2600);
+    return () => clearTimeout(t);
+  }, [lastAddedId]);
+
   const theme = useMemo(() => getTheme(themeKey), [themeKey]);
   const font = useMemo(() => getFont(fontKey), [fontKey]);
   const name = storeName.trim() || "Your Store";
@@ -260,16 +267,15 @@ export default function CreatePage() {
                 return (
                   <div
                     key={s.id}
-                    className={`relative ${isNew ? "ring-2 ring-inset ring-[#143c3a]" : ""}`}
+                    className={`relative transition-all duration-500 ${
+                      isNew ? "z-10 ring-4 ring-inset ring-[#143c3a]" : ""
+                    }`}
                   >
-                    <span
-                      className={`pointer-events-none absolute left-2 top-2 z-10 rounded-md px-2 py-0.5 text-[10px] font-bold shadow-sm ${
-                        isNew ? "bg-[#143c3a] text-white" : "bg-black/55 text-white"
-                      }`}
-                    >
-                      {SECTION_LABELS[s.type]}
-                      {isNew ? " · just added" : ""}
-                    </span>
+                    {isNew ? (
+                      <span className="pointer-events-none absolute right-2 top-2 z-20 animate-bounce rounded-full bg-[#143c3a] px-3 py-1 text-[11px] font-bold text-white shadow-lg">
+                        ✓ {SECTION_LABELS[s.type]} added
+                      </span>
+                    ) : null}
                     <PreviewSection section={s} ctx={ctx} />
                   </div>
                 );
