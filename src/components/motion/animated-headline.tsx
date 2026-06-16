@@ -38,23 +38,22 @@ export function AnimatedHeadline({
             display: "inline-block",
             overflow: "hidden",
             verticalAlign: "top",
+            paddingBottom: "0.02em",
           }}
         >
           <motion.span
             className="headline-word-inner"
-            style={{ display: "inline-block", transformOrigin: "50% 85%" }}
+            style={{ display: "inline-block" }}
             variants={{
-              hidden: { y: "115%", rotateX: -22, scale: 0.92, opacity: 0 },
+              hidden: { y: "0.55em", filter: "blur(7px)", opacity: 0 },
               show: {
-                y: ["115%", "-18%", "7%", "0%"],
-                rotateX: [-22, 8, -2, 0],
-                scale: [0.92, 1.08, 0.985, 1],
+                y: 0,
+                filter: "blur(0px)",
                 opacity: 1,
               },
             }}
             transition={{
-              duration: 0.95,
-              times: [0, 0.58, 0.82, 1],
+              duration: 0.62,
               ease: [0.17, 0.84, 0.28, 1],
             }}
           >
