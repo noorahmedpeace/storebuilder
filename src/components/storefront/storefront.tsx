@@ -644,14 +644,14 @@ function SectionView({
           <h2 className={`mb-6 text-3xl font-bold ${upper}`}>
             {p.title || "Shop by category"}
           </h2>
-          <div className="grid grid-cols-3 gap-5 sm:grid-cols-4 lg:grid-cols-6">
+          <div className="flex gap-5 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center">
             {cats.map((c, idx) => (
-              <div key={idx} className="text-center">
+              <div key={idx} className="w-24 shrink-0 text-center">
                 <div
-                  className="mx-auto aspect-square w-full rounded-full border border-black/10"
+                  className="mx-auto size-20 rounded-full border border-black/10 shadow-sm"
                   style={{ background: c.img ? `center/cover no-repeat url(${c.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
                 />
-                <p className="mt-2 text-sm font-semibold">{c.name}</p>
+                <p className="mt-2 text-xs font-semibold leading-tight">{c.name}</p>
               </div>
             ))}
           </div>

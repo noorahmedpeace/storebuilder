@@ -1096,11 +1096,11 @@ export function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ct
       return (
         <div className="px-6 py-6">
           <p className="mb-3 font-bold">{T("title", p.title || "", "Shop by category")}</p>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="flex gap-3 overflow-x-auto pb-1">
             {Array.from({ length: count }, (_, k) => k + 1).map((i) => (
-              <div key={i} className="text-center">
-                <MediaBox src={p[`c${i}img`] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square rounded-full" label="📷" onPick={ed ? () => ed.pick(`c${i}img`) : undefined} />
-                <p className="mt-1 text-[11px] font-semibold">{ed ? <EditableText value={p[`c${i}`] || ""} placeholder="Category" onSave={(v) => ed.set(`c${i}`, v)} /> : p[`c${i}`]}</p>
+              <div key={i} className="w-16 shrink-0 text-center">
+                <MediaBox src={p[`c${i}img`] || undefined} brand={ctx.brand} accent={ctx.accent} className="mx-auto size-14 rounded-full" label="📷" onPick={ed ? () => ed.pick(`c${i}img`) : undefined} />
+                <p className="mt-1 text-[10px] font-semibold leading-tight">{ed ? <EditableText value={p[`c${i}`] || ""} placeholder="Category" onSave={(v) => ed.set(`c${i}`, v)} /> : p[`c${i}`]}</p>
               </div>
             ))}
           </div>
