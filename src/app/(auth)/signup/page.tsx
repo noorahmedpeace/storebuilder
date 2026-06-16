@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Store } from "lucide-react";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import { isDatabaseConfigured } from "@/lib/db";
@@ -135,6 +135,17 @@ export default async function SignupPage({
             Publish my store
           </button>
         </form>
+
+        <div className="mt-4 flex items-center gap-3 text-xs text-[#9aa3a0]">
+          <span className="h-px flex-1 bg-black/10" /> or just looking? <span className="h-px flex-1 bg-black/10" />
+        </div>
+
+        <Link
+          href="/store/oud-reserve"
+          className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#143c3a]/30 font-semibold text-[#143c3a] transition hover:bg-[#143c3a]/5"
+        >
+          <Store size={16} /> See a live demo store (no sign-up)
+        </Link>
 
         <p className="mt-4 text-center text-sm text-[#4f5b58]">
           Haven&apos;t designed yet?{" "}

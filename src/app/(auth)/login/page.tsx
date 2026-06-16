@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Store } from "lucide-react";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
+import { isDatabaseConfigured } from "@/lib/db";
 
 export const metadata = {
   title: "Sign in - BazaarOS Commerce Cloud",
@@ -30,6 +31,7 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const dbReady = isDatabaseConfigured();
 
   return (
     <main className="grid min-h-screen place-items-center bg-[#f7f4ee] px-5 text-[#171717]">
@@ -50,6 +52,18 @@ export default async function LoginPage({
         <p className="mt-2 text-sm text-[#4f5b58]">
           Use your merchant or platform admin account.
         </p>
+
+        {!dbReady ? (
+          <div className="mt-4 rounded-lg bg-[#fff7e6] px-4 py-3 text-sm text-[#7a5a12]">
+            <p className="font-semibold">This is running in demo mode</p>
+            <p className="mt-1">
+              Login needs a database. To enable real accounts, add{" "}
+              <code className="rounded bg-[#f3e6c2] px-1">DATABASE_URL</code> and{" "}
+              <code className="rounded bg-[#f3e6c2] px-1">NEXTAUTH_SECRET</code> in
+              your Vercel project settings. Meanwhile, explore the demo below.
+            </p>
+          </div>
+        ) : null}
 
         {error ? (
           <p className="mt-4 rounded-lg bg-[#fbeaea] px-4 py-3 text-sm font-semibold text-[#a23b3b]">
@@ -90,10 +104,21 @@ export default async function LoginPage({
           </button>
         </form>
 
+        <div className="mt-4 flex items-center gap-3 text-xs text-[#9aa3a0]">
+          <span className="h-px flex-1 bg-black/10" /> or <span className="h-px flex-1 bg-black/10" />
+        </div>
+
+        <Link
+          href="/store/oud-reserve"
+          className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#143c3a]/30 font-semibold text-[#143c3a] transition hover:bg-[#143c3a]/5"
+        >
+          <Store size={16} /> See a live demo store
+        </Link>
+
         <p className="mt-4 text-center text-sm text-[#4f5b58]">
           Don&apos;t have a store?{" "}
-          <Link href="/signup" className="font-semibold text-[#143c3a]">
-            Create one
+          <Link href="/create" className="font-semibold text-[#143c3a]">
+            Build one free
           </Link>
         </p>
       </div>
