@@ -17,6 +17,7 @@ import {
   type Section,
   type SectionType,
 } from "@/lib/sections";
+import { SectionFieldInput } from "@/components/storefront/section-field-input";
 
 let counter = 0;
 function newId() {
@@ -151,12 +152,11 @@ export function SectionBuilder({
               {SECTION_FIELDS[section.type] ? (
                 <div className="mt-3 grid gap-2 pl-7">
                   {SECTION_FIELDS[section.type]!.map((field) => (
-                    <input
+                    <SectionFieldInput
                       key={field.key}
+                      field={field}
                       value={section.props[field.key] ?? ""}
-                      onChange={(e) => setProp(i, field.key, e.target.value)}
-                      placeholder={field.label}
-                      className="h-9 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm outline-none focus:border-zinc-900"
+                      onChange={(v) => setProp(i, field.key, v)}
                     />
                   ))}
                 </div>

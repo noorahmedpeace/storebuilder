@@ -3,6 +3,7 @@ import { Check, MessageCircle, ShoppingBag, ShoppingCart, Star } from "lucide-re
 import { getStoreBySlug } from "@/lib/repositories/stores";
 import { AddToCart } from "./add-to-cart";
 import { StoreJsonLd } from "./json-ld";
+import { Carousel } from "./carousel";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
@@ -416,6 +417,184 @@ function SectionView({
           buttonLabel={p.buttonLabel}
           brand={brand}
         />
+      );
+
+    case "slider":
+      return <Carousel images={[p.image1, p.image2, p.image3]} caption={p.caption} />;
+
+    case "gallery": {
+      const imgs = ["g1", "g2", "g3", "g4", "g5", "g6"].map((k) => p[k]).filter(Boolean);
+      if (!imgs.length) return null;
+      return (
+        <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+          {p.title ? <h2 className={`mb-6 text-3xl font-bold ${upper}`}>{p.title}</h2> : null}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {imgs.map((src, idx) => (
+              <div
+                key={idx}
+                className={`aspect-square ${theme.radius}`}
+                style={{ background: `center/cover no-repeat url(${src})` }}
+              />
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "deals": {
+      const deals = [
+        { img: p.d1img, text: p.d1 },
+        { img: p.d2img, text: p.d2 },
+        { img: p.d3img, text: p.d3 },
+      ].filter((d) => d.text || d.img);
+      if (!deals.length) return null;
+      return (
+        <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+          <h2 className={`mb-6 text-3xl font-bold ${upper}`}>{p.title || "Deals"}</h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {deals.map((d, idx) => {
+              const [dname, dprice] = (d.text || "").split("|").map((x) => x.trim());
+              return (
+                <article key={idx} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${theme.radius}`}>
+                  <div
+                    className="aspect-[4/3] w-full"
+                    style={{ background: d.img ? `center/cover no-repeat url(${d.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
+                  />
+                  <div className="flex items-center justify-between p-4">
+                    <span className="font-bold">{dname || "Deal"}</span>
+                    {dprice ? (
+                      <span className="rounded-lg px-3 py-1 text-sm font-bold text-white" style={{ background: brand }}>
+                        {store.currency} {dprice}
+                      </span>
+                    ) : null}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      );
+    }
+
+    case "menuList": {
+      const rows = (p.items || "")
+        .split("\n")
+        .map((l) => l.split("|").map((x) => x.trim()))
+        .filter((parts) => parts[0]);
+      if (!rows.length) return null;
+      return (
+        <section className="mx-auto max-w-3xl px-5 py-12 lg:px-8">
+          <h2 className={`mb-6 text-3xl font-bold ${upper}`}>{p.title || "Menu"}</h2>
+          <div className="divide-y divide-black/10">
+            {rows.map((parts, idx) => (
+              <div key={idx} className="flex items-baseline justify-between gap-4 py-3">
+                <div>
+                  <p className="font-bold">{parts[0]}</p>
+                  {parts[2] ? <p className="text-sm text-[#68716d]">{parts[2]}</p> : null}
+                </div>
+                {parts[1] ? (
+                  <span className="whitespace-nowrap font-mono font-bold" style={{ color: brand }}>
+                    {store.currency} {parts[1]}
+                  </span>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "steps": {
+      const steps = [p.s1, p.s2, p.s3].filter(Boolean);
+      if (!steps.length) return null;
+      return (
+        <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+          <h2 className={`mb-6 text-3xl font-bold ${upper}`}>{p.title || "How it works"}</h2>
+          <div className="grid gap-5 sm:grid-cols-3">
+            {steps.map((s, idx) => (
+              <div key={idx} className="rounded-xl border border-black/10 bg-white p-5">
+                <span className="grid size-9 place-items-center rounded-full text-sm font-bold text-white" style={{ background: brand }}>
+                  {idx + 1}
+                </span>
+                <p className="mt-3 font-semibold">{s}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "stats": {
+      const stats = [p.n1, p.n2, p.n3, p.n4]
+        .filter(Boolean)
+        .map((n) => (n || "").split("|").map((x) => x.trim()));
+      if (!stats.length) return null;
+      return (
+        <section className="px-5 py-12 lg:px-8" style={{ background: brand }}>
+          <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 text-center text-white sm:grid-cols-4">
+            {stats.map((st, idx) => (
+              <div key={idx}>
+                <p className="text-3xl font-bold md:text-4xl">{st[0]}</p>
+                <p className="mt-1 text-sm text-white/75">{st[1]}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "imageText": {
+      if (!p.image && !p.heading) return null;
+      const right = (p.side || "").toLowerCase() === "right";
+      return (
+        <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+          <div className={`grid items-center gap-8 lg:grid-cols-2 ${right ? "lg:[&>*:first-child]:order-2" : ""}`}>
+            <div
+              className={`aspect-[4/3] w-full ${theme.radius}`}
+              style={{ background: p.image ? `center/cover no-repeat url(${p.image})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
+            />
+            <div>
+              {p.heading ? <h2 className={`text-3xl font-bold ${upper}`}>{p.heading}</h2> : null}
+              {p.body ? <p className="mt-4 leading-8 text-[#555d59]">{p.body}</p> : null}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    case "cta":
+      if (!p.heading) return null;
+      return (
+        <section
+          className="relative px-5 py-16 text-center lg:px-8"
+          style={{
+            background: p.bgImage
+              ? `linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), center/cover no-repeat url(${p.bgImage})`
+              : brand,
+          }}
+        >
+          <h2 className={`text-3xl font-bold text-white md:text-4xl ${upper}`}>{p.heading}</h2>
+          {p.subheading ? <p className="mx-auto mt-3 max-w-xl text-white/85">{p.subheading}</p> : null}
+          <a
+            href={`/store/${store.slug}`}
+            className="mt-6 inline-block rounded-lg bg-white px-6 py-3 text-sm font-bold"
+            style={{ color: brand }}
+          >
+            {p.buttonText || "Shop now"}
+          </a>
+        </section>
+      );
+
+    case "contactBar":
+      if (!p.phone && !p.address) return null;
+      return (
+        <section className="px-5 py-4 text-sm font-semibold text-white lg:px-8" style={{ background: brand }}>
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-1 text-center">
+            {p.phone ? <span>📞 {p.phone}</span> : null}
+            {p.address ? <span>📍 {p.address}</span> : null}
+            {p.hours ? <span>🕒 {p.hours}</span> : null}
+          </div>
+        </section>
       );
 
     default:

@@ -16,7 +16,19 @@ export type SectionType =
   | "imageBanner"
   | "video"
   | "countdown"
-  | "newsletter";
+  | "newsletter"
+  | "slider"
+  | "gallery"
+  | "deals"
+  | "menuList"
+  | "steps"
+  | "stats"
+  | "imageText"
+  | "cta"
+  | "contactBar";
+
+export type FieldType = "text" | "textarea" | "image";
+export type SectionField = { key: string; label: string; type?: FieldType };
 
 export type Section = {
   id: string;
@@ -39,25 +51,43 @@ export const SECTION_LABELS: Record<SectionType, string> = {
   video: "Video",
   countdown: "Countdown",
   newsletter: "Newsletter",
+  slider: "Image slider",
+  gallery: "Image gallery",
+  deals: "Deals / combos",
+  menuList: "Menu / price list",
+  steps: "How it works",
+  stats: "Stats / numbers",
+  imageText: "Image + text",
+  cta: "Call to action",
+  contactBar: "Contact bar",
 };
 
 /** Section types a merchant can add from the builder palette. */
 export const ADDABLE_SECTIONS: SectionType[] = [
-  "richText",
-  "banner",
+  "slider",
   "imageBanner",
-  "video",
-  "countdown",
+  "deals",
+  "menuList",
+  "gallery",
+  "imageText",
   "features",
+  "steps",
+  "stats",
   "reviews",
   "faq",
+  "cta",
+  "banner",
+  "richText",
+  "video",
+  "countdown",
   "newsletter",
+  "contactBar",
   "whatsapp",
   "products",
 ];
 
-/** Editable text props per section type (shown as inputs in the builder). */
-export const SECTION_FIELDS: Partial<Record<SectionType, { key: string; label: string }[]>> = {
+/** Editable props per section type (shown as inputs in the builder). */
+export const SECTION_FIELDS: Partial<Record<SectionType, SectionField[]>> = {
   hero: [
     { key: "heading", label: "Heading" },
     { key: "subheading", label: "Subheading" },
@@ -102,6 +132,64 @@ export const SECTION_FIELDS: Partial<Record<SectionType, { key: string; label: s
     { key: "title", label: "Title" },
     { key: "text", label: "Subtext" },
     { key: "buttonLabel", label: "Button label" },
+  ],
+  slider: [
+    { key: "image1", label: "Slide 1 image", type: "image" },
+    { key: "image2", label: "Slide 2 image", type: "image" },
+    { key: "image3", label: "Slide 3 image", type: "image" },
+    { key: "caption", label: "Caption (optional)" },
+  ],
+  gallery: [
+    { key: "title", label: "Title" },
+    { key: "g1", label: "Image 1", type: "image" },
+    { key: "g2", label: "Image 2", type: "image" },
+    { key: "g3", label: "Image 3", type: "image" },
+    { key: "g4", label: "Image 4", type: "image" },
+    { key: "g5", label: "Image 5", type: "image" },
+    { key: "g6", label: "Image 6", type: "image" },
+  ],
+  deals: [
+    { key: "title", label: "Title" },
+    { key: "d1img", label: "Deal 1 image", type: "image" },
+    { key: "d1", label: "Deal 1 (Name | Price)" },
+    { key: "d2img", label: "Deal 2 image", type: "image" },
+    { key: "d2", label: "Deal 2 (Name | Price)" },
+    { key: "d3img", label: "Deal 3 image", type: "image" },
+    { key: "d3", label: "Deal 3 (Name | Price)" },
+  ],
+  menuList: [
+    { key: "title", label: "Title" },
+    { key: "items", label: "Items — one per line: Name | Price | Description", type: "textarea" },
+  ],
+  steps: [
+    { key: "title", label: "Title" },
+    { key: "s1", label: "Step 1" },
+    { key: "s2", label: "Step 2" },
+    { key: "s3", label: "Step 3" },
+  ],
+  stats: [
+    { key: "title", label: "Title" },
+    { key: "n1", label: "Stat 1 (Value | Label)" },
+    { key: "n2", label: "Stat 2 (Value | Label)" },
+    { key: "n3", label: "Stat 3 (Value | Label)" },
+    { key: "n4", label: "Stat 4 (Value | Label)" },
+  ],
+  imageText: [
+    { key: "image", label: "Image", type: "image" },
+    { key: "heading", label: "Heading" },
+    { key: "body", label: "Body text", type: "textarea" },
+    { key: "side", label: "Image side (left/right)" },
+  ],
+  cta: [
+    { key: "heading", label: "Heading" },
+    { key: "subheading", label: "Subtext" },
+    { key: "buttonText", label: "Button text" },
+    { key: "bgImage", label: "Background image (optional)", type: "image" },
+  ],
+  contactBar: [
+    { key: "phone", label: "Phone" },
+    { key: "address", label: "Address" },
+    { key: "hours", label: "Hours (optional)" },
   ],
 };
 
