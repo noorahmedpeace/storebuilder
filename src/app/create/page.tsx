@@ -139,6 +139,37 @@ export default function CreatePage() {
       prev.map((s, idx) => (idx === i ? { ...s, props: { ...s.props, [key]: value } } : s)),
     );
 
+  // Tap a photo slot in the preview -> pick a file -> show instantly (data URL),
+  // then swap in the hosted URL if the server upload succeeds.
+  function pickImageFor(i: number, key: string) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+      setProp(i, key, dataUrl);
+      try {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/uploads", { method: "POST", body: fd });
+        if (res.ok) {
+          const { url } = await res.json();
+          if (url) setProp(i, key, url);
+        }
+      } catch {
+        /* keep the data URL */
+      }
+    };
+    input.click();
+  }
+
   async function onLogo(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -261,7 +292,10 @@ export default function CreatePage() {
 
         {/* Live preview */}
         <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-zinc-400">Live preview</p>
+          <p className="mb-2 text-xs font-medium text-zinc-500">
+            <span className="uppercase tracking-wider text-zinc-400">Live preview</span>
+            <span className="ml-2 rounded-full bg-[#143c3a]/10 px-2 py-0.5 font-semibold text-[#143c3a]">✎ Tap any text or photo to edit</span>
+          </p>
           <div
             className="overflow-hidden rounded-2xl border border-zinc-200 shadow-sm"
             style={{ fontFamily: font.css, background: theme.bg }}
@@ -281,8 +315,13 @@ export default function CreatePage() {
               <span className="rounded-lg px-3 py-1.5 text-xs font-bold text-white" style={{ background: brandColor }}>Cart</span>
             </div>
             <div ref={previewRef} className="max-h-[70vh] overflow-y-auto scroll-smooth">
-              {sections.filter((s) => s.visible).map((s) => {
+              {sections.map((s, index) => {
+                if (!s.visible) return null;
                 const isNew = s.id === lastAddedId;
+                const ed: Editor = {
+                  set: (key, value) => setProp(index, key, value),
+                  pick: (key) => pickImageFor(index, key),
+                };
                 return (
                   <div
                     key={s.id}
@@ -295,7 +334,7 @@ export default function CreatePage() {
                         ✓ {SECTION_LABELS[s.type]} added
                       </span>
                     ) : null}
-                    <PreviewSection section={s} ctx={ctx} />
+                    <PreviewSection section={s} ctx={ctx} ed={ed} />
                   </div>
                 );
               })}
@@ -555,74 +594,132 @@ function SliderPreview({
   );
 }
 
+/** Tap-to-edit text, in place. Uses contentEditable so the typography stays
+ *  exactly as rendered. Saves on blur; external value changes are synced in
+ *  only while the node isn't being edited. */
+function EditableText({
+  value,
+  placeholder,
+  onSave,
+  area = false,
+  className = "",
+}: {
+  value: string;
+  placeholder?: string;
+  onSave: (v: string) => void;
+  area?: boolean;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || document.activeElement === el) return;
+    if (el.textContent !== value) el.textContent = value;
+  }, [value]);
+
+  return (
+    <span
+      ref={ref}
+      contentEditable
+      suppressContentEditableWarning
+      data-ph={placeholder}
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        if (!area && e.key === "Enter") {
+          e.preventDefault();
+          (e.target as HTMLElement).blur();
+        }
+      }}
+      onBlur={(e) => {
+        const t = e.currentTarget.textContent || "";
+        if (t !== value) onSave(t);
+      }}
+      className={`cursor-text rounded outline-none ring-1 ring-transparent hover:bg-yellow-200/40 focus:bg-yellow-100/80 focus:text-zinc-900 focus:ring-[#143c3a] empty:before:opacity-40 empty:before:content-[attr(data-ph)] ${className}`}
+    />
+  );
+}
+
 /** An image area in the builder preview: shows the photo, or a clear
- *  "add a photo here" placeholder slot when empty. */
+ *  "add a photo here" placeholder. Clickable when `onPick` is given. */
 function MediaBox({
   src,
   brand,
   accent,
   className = "",
   label = "📷 Photo",
+  onPick,
 }: {
   src?: string;
   brand: string;
   accent: string;
   className?: string;
   label?: string;
+  onPick?: () => void;
 }) {
-  if (src) {
-    return (
-      <div className={className} style={{ background: `center/cover no-repeat url(${src})` }} />
-    );
-  }
-  return (
-    <div
-      className={`grid place-items-center ${className}`}
-      style={{ background: `linear-gradient(135deg, ${brand}, ${accent})` }}
-    >
-      <span className="rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold text-white">
-        {label}
-      </span>
+  const inner = src ? (
+    <div className={`relative ${className}`} style={{ background: `center/cover no-repeat url(${src})` }}>
+      {onPick ? (
+        <span className="absolute right-1 top-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold text-white">✎ Change</span>
+      ) : null}
     </div>
+  ) : (
+    <div className={`grid place-items-center ${className}`} style={{ background: `linear-gradient(135deg, ${brand}, ${accent})` }}>
+      <span className="rounded-full bg-black/40 px-2 py-0.5 text-[10px] font-bold text-white">{label}</span>
+    </div>
+  );
+  if (!onPick) return inner;
+  return (
+    <button type="button" onClick={onPick} className="block w-full text-left" title="Click to add / change photo">
+      {inner}
+    </button>
   );
 }
 
+type Editor = { set: (key: string, value: string) => void; pick: (key: string) => void };
+
 /* ---------------- Preview section renderer ---------------- */
-function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
+function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?: Editor }) {
   const p = section.props ?? {};
+  // text helper: editable when `ed` is present, plain text otherwise
+  const T = (key: string, current: string, placeholder: string, area = false, className = "") =>
+    ed ? (
+      <EditableText value={current} placeholder={placeholder} area={area} className={className} onSave={(v) => ed.set(key, v)} />
+    ) : (
+      <>{current || placeholder}</>
+    );
+  // edit one "a | b | c" part of a prop, preserving the others
+  const setPart = (key: string, raw: string, idx: number, v: string) => {
+    const parts = raw.split("|").map((s) => s.trim());
+    while (parts.length <= idx) parts.push("");
+    parts[idx] = v;
+    ed?.set(key, parts.join(" | "));
+  };
+
   switch (section.type) {
     case "announcement":
-      return <div className="px-4 py-1.5 text-center text-xs font-semibold text-white" style={{ background: ctx.brand }}>{p.text || `Welcome to ${ctx.name}`}</div>;
+      return <div className="px-4 py-1.5 text-center text-xs font-semibold text-white" style={{ background: ctx.brand }}>{T("text", p.text || "", `Welcome to ${ctx.name}`)}</div>;
     case "hero":
       return (
         <div className="px-6 py-10">
           <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: ctx.accent }}>{ctx.businessType || "Online store"}</p>
-          <h2 className="mt-2 text-3xl font-bold leading-tight">{p.heading || ctx.tagline || `Welcome to ${ctx.name}`}</h2>
-          {p.subheading ? <p className="mt-2 text-sm text-[#555]">{p.subheading}</p> : null}
+          <h2 className="mt-2 text-3xl font-bold leading-tight">{T("heading", p.heading || "", ctx.tagline || `Welcome to ${ctx.name}`)}</h2>
+          <p className="mt-2 text-sm text-[#555]">{T("subheading", p.subheading || "", "Add a subheading", true)}</p>
         </div>
       );
     case "products":
       return (
         <div className="px-6 pb-6">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-lg font-bold">{p.title || "Products"}</p>
-            <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#555]">
-              Sample photos
-            </span>
+            <p className="text-lg font-bold">{T("title", p.title || "", "Products")}</p>
+            <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#555]">Sample photos</span>
           </div>
           <div className="grid grid-cols-3 gap-3">
             {previewProducts.map((product) => (
-              <div
-                key={product.name}
-                className={`overflow-hidden border border-black/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${ctx.radius}`}
-              >
+              <div key={product.name} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`}>
                 <div className="aspect-square w-full overflow-hidden bg-zinc-100">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition duration-500 hover:scale-105"
-                  />
+                  <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
                 </div>
                 <div className="p-2">
                   <p className="truncate text-xs font-bold">{product.name}</p>
@@ -636,94 +733,220 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
     case "richText":
       return (
         <div className="px-6 py-8 text-center">
-          {p.heading ? <h3 className="text-2xl font-bold">{p.heading}</h3> : null}
-          {p.body ? <p className="mt-2 text-sm text-[#555]">{p.body}</p> : null}
+          <h3 className="text-2xl font-bold">{T("heading", p.heading || "", "Heading")}</h3>
+          <p className="mt-2 text-sm text-[#555]">{T("body", p.body || "", "Add some text", true)}</p>
         </div>
       );
     case "banner":
-      return <div className="px-6 py-6 text-center text-lg font-bold text-white" style={{ background: ctx.accent }}>{p.text || "Special offer"}</div>;
+      return <div className="px-6 py-6 text-center text-lg font-bold text-white" style={{ background: ctx.accent }}>{T("text", p.text || "", "Special offer")}</div>;
     case "features": {
       const items = (p.items || "Fast delivery, Cash on delivery, Easy returns").split(",").map((s) => s.trim()).filter(Boolean);
       return (
         <div className="px-6 py-6">
-          {p.title ? <p className="mb-3 font-bold">{p.title}</p> : null}
+          <p className="mb-3 font-bold">{T("title", p.title || "", "Why shop with us")}</p>
           <div className="grid grid-cols-2 gap-2">
-            {items.slice(0, 4).map((it) => (
-              <div key={it} className="rounded-lg border border-black/10 bg-white px-3 py-2 text-xs font-semibold">✓ {it}</div>
+            {items.slice(0, 4).map((it, i) => (
+              <div key={i} className="rounded-lg border border-black/10 bg-white px-3 py-2 text-xs font-semibold">✓ {ed ? <EditableText value={it} placeholder="Perk" onSave={(v) => { const arr = [...items]; arr[i] = v; ed.set("items", arr.join(", ")); }} /> : it}</div>
             ))}
           </div>
         </div>
       );
     }
-    case "reviews":
+    case "reviews": {
+      const reviews = [["r1", p.r1 || "Ayesha — Great quality!"], ["r2", p.r2 || "Bilal — Fast delivery"]];
       return (
         <div className="px-6 py-6">
-          <p className="mb-3 font-bold">{p.title || "What customers say"}</p>
+          <p className="mb-3 font-bold">{T("title", p.title || "", "What customers say")}</p>
           <div className="grid grid-cols-2 gap-2">
-            {[p.r1 || "Ayesha — Great quality!", p.r2 || "Bilal — Fast delivery"].map((r, i) => (
+            {reviews.map(([key, r], i) => (
               <div key={i} className="rounded-lg border border-black/10 bg-white p-3">
                 <div className="flex gap-0.5" style={{ color: ctx.accent }}>{[0,1,2,3,4].map((s) => <Star key={s} size={11} fill="currentColor" />)}</div>
-                <p className="mt-1 text-xs text-[#555]">{r}</p>
+                <p className="mt-1 text-xs text-[#555]">{T(key, p[key] || "", r, true)}</p>
               </div>
             ))}
           </div>
         </div>
       );
-    case "faq":
+    }
+    case "faq": {
+      const faqs = [["q1", p.q1 || "Do you deliver? | Yes"], ["q2", p.q2 || ""]];
       return (
         <div className="px-6 py-6">
-          <p className="mb-2 font-bold">{p.title || "FAQ"}</p>
-          {[p.q1 || "Do you deliver? | Yes", p.q2].filter(Boolean).map((q, i) => (
-            <div key={i} className="border-b border-black/10 py-2 text-sm font-semibold">{(q || "").split("|")[0]}</div>
-          ))}
+          <p className="mb-2 font-bold">{T("title", p.title || "", "FAQ")}</p>
+          {faqs.filter(([, raw]) => ed || raw).map(([key, raw], i) => {
+            const parts = raw.split("|");
+            const q = (parts[0] || "").trim();
+            return (
+              <div key={i} className="border-b border-black/10 py-2 text-sm font-semibold">
+                {ed ? <EditableText value={q} placeholder="Add a question" onSave={(v) => setPart(key, raw || " | ", 0, v)} /> : q}
+              </div>
+            );
+          })}
         </div>
       );
+    }
     case "whatsapp":
-      return <div className="px-6 py-6 text-center"><span className="inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white" style={{ background: ctx.brand }}>{p.text || "Order on WhatsApp"}</span></div>;
+      return <div className="px-6 py-6 text-center"><span className="inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white" style={{ background: ctx.brand }}>{T("text", p.text || "", "Order on WhatsApp")}</span></div>;
     case "imageBanner":
       return (
         <div className="relative flex min-h-32 items-center justify-center px-6 py-8 text-center text-white"
           style={{ background: p.imageUrl ? `linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)), center/cover url(${p.imageUrl})` : `linear-gradient(135deg, ${ctx.brand}, ${ctx.accent})` }}>
-          <p className="text-xl font-bold">{p.heading || "Banner heading"}</p>
-          {!p.imageUrl ? <span className="absolute right-2 top-2 rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold">📷 Add background photo</span> : null}
+          <p className="text-xl font-bold">{T("heading", p.heading || "", "Banner heading")}</p>
+          {ed ? <button type="button" onClick={() => ed.pick("imageUrl")} className="absolute right-2 top-2 rounded-full bg-black/45 px-2 py-0.5 text-[10px] font-bold">{p.imageUrl ? "✎ Change photo" : "📷 Add background photo"}</button> : null}
         </div>
       );
     case "countdown":
-      return <div className="px-6 py-6 text-center"><p className="font-bold">{p.title || "Sale ends soon"}</p><div className="mt-2 flex justify-center gap-2">{["00","12","45","30"].map((n,i) => <span key={i} className="rounded px-2 py-1 text-sm font-bold text-white" style={{ background: i===0?ctx.brand:ctx.accent }}>{n}</span>)}</div></div>;
+      return <div className="px-6 py-6 text-center"><p className="font-bold">{T("title", p.title || "", "Sale ends soon")}</p><div className="mt-2 flex justify-center gap-2">{["00","12","45","30"].map((n,i) => <span key={i} className="rounded px-2 py-1 text-sm font-bold text-white" style={{ background: i===0?ctx.brand:ctx.accent }}>{n}</span>)}</div></div>;
     case "video":
-      return <div className="px-6 py-6"><div className="aspect-video w-full rounded-lg bg-black/80 grid place-items-center text-white text-sm">▶ {p.title || "Video"}</div></div>;
+      return <div className="px-6 py-6"><div className="aspect-video w-full rounded-lg bg-black/80 grid place-items-center text-white text-sm">▶ {T("title", p.title || "", "Video")}</div></div>;
     case "newsletter":
-      return <div className="px-6 py-6 text-center"><p className="font-bold">{p.title || "Get 10% off"}</p><div className="mx-auto mt-2 flex max-w-xs gap-1"><span className="h-9 flex-1 rounded-lg border border-black/15 bg-white" /><span className="rounded-lg px-3 text-xs font-bold text-white grid place-items-center" style={{ background: ctx.brand }}>Join</span></div></div>;
+      return <div className="px-6 py-6 text-center"><p className="font-bold">{T("title", p.title || "", "Get 10% off")}</p><div className="mx-auto mt-2 flex max-w-xs gap-1"><span className="h-9 flex-1 rounded-lg border border-black/15 bg-white" /><span className="rounded-lg px-3 text-xs font-bold text-white grid place-items-center" style={{ background: ctx.brand }}>Join</span></div></div>;
     case "slider": {
       const imgs = [p.image1, p.image2, p.image3].filter(Boolean) as string[];
-      return <SliderPreview imgs={imgs} brand={ctx.brand} accent={ctx.accent} caption={p.caption} />;
+      if (!ed) return <SliderPreview imgs={imgs} brand={ctx.brand} accent={ctx.accent} caption={p.caption} />;
+      return (
+        <div>
+          <SliderPreview imgs={imgs} brand={ctx.brand} accent={ctx.accent} caption={p.caption} />
+          <div className="grid grid-cols-3 gap-2 p-3">
+            {["image1","image2","image3"].map((k) => (
+              <MediaBox key={k} src={p[k] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-video rounded" label="📷 Slide" onPick={() => ed.pick(k)} />
+            ))}
+          </div>
+          <p className="px-3 pb-3 text-center text-xs text-[#555]">{T("caption", p.caption || "", "Slide caption (optional)")}</p>
+        </div>
+      );
     }
     case "gallery": {
-      const imgs = ["g1","g2","g3","g4","g5","g6"].map((k) => p[k]);
-      return <div className="px-6 py-6">{p.title ? <p className="mb-2 font-bold">{p.title}</p> : null}<div className="grid grid-cols-3 gap-2">{imgs.map((src,i) => <MediaBox key={i} src={src || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square rounded" />)}</div></div>;
+      const keys = ["g1","g2","g3","g4","g5","g6"];
+      return (
+        <div className="px-6 py-6">
+          <p className="mb-2 font-bold">{T("title", p.title || "", "Photo gallery")}</p>
+          <div className="grid grid-cols-3 gap-2">
+            {keys.map((k) => (
+              <MediaBox key={k} src={p[k] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square rounded" onPick={ed ? () => ed.pick(k) : undefined} />
+            ))}
+          </div>
+        </div>
+      );
     }
-    case "deals":
-      return <div className="px-6 py-6"><p className="mb-2 font-bold">{p.title || "Deals"}</p><div className="grid grid-cols-3 gap-2">{[p.d1img,p.d2img,p.d3img].map((src,i) => <div key={i} className="overflow-hidden rounded border border-black/10 bg-white"><MediaBox src={src || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-[4/3]" /><div className="p-1.5 text-[10px] font-bold">{([p.d1,p.d2,p.d3][i]||"Deal").split("|")[0]}</div></div>)}</div></div>;
+    case "deals": {
+      const slots = [["d1", "d1img"], ["d2", "d2img"], ["d3", "d3img"]];
+      return (
+        <div className="px-6 py-6">
+          <p className="mb-2 font-bold">{T("title", p.title || "", "Deals")}</p>
+          <div className="grid grid-cols-3 gap-2">
+            {slots.map(([nameKey, imgKey], i) => {
+              const raw = p[nameKey] || "Deal";
+              const name = (raw.split("|")[0] || "").trim();
+              const price = (raw.split("|")[1] || "").trim();
+              return (
+                <div key={i} className="overflow-hidden rounded border border-black/10 bg-white">
+                  <MediaBox src={p[imgKey] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-[4/3]" onPick={ed ? () => ed.pick(imgKey) : undefined} />
+                  <div className="p-1.5 text-[10px] font-bold">{ed ? <EditableText value={name} placeholder="Name" onSave={(v) => setPart(nameKey, raw, 0, v)} /> : name}</div>
+                  <div className="px-1.5 pb-1.5 text-[10px] text-[#555]">{ed ? <EditableText value={price} placeholder="Price" onSave={(v) => setPart(nameKey, raw, 1, v)} /> : price}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
     case "menuList": {
-      const rows = (p.items || "Zinger Burger | 650\nFamily Deal | 1800").split("\n").filter(Boolean).slice(0,4);
-      return <div className="px-6 py-6"><p className="mb-2 font-bold">{p.title || "Menu"}</p>{rows.map((l,i) => { const a=l.split("|"); return <div key={i} className="flex justify-between border-b border-black/10 py-1.5 text-sm"><span className="font-semibold">{a[0]?.trim()}</span><span className="font-mono font-bold" style={{ color: ctx.brand }}>{a[1]?.trim()}</span></div>; })}</div>;
+      const raw = p.items || "Zinger Burger | 650\nFamily Deal | 1800";
+      const allRows = raw.split("\n").filter(Boolean);
+      const rows = allRows.slice(0, 4);
+      const setCell = (rowIdx: number, partIdx: number, v: string) => {
+        const next = [...allRows];
+        const parts = (next[rowIdx] || "").split("|").map((s) => s.trim());
+        while (parts.length <= partIdx) parts.push("");
+        parts[partIdx] = v;
+        next[rowIdx] = parts.join(" | ");
+        ed?.set("items", next.join("\n"));
+      };
+      return (
+        <div className="px-6 py-6">
+          <p className="mb-2 font-bold">{T("title", p.title || "", "Menu")}</p>
+          {rows.map((l, i) => {
+            const a = l.split("|");
+            const name = (a[0] || "").trim();
+            const price = (a[1] || "").trim();
+            return (
+              <div key={i} className="flex justify-between border-b border-black/10 py-1.5 text-sm">
+                <span className="font-semibold">{ed ? <EditableText value={name} placeholder="Item" onSave={(v) => setCell(i, 0, v)} /> : name}</span>
+                <span className="font-mono font-bold" style={{ color: ctx.brand }}>{ed ? <EditableText value={price} placeholder="0" onSave={(v) => setCell(i, 1, v)} /> : price}</span>
+              </div>
+            );
+          })}
+        </div>
+      );
     }
     case "steps": {
-      const steps = [p.s1,p.s2,p.s3].filter(Boolean);
-      return <div className="px-6 py-6"><p className="mb-2 font-bold">{p.title || "How it works"}</p><div className="grid grid-cols-3 gap-2">{(steps.length?steps:["Browse","Order","Receive"]).map((s,i) => <div key={i} className="rounded border border-black/10 bg-white p-2 text-center"><span className="mx-auto grid size-6 place-items-center rounded-full text-xs font-bold text-white" style={{ background: ctx.brand }}>{i+1}</span><p className="mt-1 text-[11px] font-semibold">{s}</p></div>)}</div></div>;
+      const keys = ["s1","s2","s3"];
+      const defaults = ["Browse", "Order", "Receive"];
+      return (
+        <div className="px-6 py-6">
+          <p className="mb-2 font-bold">{T("title", p.title || "", "How it works")}</p>
+          <div className="grid grid-cols-3 gap-2">
+            {keys.map((k, i) => (
+              <div key={i} className="rounded border border-black/10 bg-white p-2 text-center">
+                <span className="mx-auto grid size-6 place-items-center rounded-full text-xs font-bold text-white" style={{ background: ctx.brand }}>{i + 1}</span>
+                <p className="mt-1 text-[11px] font-semibold">{T(k, p[k] || "", defaults[i])}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
     }
     case "stats": {
-      const stats = [p.n1,p.n2,p.n3,p.n4].filter(Boolean).map((n)=>(n||"").split("|"));
-      return <div className="px-6 py-6 text-white" style={{ background: ctx.brand }}><div className="grid grid-cols-4 gap-2 text-center">{(stats.length?stats:[["50+","Branches"],["1M+","Orders"],["4.9","Rating"],["24/7","Support"]]).map((st,i)=><div key={i}><p className="text-xl font-bold">{st[0]}</p><p className="text-[10px] opacity-80">{st[1]}</p></div>)}</div></div>;
+      const keys = ["n1","n2","n3","n4"];
+      const defaults = [["50+","Branches"],["1M+","Orders"],["4.9","Rating"],["24/7","Support"]];
+      return (
+        <div className="px-6 py-6 text-white" style={{ background: ctx.brand }}>
+          <div className="grid grid-cols-4 gap-2 text-center">
+            {keys.map((k, i) => {
+              const raw = p[k] || "";
+              const val = (raw.split("|")[0] || "").trim() || defaults[i][0];
+              const label = (raw.split("|")[1] || "").trim() || defaults[i][1];
+              return (
+                <div key={i}>
+                  <p className="text-xl font-bold">{ed ? <EditableText value={val} placeholder="0" onSave={(v) => setPart(k, raw || " | ", 0, v)} /> : val}</p>
+                  <p className="text-[10px] opacity-80">{ed ? <EditableText value={label} placeholder="Label" onSave={(v) => setPart(k, raw || " | ", 1, v)} /> : label}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
     }
     case "imageText": {
-      const right = (p.side||"").toLowerCase()==="right";
-      return <div className="px-6 py-6"><div className={`grid grid-cols-2 items-center gap-3 ${right?"[&>*:first-child]:order-2":""}`}><MediaBox src={p.image || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-[4/3] rounded" /><div><p className="font-bold">{p.heading||"Heading"}</p><p className="mt-1 text-xs text-[#555]">{p.body||"Description text"}</p></div></div></div>;
+      const right = (p.side || "").toLowerCase() === "right";
+      return (
+        <div className="px-6 py-6">
+          <div className={`grid grid-cols-2 items-center gap-3 ${right ? "[&>*:first-child]:order-2" : ""}`}>
+            <MediaBox src={p.image || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-[4/3] rounded" onPick={ed ? () => ed.pick("image") : undefined} />
+            <div>
+              <p className="font-bold">{T("heading", p.heading || "", "Heading")}</p>
+              <p className="mt-1 text-xs text-[#555]">{T("body", p.body || "", "Description text", true)}</p>
+            </div>
+          </div>
+        </div>
+      );
     }
     case "cta":
-      return <div className="relative px-6 py-8 text-center text-white" style={{ background: p.bgImage ? `linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),center/cover url(${p.bgImage})` : ctx.brand }}><p className="text-xl font-bold">{p.heading||"Call to action"}</p><span className="mt-2 inline-block rounded bg-white px-3 py-1.5 text-xs font-bold" style={{ color: ctx.brand }}>{p.buttonText||"Shop now"}</span>{!p.bgImage ? <span className="absolute right-2 top-2 rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold">📷 Add background photo</span> : null}</div>;
+      return (
+        <div className="relative px-6 py-8 text-center text-white" style={{ background: p.bgImage ? `linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),center/cover url(${p.bgImage})` : ctx.brand }}>
+          <p className="text-xl font-bold">{T("heading", p.heading || "", "Call to action")}</p>
+          <p className="mt-1 text-xs opacity-90">{T("subheading", p.subheading || "", "Add a subtext")}</p>
+          <span className="mt-2 inline-block rounded bg-white px-3 py-1.5 text-xs font-bold" style={{ color: ctx.brand }}>{T("buttonText", p.buttonText || "", "Shop now")}</span>
+          {ed ? <button type="button" onClick={() => ed.pick("bgImage")} className="absolute right-2 top-2 rounded-full bg-black/45 px-2 py-0.5 text-[10px] font-bold">{p.bgImage ? "✎ Change photo" : "📷 Add background photo"}</button> : null}
+        </div>
+      );
     case "contactBar":
-      return <div className="px-6 py-2.5 text-center text-xs font-semibold text-white" style={{ background: ctx.brand }}>{[p.phone&&`📞 ${p.phone}`, p.address&&`📍 ${p.address}`].filter(Boolean).join("   ") || "📞 021-111-666-111   📍 Your address"}</div>;
+      return (
+        <div className="px-6 py-2.5 text-center text-xs font-semibold text-white" style={{ background: ctx.brand }}>
+          📞 {T("phone", p.phone || "", "021-111-666-111")}   📍 {T("address", p.address || "", "Your address")}
+        </div>
+      );
     default:
       return null;
   }
