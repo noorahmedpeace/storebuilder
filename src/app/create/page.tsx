@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -73,6 +73,15 @@ export default function CreatePage() {
   const [sections, setSections] = useState<Section[]>(DEFAULT_LAYOUT);
   const [templateKey, setTemplateKey] = useState<string>("");
   const [tab, setTab] = useState<"templates" | "design" | "sections">("templates");
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [scrollTick, setScrollTick] = useState(0);
+
+  // When a section is added, scroll the live preview to it so the change is visible.
+  useEffect(() => {
+    if (scrollTick === 0) return;
+    const el = previewRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [scrollTick]);
 
   const theme = useMemo(() => getTheme(themeKey), [themeKey]);
   const font = useMemo(() => getFont(fontKey), [fontKey]);
@@ -112,8 +121,10 @@ export default function CreatePage() {
   const toggle = (i: number) =>
     setSections((prev) => prev.map((s, idx) => (idx === i ? { ...s, visible: !s.visible } : s)));
   const remove = (i: number) => setSections((prev) => prev.filter((_, idx) => idx !== i));
-  const add = (type: SectionType) =>
+  const add = (type: SectionType) => {
     setSections((prev) => [...prev, { id: newId(), type, visible: true, props: {} }]);
+    setScrollTick((n) => n + 1);
+  };
   const setProp = (i: number, key: string, value: string) =>
     setSections((prev) =>
       prev.map((s, idx) => (idx === i ? { ...s, props: { ...s.props, [key]: value } } : s)),
@@ -240,7 +251,7 @@ export default function CreatePage() {
               </div>
               <span className="rounded-lg px-3 py-1.5 text-xs font-bold text-white" style={{ background: brandColor }}>Cart</span>
             </div>
-            <div className="max-h-[70vh] overflow-y-auto">
+            <div ref={previewRef} className="max-h-[70vh] overflow-y-auto scroll-smooth">
               {sections.filter((s) => s.visible).map((s) => (
                 <PreviewSection key={s.id} section={s} ctx={ctx} />
               ))}
