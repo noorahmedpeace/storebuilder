@@ -1074,6 +1074,23 @@ function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?:
           📞 {T("phone", p.phone || "", "021-111-666-111")}   📍 {T("address", p.address || "", "Your address")}
         </div>
       );
+    case "categories": {
+      const count = listCount(4, (i) => !!(p[`c${i}`] || p[`c${i}img`]));
+      return (
+        <div className="px-6 py-6">
+          <p className="mb-3 font-bold">{T("title", p.title || "", "Shop by category")}</p>
+          <div className="grid grid-cols-4 gap-3">
+            {Array.from({ length: count }, (_, k) => k + 1).map((i) => (
+              <div key={i} className="text-center">
+                <MediaBox src={p[`c${i}img`] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square rounded-full" label="📷" onPick={ed ? () => ed.pick(`c${i}img`) : undefined} />
+                <p className="mt-1 text-[11px] font-semibold">{ed ? <EditableText value={p[`c${i}`] || ""} placeholder="Category" onSave={(v) => ed.set(`c${i}`, v)} /> : p[`c${i}`]}</p>
+              </div>
+            ))}
+          </div>
+          {ed ? <AddBtn onClick={() => addItem(count)} label="+ Add category" /> : null}
+        </div>
+      );
+    }
     default:
       return null;
   }

@@ -633,6 +633,32 @@ function SectionView({
         </section>
       );
 
+    case "categories": {
+      const cats = Array.from({ length: 24 }, (_, k) => ({
+        img: p[`c${k + 1}img`],
+        name: p[`c${k + 1}`],
+      })).filter((c) => c.name || c.img);
+      if (!cats.length) return null;
+      return (
+        <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+          <h2 className={`mb-6 text-3xl font-bold ${upper}`}>
+            {p.title || "Shop by category"}
+          </h2>
+          <div className="grid grid-cols-3 gap-5 sm:grid-cols-4 lg:grid-cols-6">
+            {cats.map((c, idx) => (
+              <div key={idx} className="text-center">
+                <div
+                  className="mx-auto aspect-square w-full rounded-full border border-black/10"
+                  style={{ background: c.img ? `center/cover no-repeat url(${c.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
+                />
+                <p className="mt-2 text-sm font-semibold">{c.name}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     default:
       return null;
   }

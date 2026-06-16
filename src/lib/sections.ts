@@ -25,7 +25,8 @@ export type SectionType =
   | "stats"
   | "imageText"
   | "cta"
-  | "contactBar";
+  | "contactBar"
+  | "categories";
 
 export type FieldType = "text" | "textarea" | "image";
 export type SectionField = { key: string; label: string; type?: FieldType };
@@ -60,11 +61,13 @@ export const SECTION_LABELS: Record<SectionType, string> = {
   imageText: "✨ Story Block",
   cta: "👉 Big CTA",
   contactBar: "📞 Contact Strip",
+  categories: "🗂️ Categories",
 };
 
 /** Section types a merchant can add from the builder palette. */
 export const ADDABLE_SECTIONS: SectionType[] = [
   "slider",
+  "categories",
   "imageBanner",
   "deals",
   "menuList",
@@ -190,6 +193,17 @@ export const SECTION_FIELDS: Partial<Record<SectionType, SectionField[]>> = {
     { key: "phone", label: "Phone" },
     { key: "address", label: "Address" },
     { key: "hours", label: "Hours (optional)" },
+  ],
+  categories: [
+    { key: "title", label: "Title" },
+    { key: "c1img", label: "Category 1 image", type: "image" },
+    { key: "c1", label: "Category 1 name" },
+    { key: "c2img", label: "Category 2 image", type: "image" },
+    { key: "c2", label: "Category 2 name" },
+    { key: "c3img", label: "Category 3 image", type: "image" },
+    { key: "c3", label: "Category 3 name" },
+    { key: "c4img", label: "Category 4 image", type: "image" },
+    { key: "c4", label: "Category 4 name" },
   ],
 };
 
