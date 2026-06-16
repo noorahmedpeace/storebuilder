@@ -4,6 +4,15 @@ import { useState } from "react";
 import { Upload } from "lucide-react";
 import type { SectionField } from "@/lib/sections";
 
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
 /** Renders the right control for a section field: text input, textarea, or an
  *  image uploader (POSTs to /api/uploads and stores the returned URL). */
 export function SectionFieldInput({
@@ -35,10 +44,24 @@ export function SectionFieldInput({
       if (!file) return;
       setUploading(true);
       try {
-        const fd = new FormData();
-        fd.append("file", file);
-        const res = await fetch("/api/uploads", { method: "POST", body: fd });
-        if (res.ok) onChange((await res.json()).url);
+        // Show the picture instantly from a local data URL. This always works —
+        // including on serverless hosts (e.g. Vercel) where writing to the
+        // filesystem fails — so the live preview never ends up blank.
+        const dataUrl = await readAsDataUrl(file);
+        onChange(dataUrl);
+
+        // If the server upload succeeds, swap in the smaller hosted URL.
+        try {
+          const fd = new FormData();
+          fd.append("file", file);
+          const res = await fetch("/api/uploads", { method: "POST", body: fd });
+          if (res.ok) {
+            const { url } = await res.json();
+            if (url) onChange(url);
+          }
+        } catch {
+          /* keep the data URL preview */
+        }
       } finally {
         setUploading(false);
       }

@@ -145,10 +145,26 @@ export default function CreatePage() {
     if (!file) return;
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/uploads", { method: "POST", body: fd });
-      if (res.ok) setLogoUrl((await res.json()).url);
+      // Instant local preview (also the fallback on serverless hosts where the
+      // filesystem write fails), then swap in the hosted URL if upload works.
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+      setLogoUrl(dataUrl);
+      try {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/uploads", { method: "POST", body: fd });
+        if (res.ok) {
+          const { url } = await res.json();
+          if (url) setLogoUrl(url);
+        }
+      } catch {
+        /* keep the data URL preview */
+      }
     } finally {
       setUploading(false);
     }
