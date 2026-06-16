@@ -72,7 +72,7 @@ export default function CreatePage() {
   const [uploading, setUploading] = useState(false);
   const [sections, setSections] = useState<Section[]>(DEFAULT_LAYOUT);
   const [templateKey, setTemplateKey] = useState<string>("");
-  const [tab, setTab] = useState<"templates" | "design" | "sections">("templates");
+  const [advanced, setAdvanced] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const [scrollTick, setScrollTick] = useState(0);
   const [lastAddedId, setLastAddedId] = useState<string>("");
@@ -114,7 +114,6 @@ export default function CreatePage() {
     if (!tagline.trim()) setTagline(t.tagline);
     // deep-clone so later edits don't mutate the shared template constant
     setSections(t.layout.map((sec) => ({ ...sec, props: { ...sec.props } })));
-    setTab("design");
   }
 
   // --- section ops ---
@@ -212,41 +211,45 @@ export default function CreatePage() {
         <div className="space-y-4">
           <div>
             <h1 className="text-2xl font-bold">Build your store</h1>
-            <p className="mt-1 text-sm text-zinc-500">Design the look and lay out your page. Live preview on the right.</p>
+            <p className="mt-1 text-sm text-zinc-500">
+              Ek template chuno, basics badlo, aur publish karo. Bas teen step.
+            </p>
           </div>
 
-          <div className="flex gap-2 rounded-lg border border-zinc-200 bg-white p-1">
-            {(["templates", "design", "sections"] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold capitalize transition ${
-                  tab === t ? "bg-[#143c3a] text-white" : "text-zinc-600 hover:bg-zinc-100"
-                }`}
-              >
-                {t === "design" ? "Design" : t === "sections" ? "Page sections" : "Templates"}
-              </button>
-            ))}
-          </div>
+          {/* Step 1 — template */}
+          <TemplatesTab activeKey={templateKey} onPick={applyTemplate} />
 
-          {tab === "templates" ? (
-            <TemplatesTab activeKey={templateKey} onPick={applyTemplate} />
-          ) : tab === "design" ? (
-            <DesignTab
-              {...{ storeName, setStoreName, businessType, setBusinessType, tagline, setTagline,
-                logoUrl, onLogo, uploading, themeKey, pickTheme, brandColor, setBrandColor,
-                accentColor, setAccentColor, fontKey, setFontKey }}
-            />
-          ) : (
-            <SectionsTab
-              sections={sections}
-              onMove={move}
-              onToggle={toggle}
-              onRemove={remove}
-              onAdd={add}
-              onSetProp={setProp}
-            />
-          )}
+          {/* Step 2 — basics */}
+          <EssentialsCard
+            {...{ storeName, setStoreName, tagline, setTagline, logoUrl, onLogo,
+              uploading, brandColor, setBrandColor, accentColor, setAccentColor }}
+          />
+
+          {/* Advanced — hidden by default */}
+          <div>
+            <button
+              onClick={() => setAdvanced((a) => !a)}
+              className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-700 transition hover:border-zinc-300"
+            >
+              <span>⚙️ Customize (advanced) — fonts, theme &amp; sections</span>
+              {advanced ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+            {advanced ? (
+              <div className="mt-3 space-y-3">
+                <StyleCard
+                  {...{ businessType, setBusinessType, themeKey, pickTheme, fontKey, setFontKey }}
+                />
+                <SectionsTab
+                  sections={sections}
+                  onMove={move}
+                  onToggle={toggle}
+                  onRemove={remove}
+                  onAdd={add}
+                  onSetProp={setProp}
+                />
+              </div>
+            ) : null}
+          </div>
 
           <button
             onClick={publish}
@@ -304,39 +307,53 @@ export default function CreatePage() {
   );
 }
 
-/* ---------------- Design tab ---------------- */
-function DesignTab(p: {
+/* ---------------- Essentials (always visible, simple) ---------------- */
+function EssentialsCard(p: {
   storeName: string; setStoreName: (v: string) => void;
-  businessType: string; setBusinessType: (v: string) => void;
   tagline: string; setTagline: (v: string) => void;
   logoUrl: string; onLogo: (e: React.ChangeEvent<HTMLInputElement>) => void; uploading: boolean;
-  themeKey: string; pickTheme: (k: string) => void;
   brandColor: string; setBrandColor: (v: string) => void;
   accentColor: string; setAccentColor: (v: string) => void;
+}) {
+  return (
+    <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4">
+      <p className="text-sm font-semibold text-zinc-700">Your basics</p>
+      <TextField label="Store name" value={p.storeName} onChange={p.setStoreName} placeholder="Ali Electronics" />
+      <TextField label="Tagline" value={p.tagline} onChange={p.setTagline} placeholder="Best deals in town" />
+      <div>
+        <span className="text-sm font-semibold text-zinc-600">Logo (optional)</span>
+        <div className="mt-1 flex items-center gap-3">
+          {p.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={p.logoUrl} alt="logo" className="size-10 rounded-lg border border-zinc-200 object-cover" />
+          ) : null}
+          <input type="file" accept="image/*" onChange={p.onLogo}
+            className="w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#143c3a] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
+        </div>
+        {p.uploading ? <p className="mt-1 text-xs text-zinc-500">Uploading…</p> : null}
+      </div>
+      <div className="flex flex-wrap gap-4">
+        <ColorField label="Brand color" value={p.brandColor} onChange={p.setBrandColor} />
+        <ColorField label="Accent color" value={p.accentColor} onChange={p.setAccentColor} />
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Style (advanced: business type, theme, font) ---------------- */
+function StyleCard(p: {
+  businessType: string; setBusinessType: (v: string) => void;
+  themeKey: string; pickTheme: (k: string) => void;
   fontKey: string; setFontKey: (v: string) => void;
 }) {
   return (
     <>
-      <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4">
-        <TextField label="Store name" value={p.storeName} onChange={p.setStoreName} placeholder="Ali Electronics" />
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
         <TextField label="Business type" value={p.businessType} onChange={p.setBusinessType} placeholder="Electronics, Grocery, Perfume..." />
-        <TextField label="Tagline" value={p.tagline} onChange={p.setTagline} placeholder="Best deals in town" />
-        <div>
-          <span className="text-sm font-semibold text-zinc-600">Logo (optional)</span>
-          <div className="mt-1 flex items-center gap-3">
-            {p.logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={p.logoUrl} alt="logo" className="size-10 rounded-lg border border-zinc-200 object-cover" />
-            ) : null}
-            <input type="file" accept="image/*" onChange={p.onLogo}
-              className="w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#143c3a] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
-          </div>
-          {p.uploading ? <p className="mt-1 text-xs text-zinc-500">Uploading…</p> : null}
-        </div>
       </div>
 
       <div className="rounded-xl border border-zinc-200 bg-white p-4">
-        <p className="mb-3 text-sm font-semibold text-zinc-700">Theme</p>
+        <p className="mb-3 text-sm font-semibold text-zinc-700">Theme (colour preset)</p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {THEMES.map((t) => (
             <button key={t.key} onClick={() => p.pickTheme(t.key)}
@@ -347,10 +364,6 @@ function DesignTab(p: {
               {t.name}
             </button>
           ))}
-        </div>
-        <div className="mt-3 flex flex-wrap gap-4">
-          <ColorField label="Brand color" value={p.brandColor} onChange={p.setBrandColor} />
-          <ColorField label="Accent color" value={p.accentColor} onChange={p.setAccentColor} />
         </div>
       </div>
 
