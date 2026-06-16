@@ -293,7 +293,7 @@ function SectionView({
     }
 
     case "reviews": {
-      const reviews = [p.r1, p.r2, p.r3]
+      const reviews = Array.from({ length: 24 }, (_, k) => p[`r${k + 1}`])
         .filter((r): r is string => Boolean(r && r.trim()))
         .map((r) => {
           const [name, ...rest] = r.split("—");
@@ -326,7 +326,7 @@ function SectionView({
     }
 
     case "faq": {
-      const faqs = [p.q1, p.q2, p.q3]
+      const faqs = Array.from({ length: 24 }, (_, k) => p[`q${k + 1}`])
         .filter((q): q is string => Boolean(q && q.trim()))
         .map((q) => {
           const [question, ...rest] = q.split("|");
@@ -423,7 +423,7 @@ function SectionView({
       return <Carousel images={[p.image1, p.image2, p.image3]} caption={p.caption} />;
 
     case "gallery": {
-      const imgs = ["g1", "g2", "g3", "g4", "g5", "g6"].map((k) => p[k]).filter(Boolean);
+      const imgs = Array.from({ length: 24 }, (_, k) => p[`g${k + 1}`]).filter(Boolean);
       if (!imgs.length) return null;
       return (
         <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
@@ -442,11 +442,10 @@ function SectionView({
     }
 
     case "deals": {
-      const deals = [
-        { img: p.d1img, text: p.d1 },
-        { img: p.d2img, text: p.d2 },
-        { img: p.d3img, text: p.d3 },
-      ].filter((d) => d.text || d.img);
+      const deals = Array.from({ length: 24 }, (_, k) => ({
+        img: p[`d${k + 1}img`],
+        text: p[`d${k + 1}`],
+      })).filter((d) => d.text || d.img);
       if (!deals.length) return null;
       return (
         <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
@@ -505,7 +504,7 @@ function SectionView({
     }
 
     case "steps": {
-      const steps = [p.s1, p.s2, p.s3].filter(Boolean);
+      const steps = Array.from({ length: 24 }, (_, k) => p[`s${k + 1}`]).filter(Boolean);
       if (!steps.length) return null;
       return (
         <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">

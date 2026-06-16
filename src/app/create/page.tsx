@@ -112,6 +112,7 @@ export default function CreatePage() {
   const [sections, setSections] = useState<Section[]>(DEFAULT_LAYOUT);
   const [templateKey, setTemplateKey] = useState<string>("");
   const [advanced, setAdvanced] = useState(false);
+  const [showAddPalette, setShowAddPalette] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const [scrollTick, setScrollTick] = useState(0);
   const [lastAddedId, setLastAddedId] = useState<string>("");
@@ -288,7 +289,7 @@ export default function CreatePage() {
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
+      <div className="mx-auto grid max-w-7xl items-start gap-6 px-5 py-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
         {/* Controls */}
         <div className="space-y-4">
           <div>
@@ -307,7 +308,32 @@ export default function CreatePage() {
               uploading, brandColor, setBrandColor, accentColor, setAccentColor }}
           />
 
-          {/* Advanced — hidden by default */}
+          {/* Add a section — easy, in the main flow */}
+          <div className="rounded-xl border border-zinc-200 bg-white p-3">
+            <button
+              onClick={() => setShowAddPalette((v) => !v)}
+              className="flex w-full items-center justify-between text-sm font-semibold text-zinc-700"
+            >
+              <span>➕ Add a section</span>
+              {showAddPalette ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+            {showAddPalette ? (
+              <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+                {ADDABLE_SECTIONS.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => add(t)}
+                    className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-left text-xs font-semibold transition hover:border-[#143c3a]"
+                  >
+                    <Plus size={13} className="shrink-0" />
+                    <span className="min-w-0 truncate">{SECTION_LABELS[t]}</span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          {/* Advanced — reorder / hide / remove sections */}
           <div>
             <button
               onClick={() => setAdvanced((a) => !a)}
@@ -341,8 +367,8 @@ export default function CreatePage() {
           </button>
         </div>
 
-        {/* Live preview */}
-        <div>
+        {/* Live preview (sticky so it stays in view while editing) */}
+        <div className="lg:sticky lg:top-4 lg:self-start">
           <p className="mb-2 text-xs font-medium text-zinc-500">
             <span className="uppercase tracking-wider text-zinc-400">Live preview</span>
             <span className="ml-2 rounded-full bg-[#143c3a]/10 px-2 py-0.5 font-semibold text-[#143c3a]">✎ Tap any text or photo to edit</span>
@@ -729,6 +755,19 @@ function MediaBox({
 
 type Editor = { set: (key: string, value: string) => void; pick: (key: string) => void };
 
+/** Dashed "+ Add ..." button shown inside editable sections. */
+function AddBtn({ onClick, label }: { onClick: () => void; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="mt-3 w-full rounded-lg border border-dashed border-[#143c3a]/40 py-1.5 text-xs font-bold text-[#143c3a] transition hover:bg-[#143c3a]/5"
+    >
+      {label}
+    </button>
+  );
+}
+
 /* ---------------- Preview section renderer ---------------- */
 function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?: Editor }) {
   const p = section.props ?? {};
@@ -746,6 +785,13 @@ function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?:
     parts[idx] = v;
     ed?.set(key, parts.join(" | "));
   };
+  // how many items to show in a repeatable list (deals, gallery, faq…)
+  const listCount = (def: number, has: (i: number) => boolean) => {
+    let n = Math.max(def, Number(p._count) || 0);
+    for (let i = 1; i <= 24; i++) if (has(i)) n = Math.max(n, i);
+    return Math.min(n, 24);
+  };
+  const addItem = (count: number) => ed?.set("_count", String(count + 1));
 
   switch (section.type) {
     case "announcement":
@@ -804,35 +850,38 @@ function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?:
       );
     }
     case "reviews": {
-      const reviews = [["r1", p.r1 || "Ayesha — Great quality!"], ["r2", p.r2 || "Bilal — Fast delivery"]];
+      const defaults = ["Ayesha — Great quality!", "Bilal — Fast delivery", "Sara — Loved it!"];
+      const count = listCount(2, (i) => !!p[`r${i}`]);
       return (
         <div className="px-6 py-6">
           <p className="mb-3 font-bold">{T("title", p.title || "", "What customers say")}</p>
           <div className="grid grid-cols-2 gap-2">
-            {reviews.map(([key, r], i) => (
+            {Array.from({ length: count }, (_, k) => k + 1).map((i) => (
               <div key={i} className="rounded-lg border border-black/10 bg-white p-3">
                 <div className="flex gap-0.5" style={{ color: ctx.accent }}>{[0,1,2,3,4].map((s) => <Star key={s} size={11} fill="currentColor" />)}</div>
-                <p className="mt-1 text-xs text-[#555]">{T(key, p[key] || "", r, true)}</p>
+                <p className="mt-1 text-xs text-[#555]">{T(`r${i}`, p[`r${i}`] || "", defaults[i - 1] || "Name — quote", true)}</p>
               </div>
             ))}
           </div>
+          {ed ? <AddBtn onClick={() => addItem(count)} label="+ Add review" /> : null}
         </div>
       );
     }
     case "faq": {
-      const faqs = [["q1", p.q1 || "Do you deliver? | Yes"], ["q2", p.q2 || ""]];
+      const count = listCount(2, (i) => !!p[`q${i}`]);
       return (
         <div className="px-6 py-6">
           <p className="mb-2 font-bold">{T("title", p.title || "", "FAQ")}</p>
-          {faqs.filter(([, raw]) => ed || raw).map(([key, raw], i) => {
-            const parts = raw.split("|");
-            const q = (parts[0] || "").trim();
+          {Array.from({ length: count }, (_, k) => k + 1).map((i) => {
+            const raw = p[`q${i}`] || "";
+            const q = (raw.split("|")[0] || "").trim();
             return (
               <div key={i} className="border-b border-black/10 py-2 text-sm font-semibold">
-                {ed ? <EditableText value={q} placeholder="Add a question" onSave={(v) => setPart(key, raw || " | ", 0, v)} /> : q}
+                {ed ? <EditableText value={q} placeholder="Add a question" onSave={(v) => setPart(`q${i}`, raw || " | ", 0, v)} /> : q}
               </div>
             );
           })}
+          {ed ? <AddBtn onClick={() => addItem(count)} label="+ Add question" /> : null}
         </div>
       );
     }
@@ -868,26 +917,29 @@ function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?:
       );
     }
     case "gallery": {
-      const keys = ["g1","g2","g3","g4","g5","g6"];
+      const count = listCount(6, (i) => !!p[`g${i}`]);
       return (
         <div className="px-6 py-6">
           <p className="mb-2 font-bold">{T("title", p.title || "", "Photo gallery")}</p>
           <div className="grid grid-cols-3 gap-2">
-            {keys.map((k) => (
-              <MediaBox key={k} src={p[k] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square rounded" onPick={ed ? () => ed.pick(k) : undefined} />
+            {Array.from({ length: count }, (_, k) => k + 1).map((i) => (
+              <MediaBox key={i} src={p[`g${i}`] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square rounded" onPick={ed ? () => ed.pick(`g${i}`) : undefined} />
             ))}
           </div>
+          {ed ? <AddBtn onClick={() => addItem(count)} label="+ Add photo" /> : null}
         </div>
       );
     }
     case "deals": {
-      const slots = [["d1", "d1img"], ["d2", "d2img"], ["d3", "d3img"]];
+      const count = listCount(3, (i) => !!(p[`d${i}`] || p[`d${i}img`]));
       return (
         <div className="px-6 py-6">
           <p className="mb-2 font-bold">{T("title", p.title || "", "Deals")}</p>
           <div className="grid grid-cols-3 gap-2">
-            {slots.map(([nameKey, imgKey], i) => {
-              const raw = p[nameKey] || "Deal";
+            {Array.from({ length: count }, (_, k) => k + 1).map((i) => {
+              const nameKey = `d${i}`;
+              const imgKey = `d${i}img`;
+              const raw = p[nameKey] || "";
               const name = (raw.split("|")[0] || "").trim();
               const price = (raw.split("|")[1] || "").trim();
               return (
@@ -899,13 +951,14 @@ function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?:
               );
             })}
           </div>
+          {ed ? <AddBtn onClick={() => addItem(count)} label="+ Add deal" /> : null}
         </div>
       );
     }
     case "menuList": {
       const raw = p.items || "Zinger Burger | 650\nFamily Deal | 1800";
       const allRows = raw.split("\n").filter(Boolean);
-      const rows = allRows.slice(0, 4);
+      const rows = allRows;
       const setCell = (rowIdx: number, partIdx: number, v: string) => {
         const next = [...allRows];
         const parts = (next[rowIdx] || "").split("|").map((s) => s.trim());
@@ -928,23 +981,25 @@ function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?:
               </div>
             );
           })}
+          {ed ? <AddBtn onClick={() => ed.set("items", `${raw}\nNew item | 0`)} label="+ Add menu item" /> : null}
         </div>
       );
     }
     case "steps": {
-      const keys = ["s1","s2","s3"];
-      const defaults = ["Browse", "Order", "Receive"];
+      const defaults = ["Browse", "Order", "Receive", "Enjoy"];
+      const count = listCount(3, (i) => !!p[`s${i}`]);
       return (
         <div className="px-6 py-6">
           <p className="mb-2 font-bold">{T("title", p.title || "", "How it works")}</p>
           <div className="grid grid-cols-3 gap-2">
-            {keys.map((k, i) => (
+            {Array.from({ length: count }, (_, k) => k + 1).map((i) => (
               <div key={i} className="rounded border border-black/10 bg-white p-2 text-center">
-                <span className="mx-auto grid size-6 place-items-center rounded-full text-xs font-bold text-white" style={{ background: ctx.brand }}>{i + 1}</span>
-                <p className="mt-1 text-[11px] font-semibold">{T(k, p[k] || "", defaults[i])}</p>
+                <span className="mx-auto grid size-6 place-items-center rounded-full text-xs font-bold text-white" style={{ background: ctx.brand }}>{i}</span>
+                <p className="mt-1 text-[11px] font-semibold">{T(`s${i}`, p[`s${i}`] || "", defaults[i - 1] || "Step")}</p>
               </div>
             ))}
           </div>
+          {ed ? <AddBtn onClick={() => addItem(count)} label="+ Add step" /> : null}
         </div>
       );
     }
