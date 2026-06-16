@@ -36,6 +36,11 @@ const s = (
 const img = (id: string, w = 1000) =>
   `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`;
 
+/** Topical keyword photo (LoremFlickr) — used where a specific item needs an
+ *  on-subject picture (rice, earbuds, etc.). `lock` keeps it stable per slot. */
+const kw = (keyword: string, lock: number, w = 700) =>
+  `https://loremflickr.com/${w}/${Math.round(w * 0.75)}/${keyword}?lock=${lock}`;
+
 // Curated, verified photo ids (all return 200).
 const PIC = {
   // food / restaurant
@@ -86,11 +91,11 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
       }),
       s("t-deals", "deals", {
         title: "🔥 Today's Best Deals",
-        d1img: img(PIC.smartphone, 700),
+        d1img: kw("smartphone", 11),
         d1: "Smartphone Pro Max | Rs 249,900",
-        d2img: img(PIC.phoneHand, 700),
+        d2img: kw("earbuds", 12),
         d2: "Wireless Earbuds | Rs 4,500",
-        d3img: img(PIC.phones, 700),
+        d3img: kw("charger", 13),
         d3: "Fast Charger 65W | Rs 2,900",
       }),
       s("t-feat", "features", {
@@ -249,12 +254,12 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
       s("t-prod", "products", { title: "New Arrivals" }),
       s("t-gallery", "gallery", {
         title: "The Lookbook",
-        g1: img(PIC.shopping, 600),
-        g2: img(PIC.clothingRack, 600),
-        g3: img(PIC.shoe, 600),
-        g4: img(PIC.shopping, 600),
-        g5: img(PIC.clothingRack, 600),
-        g6: img(PIC.shoe, 600),
+        g1: kw("fashion", 31, 600),
+        g2: kw("dress", 32, 600),
+        g3: kw("shoes", 33, 600),
+        g4: kw("handbag", 34, 600),
+        g5: kw("jeans", 35, 600),
+        g6: kw("sunglasses", 36, 600),
       }),
       s("t-feat", "features", {
         title: "The promise",
@@ -292,11 +297,11 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
       s("t-banner", "banner", { text: "Mega Monthly Savings — up to 30% off" }),
       s("t-deals", "deals", {
         title: "🔥 Daily Deals",
-        d1img: img(PIC.veggies, 700),
+        d1img: kw("vegetables", 21),
         d1: "Fresh Vegetables | from Rs 99",
-        d2img: img(PIC.veggies, 700),
+        d2img: kw("rice", 22),
         d2: "Basmati Rice 5kg | Rs 1,950",
-        d3img: img(PIC.veggies, 700),
+        d3img: kw("oil", 23),
         d3: "Cooking Oil 5L | Rs 2,750",
       }),
       s("t-prod", "products", { title: "Popular this week" }),
