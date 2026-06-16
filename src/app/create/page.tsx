@@ -376,7 +376,12 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
     case "products":
       return (
         <div className="px-6 pb-6">
-          <p className="mb-3 text-lg font-bold">{p.title || "Products"}</p>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="text-lg font-bold">{p.title || "Products"}</p>
+            <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#555]">
+              Sample photos
+            </span>
+          </div>
           <div className="grid grid-cols-3 gap-3">
             {previewProducts.map((product) => (
               <div
