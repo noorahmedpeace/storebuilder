@@ -189,6 +189,9 @@ model Product {
   status      String           @default("draft")
   seoTitle    String?
   seoDescription String?
+  features    String?
+  specs       String?
+  faq         String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   store       Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)

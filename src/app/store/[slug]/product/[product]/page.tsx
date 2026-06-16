@@ -9,7 +9,7 @@ import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { AddToCart } from "@/components/storefront/add-to-cart";
-import { ProductJsonLd } from "@/components/storefront/json-ld";
+import { ProductJsonLd, FaqJsonLd } from "@/components/storefront/json-ld";
 
 function waLink(whatsapp: string | null, text: string) {
   if (!whatsapp) return null;
@@ -55,6 +55,22 @@ export default async function ProductPage({
     store.whatsapp,
     `Hi ${store.name}, I'd like to order: ${product.title}`,
   );
+
+  const features = (product.features || "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const specs = (product.specs || "")
+    .split("\n")
+    .map((l) => l.split("|").map((x) => x.trim()))
+    .filter((parts) => parts[0]);
+  const faqs = (product.faq || "")
+    .split("\n")
+    .map((l) => {
+      const [q, ...rest] = l.split("|");
+      return { q: q.trim(), a: rest.join("|").trim() };
+    })
+    .filter((f) => f.q);
 
   return (
     <main className="min-h-screen text-[#171717]" style={{ background: theme.bg, fontFamily: font.css }}>
@@ -147,7 +163,57 @@ export default async function ProductPage({
             ) : null}
           </div>
         </div>
+
+        {(features.length > 0 || specs.length > 0 || faqs.length > 0) ? (
+          <div className="mt-12 grid gap-10 lg:grid-cols-2">
+            {features.length > 0 ? (
+              <div>
+                <h2 className="text-xl font-bold">Features</h2>
+                <ul className="mt-4 space-y-2">
+                  {features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-2 text-[#444]">
+                      <span className="mt-1 grid size-5 shrink-0 place-items-center rounded-full text-[11px] text-white" style={{ background: brand }}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {specs.length > 0 ? (
+              <div>
+                <h2 className="text-xl font-bold">Specifications</h2>
+                <table className="mt-4 w-full text-left text-sm">
+                  <tbody>
+                    {specs.map((parts, i) => (
+                      <tr key={i} className="border-b border-black/10">
+                        <th className="py-2.5 pr-4 font-semibold text-[#444]">{parts[0]}</th>
+                        <td className="py-2.5 text-[#555d59]">{parts[1] ?? ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+
+            {faqs.length > 0 ? (
+              <div className="lg:col-span-2">
+                <h2 className="text-xl font-bold">Frequently asked questions</h2>
+                <div className="mt-4 space-y-3">
+                  {faqs.map((f, i) => (
+                    <details key={i} className="rounded-xl border border-black/10 bg-white p-4">
+                      <summary className="cursor-pointer font-bold">{f.q}</summary>
+                      {f.a ? <p className="mt-2 leading-7 text-[#555]">{f.a}</p> : null}
+                    </details>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </section>
+
+      {faqs.length > 0 ? <FaqJsonLd faqs={faqs.map((f) => ({ q: f.q, a: f.a }))} /> : null}
     </main>
   );
 }

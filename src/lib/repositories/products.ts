@@ -33,6 +33,9 @@ export async function createProduct(
     description?: string;
     sku: string;
     price: string | number;
+    features?: string;
+    specs?: string;
+    faq?: string;
   },
 ) {
   const db = getDb();
@@ -43,6 +46,9 @@ export async function createProduct(
       title: input.title,
       slug: input.slug,
       description: input.description ?? "",
+      features: input.features || null,
+      specs: input.specs || null,
+      faq: input.faq || null,
       status: "draft",
       variants: {
         create: {
@@ -93,6 +99,9 @@ export type UpdateProductInput = {
   seoDescription?: string | null;
   price?: string | number;
   sku?: string;
+  features?: string | null;
+  specs?: string | null;
+  faq?: string | null;
 };
 
 /** Updates a product (and optionally its first variant), tenant-scoped.
@@ -117,6 +126,9 @@ export async function updateProduct(
   if (input.status !== undefined) data.status = input.status;
   if (input.seoTitle !== undefined) data.seoTitle = input.seoTitle;
   if (input.seoDescription !== undefined) data.seoDescription = input.seoDescription;
+  if (input.features !== undefined) data.features = input.features;
+  if (input.specs !== undefined) data.specs = input.specs;
+  if (input.faq !== undefined) data.faq = input.faq;
 
   await db.product.update({ where: { id: existing.id }, data });
 

@@ -1,4 +1,5 @@
 import { revalidatePath } from "next/cache";
+import Link from "next/link";
 import { EmptyState, Panel } from "@/components/app-shell";
 import {
   addProductImage,
@@ -21,6 +22,9 @@ async function createProductAction(formData: FormData) {
       sku: String(formData.get("sku") ?? ""),
       price: String(formData.get("price") ?? "0"),
       description: String(formData.get("description") ?? ""),
+      features: String(formData.get("features") ?? "").trim() || undefined,
+      specs: String(formData.get("specs") ?? "").trim() || undefined,
+      faq: String(formData.get("faq") ?? "").trim() || undefined,
     });
 
     const image = formData.get("image");
@@ -85,6 +89,33 @@ export default async function ProductsPage() {
             <textarea
               name="description"
               rows={2}
+              className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 outline-none focus:border-zinc-900"
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm font-semibold text-zinc-600">Features (one per line)</span>
+            <textarea
+              name="features"
+              rows={2}
+              placeholder={"Reusable\nFood-safe\n1-year warranty"}
+              className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 outline-none focus:border-zinc-900"
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm font-semibold text-zinc-600">Specifications (Label | Value per line)</span>
+            <textarea
+              name="specs"
+              rows={2}
+              placeholder={"Weight | 1 kg\nColor | Blue\nMaterial | Silica"}
+              className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 outline-none focus:border-zinc-900"
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm font-semibold text-zinc-600">FAQ (Question | Answer per line)</span>
+            <textarea
+              name="faq"
+              rows={2}
+              placeholder={"Is it reusable? | Yes, just dry it\nDelivery time? | 2-3 days"}
               className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 outline-none focus:border-zinc-900"
             />
           </label>
@@ -154,6 +185,12 @@ export default async function ProductsPage() {
                       </td>
                       <td>
                         <div className="flex justify-end gap-2">
+                          <Link
+                            href={`/dashboard/products/${product.id}/edit`}
+                            className="rounded-lg border border-zinc-300 px-3 py-1 text-xs font-semibold transition hover:border-[#143c3a]"
+                          >
+                            Edit
+                          </Link>
                           <form action={toggleStatusAction}>
                             <input type="hidden" name="id" value={product.id} />
                             <input
