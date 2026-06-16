@@ -35,17 +35,17 @@ const previewProducts = [
   {
     name: "Aura Headphones",
     price: "Rs 8,900",
-    image: "/media/preview-products/headphones.png",
+    image: "/media/preview-products/headphones.png?v=2",
   },
   {
     name: "Luna Handbag",
     price: "Rs 14,500",
-    image: "/media/preview-products/handbag.png",
+    image: "/media/preview-products/handbag.png?v=2",
   },
   {
     name: "Noir Perfume",
     price: "Rs 6,200",
-    image: "/media/preview-products/perfume.png",
+    image: "/media/preview-products/perfume.png?v=2",
   },
 ];
 
@@ -383,10 +383,14 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
                 key={product.name}
                 className={`overflow-hidden border border-black/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${ctx.radius}`}
               >
-                <div
-                  className="aspect-square w-full bg-cover bg-center"
-                  style={{ backgroundImage: `url(${product.image})` }}
-                />
+                <div className="aspect-square w-full overflow-hidden bg-zinc-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                  />
+                </div>
                 <div className="p-2">
                   <p className="truncate text-xs font-bold">{product.name}</p>
                   <p className="text-xs">{product.price}</p>
