@@ -24,11 +24,30 @@ import {
   type Section,
   type SectionType,
 } from "@/lib/sections";
+import { SectionFieldInput } from "@/components/storefront/section-field-input";
 
 const DRAFT_KEY = "storebuilder_draft";
 
 let counter = 0;
 const newId = () => `s-${Date.now()}-${counter++}`;
+
+const previewProducts = [
+  {
+    name: "Aura Headphones",
+    price: "Rs 8,900",
+    image: "/media/preview-products/headphones.png",
+  },
+  {
+    name: "Luna Handbag",
+    price: "Rs 14,500",
+    image: "/media/preview-products/handbag.png",
+  },
+  {
+    name: "Noir Perfume",
+    price: "Rs 6,200",
+    image: "/media/preview-products/perfume.png",
+  },
+];
 
 type Ctx = {
   name: string;
@@ -311,9 +330,12 @@ function SectionsTab({
               {SECTION_FIELDS[s.type] ? (
                 <div className="mt-2 grid gap-2">
                   {SECTION_FIELDS[s.type]!.map((f) => (
-                    <input key={f.key} value={s.props[f.key] ?? ""} onChange={(e) => onSetProp(i, f.key, e.target.value)}
-                      placeholder={f.label}
-                      className="h-9 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm outline-none focus:border-zinc-900" />
+                    <SectionFieldInput
+                      key={f.key}
+                      field={f}
+                      value={s.props[f.key] ?? ""}
+                      onChange={(v) => onSetProp(i, f.key, v)}
+                    />
                   ))}
                 </div>
               ) : null}
@@ -356,10 +378,19 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
         <div className="px-6 pb-6">
           <p className="mb-3 text-lg font-bold">{p.title || "Products"}</p>
           <div className="grid grid-cols-3 gap-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className={`overflow-hidden border border-black/10 bg-white ${ctx.radius}`}>
-                <div className="aspect-square w-full" style={{ background: `linear-gradient(135deg, ${ctx.brand}, ${ctx.accent})` }} />
-                <div className="p-2"><p className="text-xs font-bold">Product {i}</p><p className="text-xs">Rs {(i * 1500).toLocaleString()}</p></div>
+            {previewProducts.map((product) => (
+              <div
+                key={product.name}
+                className={`overflow-hidden border border-black/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${ctx.radius}`}
+              >
+                <div
+                  className="aspect-square w-full bg-cover bg-center"
+                  style={{ backgroundImage: `url(${product.image})` }}
+                />
+                <div className="p-2">
+                  <p className="truncate text-xs font-bold">{product.name}</p>
+                  <p className="text-xs">{product.price}</p>
+                </div>
               </div>
             ))}
           </div>
