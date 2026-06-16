@@ -1,9 +1,12 @@
 /**
  * Starter templates: ready-made full-store presets. Picking one seeds the
  * store's branding (theme/colors/font) AND a complete, pre-filled section
- * layout with sample copy — so a merchant gets a finished-looking homepage in
- * one click, then tweaks. This is the layer above THEMES (which only seed
- * colors). Used by the /create builder's "Templates" tab.
+ * layout with real sample photos + copy — so a merchant gets a finished-looking
+ * homepage in one click, then swaps in their own pictures/text. This is the
+ * layer above THEMES (which only seed colors). Used by the /create "Templates" tab.
+ *
+ * Photos are Unsplash CDN images (free to hot-link) used as tasteful demo
+ * content; merchants replace them with their own from the live preview.
  */
 import type { FontKey } from "@/lib/fonts";
 import type { Section } from "@/lib/sections";
@@ -29,6 +32,35 @@ const s = (
   props: Record<string, string> = {},
 ): Section => ({ id, type, visible: true, props });
 
+/** Build a sized Unsplash CDN url for a verified photo id. */
+const img = (id: string, w = 1000) =>
+  `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`;
+
+// Curated, verified photo ids (all return 200).
+const PIC = {
+  // food / restaurant
+  foodFlatlay: "photo-1504674900247-0877df9cc836",
+  pizza: "photo-1565299624946-b28f40a0ae38",
+  burger1: "photo-1571091718767-18b5b1457add",
+  pizza2: "photo-1513104890138-7c749659a591",
+  burger2: "photo-1550547660-d9450f859349",
+  burger3: "photo-1568901346375-23c9450c58cd",
+  breakfast: "photo-1567620905732-2d1ec7ab7445",
+  burger4: "photo-1551782450-a2132b4ba21d",
+  restaurant: "photo-1414235077428-338989a2e8c0",
+  // phones / electronics
+  phones: "photo-1610440042657-612c34d95e9f",
+  phoneHand: "photo-1511707171634-5f897ff02aa9",
+  smartphone: "photo-1592899677977-9c10ca588bbd",
+  retail: "photo-1441986300917-64674bd600d8",
+  // fashion
+  shoe: "photo-1542291026-7eec264c27ff",
+  shopping: "photo-1483985988355-763728e1935b",
+  clothingRack: "photo-1445205170230-053b83016050",
+  // grocery
+  veggies: "photo-1542838132-92c53300491e",
+};
+
 export const STARTER_TEMPLATES: StarterTemplate[] = [
   {
     key: "mobile-shop",
@@ -47,12 +79,18 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
         text: "📱 Free delivery all over Pakistan · Cash on Delivery available",
       }),
       s("t-slide", "slider", {
+        image1: img(PIC.phones, 1400),
+        image2: img(PIC.phoneHand, 1400),
+        image3: img(PIC.smartphone, 1400),
         caption: "New arrivals every week",
       }),
       s("t-deals", "deals", {
         title: "🔥 Today's Best Deals",
+        d1img: img(PIC.smartphone, 700),
         d1: "Smartphone Pro Max | Rs 249,900",
+        d2img: img(PIC.phoneHand, 700),
         d2: "Wireless Earbuds | Rs 4,500",
+        d3img: img(PIC.phones, 700),
         d3: "Fast Charger 65W | Rs 2,900",
       }),
       s("t-feat", "features", {
@@ -69,6 +107,7 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
         n4: "24/7 | Support",
       }),
       s("t-it", "imageText", {
+        image: img(PIC.retail, 900),
         heading: "Pakistan's trusted mobile store",
         body: "We stock only 100% original, PTA-approved devices with full warranty. Order online and pay cash when it reaches your door.",
         side: "left",
@@ -109,11 +148,19 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
       s("t-ann", "announcement", {
         text: "🍔 Free delivery on orders above Rs 1500",
       }),
-      s("t-slide", "slider", { caption: "Today's specials" }),
+      s("t-slide", "slider", {
+        image1: img(PIC.foodFlatlay, 1400),
+        image2: img(PIC.pizza, 1400),
+        image3: img(PIC.burger2, 1400),
+        caption: "Today's specials",
+      }),
       s("t-deals", "deals", {
         title: "🔥 Hot Combos",
+        d1img: img(PIC.burger1, 700),
         d1: "Zinger Combo | Rs 650",
+        d2img: img(PIC.burger3, 700),
         d2: "Family Deal | Rs 1,800",
+        d3img: img(PIC.pizza2, 700),
         d3: "Pizza + Drink | Rs 1,200",
       }),
       s("t-menu", "menuList", {
@@ -122,11 +169,20 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
           "Zinger Burger | 650 | Crispy chicken fillet with fresh mayo\nLoaded Fries | 450 | Cheese & jalapeño\nFamily Bucket | 1800 | 8pc chicken + sides\nChocolate Shake | 350 | Thick & creamy",
       }),
       s("t-story", "imageText", {
+        image: img(PIC.burger4, 900),
         heading: "Freshly cooked, every single time",
         body: "We never pre-cook. Your order is fried fresh when you place it — crispy outside, juicy inside. That's our promise.",
         side: "left",
       }),
-      s("t-gallery", "gallery", { title: "Straight from our kitchen" }),
+      s("t-gallery", "gallery", {
+        title: "Straight from our kitchen",
+        g1: img(PIC.foodFlatlay, 600),
+        g2: img(PIC.pizza, 600),
+        g3: img(PIC.burger1, 600),
+        g4: img(PIC.pizza2, 600),
+        g5: img(PIC.breakfast, 600),
+        g6: img(PIC.restaurant, 600),
+      }),
       s("t-steps", "steps", {
         title: "How to order",
         s1: "Pick your meal",
@@ -151,6 +207,7 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
         r3: "Maryam — Generous portions.",
       }),
       s("t-cta", "cta", {
+        bgImage: img(PIC.burger2, 1400),
         heading: "Hungry? Order now and get it hot",
         subheading: "Free delivery on orders above Rs 1500",
         buttonText: "Order now",
@@ -177,14 +234,28 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
     tagline: "Wear the season",
     layout: [
       s("t-ann", "announcement", { text: "✨ New season collection is live" }),
-      s("t-slide", "slider", { caption: "Spring / Summer lookbook" }),
+      s("t-slide", "slider", {
+        image1: img(PIC.shopping, 1400),
+        image2: img(PIC.clothingRack, 1400),
+        image3: img(PIC.shoe, 1400),
+        caption: "Spring / Summer lookbook",
+      }),
       s("t-it", "imageText", {
+        image: img(PIC.clothingRack, 900),
         heading: "Designed for everyday confidence",
         body: "Premium fabrics, modern cuts, and timeless colours — made to be worn again and again.",
         side: "right",
       }),
       s("t-prod", "products", { title: "New Arrivals" }),
-      s("t-gallery", "gallery", { title: "The Lookbook" }),
+      s("t-gallery", "gallery", {
+        title: "The Lookbook",
+        g1: img(PIC.shopping, 600),
+        g2: img(PIC.clothingRack, 600),
+        g3: img(PIC.shoe, 600),
+        g4: img(PIC.shopping, 600),
+        g5: img(PIC.clothingRack, 600),
+        g6: img(PIC.shoe, 600),
+      }),
       s("t-feat", "features", {
         title: "The promise",
         items: "Premium Fabric, Free Returns, Cash on Delivery, Nationwide Shipping",
@@ -221,9 +292,12 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
       s("t-banner", "banner", { text: "Mega Monthly Savings — up to 30% off" }),
       s("t-deals", "deals", {
         title: "🔥 Daily Deals",
-        d1: "Cooking Oil 5L | Rs 2,750",
+        d1img: img(PIC.veggies, 700),
+        d1: "Fresh Vegetables | from Rs 99",
+        d2img: img(PIC.veggies, 700),
         d2: "Basmati Rice 5kg | Rs 1,950",
-        d3: "Tea Pack 950g | Rs 1,450",
+        d3img: img(PIC.veggies, 700),
+        d3: "Cooking Oil 5L | Rs 2,750",
       }),
       s("t-prod", "products", { title: "Popular this week" }),
       s("t-steps", "steps", {
