@@ -190,21 +190,20 @@ function SectionView({
       );
     }
 
-    case "products":
+    case "products": {
+      // Builder-added product cards (image + "Name | Price"), shown until the
+      // merchant adds real catalog products in the dashboard.
+      const manual = Array.from({ length: 24 }, (_, k) => ({
+        img: p[`pr${k + 1}img`],
+        text: p[`pr${k + 1}`],
+      })).filter((d) => d.text || d.img);
+      const orderLink = waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`);
       return (
         <section className="mx-auto max-w-7xl px-5 pb-16 lg:px-8">
           <h2 className={`mb-7 text-3xl font-bold ${head} ${upper}`}>
             {p.title || "Products"}
           </h2>
-          {store.products.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-black/15 bg-white/60 p-12 text-center">
-              <ShoppingBag className="mx-auto" style={{ color: brand }} />
-              <p className="mt-3 font-bold">Coming soon</p>
-              <p className="mt-1 text-sm text-[#68716d]">
-                This store hasn&apos;t published any products yet.
-              </p>
-            </div>
-          ) : (
+          {store.products.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {store.products.map((product) => (
                 <ProductCard
@@ -217,9 +216,47 @@ function SectionView({
                 />
               ))}
             </div>
+          ) : manual.length > 0 ? (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {manual.map((d, idx) => {
+                const [pname, pprice] = (d.text || "").split("|").map((x) => x.trim());
+                return (
+                  <article key={idx} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${theme.radius}`}>
+                    <div
+                      className="aspect-square w-full"
+                      style={{ background: d.img ? `center/cover no-repeat url(${d.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
+                    />
+                    <div className="p-4">
+                      <p className="font-bold">{pname || "Product"}</p>
+                      <div className="mt-1 flex items-center justify-between gap-2">
+                        {pprice ? (
+                          <span className="font-mono font-bold" style={{ color: brand }}>
+                            {store.currency} {pprice}
+                          </span>
+                        ) : <span />}
+                        {orderLink ? (
+                          <a href={orderLink} className="rounded-lg px-3 py-1 text-xs font-bold text-white" style={{ background: brand }}>
+                            Order
+                          </a>
+                        ) : null}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-black/15 bg-white/60 p-12 text-center">
+              <ShoppingBag className="mx-auto" style={{ color: brand }} />
+              <p className="mt-3 font-bold">Coming soon</p>
+              <p className="mt-1 text-sm text-[#68716d]">
+                This store hasn&apos;t published any products yet.
+              </p>
+            </div>
           )}
         </section>
       );
+    }
 
     case "richText":
       if (!p.heading && !p.body) return null;

@@ -804,29 +804,50 @@ function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?:
           <p className="mt-2 text-sm text-[#555]">{T("subheading", p.subheading || "", "Add a subheading", true)}</p>
         </div>
       );
-    case "products":
+    case "products": {
+      const count = listCount(0, (i) => !!(p[`pr${i}`] || p[`pr${i}img`]));
+      const showSamples = count === 0;
       return (
         <div className="px-6 pb-6">
           <div className="mb-3 flex items-center justify-between gap-3">
             <p className="text-lg font-bold">{T("title", p.title || "", "Products")}</p>
-            <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#555]">Sample photos</span>
+            {showSamples ? (
+              <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#555]">Sample — add yours</span>
+            ) : null}
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {previewProducts.map((product) => (
-              <div key={product.name} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`}>
-                <div className="aspect-square w-full overflow-hidden bg-zinc-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-                </div>
-                <div className="p-2">
-                  <p className="truncate text-xs font-bold">{product.name}</p>
-                  <p className="text-xs">{product.price}</p>
-                </div>
-              </div>
-            ))}
+            {showSamples
+              ? previewProducts.map((product) => (
+                  <div key={product.name} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`}>
+                    <div className="aspect-square w-full overflow-hidden bg-zinc-100">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+                    </div>
+                    <div className="p-2">
+                      <p className="truncate text-xs font-bold">{product.name}</p>
+                      <p className="text-xs">{product.price}</p>
+                    </div>
+                  </div>
+                ))
+              : Array.from({ length: count }, (_, k) => k + 1).map((i) => {
+                  const raw = p[`pr${i}`] || "";
+                  const name = (raw.split("|")[0] || "").trim();
+                  const price = (raw.split("|")[1] || "").trim();
+                  return (
+                    <div key={i} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`}>
+                      <MediaBox src={p[`pr${i}img`] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square" onPick={ed ? () => ed.pick(`pr${i}img`) : undefined} />
+                      <div className="p-2">
+                        <p className="truncate text-xs font-bold">{ed ? <EditableText value={name} placeholder="Product name" onSave={(v) => setPart(`pr${i}`, raw, 0, v)} /> : name}</p>
+                        <p className="text-xs">{ed ? <EditableText value={price} placeholder="Price" onSave={(v) => setPart(`pr${i}`, raw, 1, v)} /> : price}</p>
+                      </div>
+                    </div>
+                  );
+                })}
           </div>
+          {ed ? <AddBtn onClick={() => addItem(count)} label="+ Add product" /> : null}
         </div>
       );
+    }
     case "richText":
       return (
         <div className="px-6 py-8 text-center">
