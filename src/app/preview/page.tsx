@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Monitor, Smartphone } from "lucide-react";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
@@ -26,6 +26,7 @@ type Draft = {
 export default function PreviewPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [device, setDevice] = useState<"phone" | "desktop" | null>(null);
 
   useEffect(() => {
     let d: Draft | null = null;
@@ -68,14 +69,89 @@ export default function PreviewPage() {
     return <main className="grid min-h-screen place-items-center bg-zinc-50 text-zinc-400">Loading preview…</main>;
   }
 
+  // Ask once: phone or desktop?
+  if (!device) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-zinc-100 px-5 text-zinc-900">
+        <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+          <h1 className="text-2xl font-bold">Preview {name}</h1>
+          <p className="mt-1 text-sm text-zinc-500">How do you want to see your store?</p>
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setDevice("phone")}
+              className="flex flex-col items-center gap-2 rounded-xl border border-zinc-200 px-4 py-6 font-semibold transition hover:border-[#143c3a] hover:bg-[#143c3a]/5"
+            >
+              <Smartphone size={28} className="text-[#143c3a]" /> Phone
+            </button>
+            <button
+              onClick={() => setDevice("desktop")}
+              className="flex flex-col items-center gap-2 rounded-xl border border-zinc-200 px-4 py-6 font-semibold transition hover:border-[#143c3a] hover:bg-[#143c3a]/5"
+            >
+              <Monitor size={28} className="text-[#143c3a]" /> Desktop
+            </button>
+          </div>
+          <Link href="/create" className="mt-5 inline-block text-sm font-semibold text-zinc-500 hover:underline">
+            ← Back to editor
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  const isPhone = device === "phone";
+
+  const storeContent = (
+    <div style={{ background: theme.bg, fontFamily: font.css }}>
+      <div className="flex items-center justify-between border-b border-black/10 bg-white px-5 py-4">
+        <div className="flex items-center gap-2">
+          {draft?.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={draft.logoUrl} alt="logo" className="size-9 rounded-lg object-cover" />
+          ) : (
+            <span className="grid size-9 place-items-center rounded-lg text-sm font-bold text-white" style={{ background: brand }}>
+              {logoText}
+            </span>
+          )}
+          <span className="text-lg font-bold">{name}</span>
+        </div>
+        <span className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: brand }}>
+          Cart
+        </span>
+      </div>
+      {sections
+        .filter((s) => s.visible)
+        .map((s) => (
+          <PreviewSection key={s.id} section={s} ctx={ctx} />
+        ))}
+      <div className="px-6 py-8 text-center text-xs text-[#8a8a8a]">
+        © {name} · Powered by StoreBuilder
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-zinc-100">
       {/* preview toolbar */}
-      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-black/10 bg-white/90 px-4 py-2 backdrop-blur">
+      <div className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-black/10 bg-white/90 px-4 py-2 backdrop-blur">
         <Link href="/create" className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-600 hover:text-zinc-900">
-          <ArrowLeft size={15} /> Back to editor
+          <ArrowLeft size={15} /> <span className="hidden sm:inline">Back to editor</span>
         </Link>
-        <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Preview</span>
+
+        <div className="flex rounded-lg border border-zinc-200 bg-white p-0.5">
+          <button
+            onClick={() => setDevice("phone")}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold transition ${isPhone ? "bg-[#143c3a] text-white" : "text-zinc-600"}`}
+          >
+            <Smartphone size={14} /> Phone
+          </button>
+          <button
+            onClick={() => setDevice("desktop")}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold transition ${!isPhone ? "bg-[#143c3a] text-white" : "text-zinc-600"}`}
+          >
+            <Monitor size={14} /> Desktop
+          </button>
+        </div>
+
         <Link
           href="/signup"
           className="inline-flex items-center gap-1.5 rounded-lg bg-[#143c3a] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0f2c2a]"
@@ -84,35 +160,16 @@ export default function PreviewPage() {
         </Link>
       </div>
 
-      {/* the store, full width */}
-      <div className="mx-auto max-w-3xl shadow-xl">
-        <div style={{ background: theme.bg, fontFamily: font.css }}>
-          <div className="flex items-center justify-between border-b border-black/10 bg-white px-5 py-4">
-            <div className="flex items-center gap-2">
-              {draft?.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={draft.logoUrl} alt="logo" className="size-9 rounded-lg object-cover" />
-              ) : (
-                <span className="grid size-9 place-items-center rounded-lg text-sm font-bold text-white" style={{ background: brand }}>
-                  {logoText}
-                </span>
-              )}
-              <span className="text-lg font-bold">{name}</span>
-            </div>
-            <span className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: brand }}>
-              Cart
-            </span>
-          </div>
-          {sections
-            .filter((s) => s.visible)
-            .map((s) => (
-              <PreviewSection key={s.id} section={s} ctx={ctx} />
-            ))}
-          <div className="px-6 py-8 text-center text-xs text-[#8a8a8a]">
-            © {name} · Powered by StoreBuilder
-          </div>
+      {/* device frame */}
+      {isPhone ? (
+        <div className="mx-auto my-6 w-[390px] max-w-[94vw] overflow-hidden rounded-[2.4rem] border-[10px] border-zinc-900 shadow-2xl">
+          {storeContent}
         </div>
-      </div>
+      ) : (
+        <div className="mx-auto my-6 max-w-6xl overflow-hidden rounded-xl border border-zinc-200 shadow-xl">
+          {storeContent}
+        </div>
+      )}
     </div>
   );
 }
