@@ -172,7 +172,7 @@ export default function CreatePage() {
 
       <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
         {/* Controls */}
-        <div className="space-y-5">
+        <div className="space-y-4">
           <div>
             <h1 className="text-2xl font-bold">Build your store</h1>
             <p className="mt-1 text-sm text-zinc-500">Design the look and lay out your page. Live preview on the right.</p>
@@ -265,7 +265,7 @@ function DesignTab(p: {
 }) {
   return (
     <>
-      <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5">
+      <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4">
         <TextField label="Store name" value={p.storeName} onChange={p.setStoreName} placeholder="Ali Electronics" />
         <TextField label="Business type" value={p.businessType} onChange={p.setBusinessType} placeholder="Electronics, Grocery, Perfume..." />
         <TextField label="Tagline" value={p.tagline} onChange={p.setTagline} placeholder="Best deals in town" />
@@ -283,7 +283,7 @@ function DesignTab(p: {
         </div>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white p-5">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
         <p className="mb-3 text-sm font-semibold text-zinc-700">Theme</p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {THEMES.map((t) => (
@@ -296,13 +296,13 @@ function DesignTab(p: {
             </button>
           ))}
         </div>
-        <div className="mt-4 flex flex-wrap gap-5">
+        <div className="mt-3 flex flex-wrap gap-4">
           <ColorField label="Brand color" value={p.brandColor} onChange={p.setBrandColor} />
           <ColorField label="Accent color" value={p.accentColor} onChange={p.setAccentColor} />
         </div>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white p-5">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
         <p className="mb-3 text-sm font-semibold text-zinc-700">Font</p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {FONTS.map((f) => (
@@ -332,21 +332,21 @@ function SectionsTab({
   onSetProp: (i: number, key: string, value: string) => void;
 }) {
   return (
-    <div className="space-y-4">
-      <div className="rounded-xl border border-zinc-200 bg-white p-4">
-        <p className="mb-3 text-sm font-semibold text-zinc-700">Your page sections</p>
-        <div className="space-y-2">
+    <div className="space-y-3">
+      <div className="rounded-xl border border-zinc-200 bg-white p-3">
+        <p className="mb-2 text-sm font-semibold text-zinc-700">Your page sections</p>
+        <div className="space-y-1.5">
           {sections.map((s, i) => (
-            <div key={s.id} className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
-              <div className="flex items-center gap-2">
-                <span className="flex-1 text-sm font-bold">{SECTION_LABELS[s.type]}</span>
-                <button onClick={() => onMove(i, -1)} className="grid size-7 place-items-center rounded border border-zinc-200 bg-white" title="Up"><ChevronUp size={14} /></button>
-                <button onClick={() => onMove(i, 1)} className="grid size-7 place-items-center rounded border border-zinc-200 bg-white" title="Down"><ChevronDown size={14} /></button>
-                <button onClick={() => onToggle(i)} className="grid size-7 place-items-center rounded border border-zinc-200 bg-white" title={s.visible ? "Hide" : "Show"}>{s.visible ? <Eye size={14} /> : <EyeOff size={14} />}</button>
-                <button onClick={() => onRemove(i)} className="grid size-7 place-items-center rounded border border-[#a23b3b]/40 text-[#a23b3b]" title="Remove"><Trash2 size={14} /></button>
+            <div key={s.id} className="rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-2">
+              <div className="flex items-center gap-1">
+                <span className="min-w-0 flex-1 truncate text-sm font-bold">{SECTION_LABELS[s.type]}</span>
+                <button onClick={() => onMove(i, -1)} className="grid size-7 shrink-0 place-items-center rounded border border-zinc-200 bg-white" title="Up"><ChevronUp size={14} /></button>
+                <button onClick={() => onMove(i, 1)} className="grid size-7 shrink-0 place-items-center rounded border border-zinc-200 bg-white" title="Down"><ChevronDown size={14} /></button>
+                <button onClick={() => onToggle(i)} className="grid size-7 shrink-0 place-items-center rounded border border-zinc-200 bg-white" title={s.visible ? "Hide" : "Show"}>{s.visible ? <Eye size={14} /> : <EyeOff size={14} />}</button>
+                <button onClick={() => onRemove(i)} className="grid size-7 shrink-0 place-items-center rounded border border-[#a23b3b]/40 text-[#a23b3b]" title="Remove"><Trash2 size={14} /></button>
               </div>
               {SECTION_FIELDS[s.type] ? (
-                <div className="mt-2 grid gap-2">
+                <div className="mt-2 grid gap-1.5">
                   {SECTION_FIELDS[s.type]!.map((f) => (
                     <SectionFieldInput
                       key={f.key}
@@ -362,13 +362,14 @@ function SectionsTab({
         </div>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white p-4">
-        <p className="mb-3 text-sm font-semibold text-zinc-700">Add a section</p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="rounded-xl border border-zinc-200 bg-white p-3">
+        <p className="mb-2 text-sm font-semibold text-zinc-700">Add a section</p>
+        <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {ADDABLE_SECTIONS.map((t) => (
             <button key={t} onClick={() => onAdd(t)}
-              className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-left text-sm font-semibold transition hover:border-[#143c3a]">
-              <Plus size={14} /> {SECTION_LABELS[t]}
+              className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-left text-xs font-semibold transition hover:border-[#143c3a]">
+              <Plus size={13} className="shrink-0" />
+              <span className="min-w-0 truncate">{SECTION_LABELS[t]}</span>
             </button>
           ))}
         </div>
@@ -386,7 +387,7 @@ function TemplatesTab({
   onPick: (t: StarterTemplate) => void;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5">
+    <div className="rounded-xl border border-zinc-200 bg-white p-4">
       <p className="text-sm font-semibold text-zinc-700">Start from a template</p>
       <p className="mt-1 text-xs text-zinc-500">
         Pick a ready-made store — colours, fonts and a full homepage are filled in.
