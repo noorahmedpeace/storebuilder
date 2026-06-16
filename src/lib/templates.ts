@@ -121,16 +121,39 @@ export const STARTER_TEMPLATES: StarterTemplate[] = [
         items:
           "Zinger Burger | 650 | Crispy chicken fillet with fresh mayo\nLoaded Fries | 450 | Cheese & jalapeño\nFamily Bucket | 1800 | 8pc chicken + sides\nChocolate Shake | 350 | Thick & creamy",
       }),
+      s("t-story", "imageText", {
+        heading: "Freshly cooked, every single time",
+        body: "We never pre-cook. Your order is fried fresh when you place it — crispy outside, juicy inside. That's our promise.",
+        side: "left",
+      }),
       s("t-gallery", "gallery", { title: "Straight from our kitchen" }),
+      s("t-steps", "steps", {
+        title: "How to order",
+        s1: "Pick your meal",
+        s2: "Place the order",
+        s3: "Hot delivery to your door",
+      }),
       s("t-feat", "features", {
         title: "Why order from us",
         items: "Hot & Fresh, Fast Delivery, Cash on Delivery, Hygienic Kitchen",
+      }),
+      s("t-stats", "stats", {
+        title: "Trusted by food lovers",
+        n1: "200,000+ | Orders served",
+        n2: "30 min | Average delivery",
+        n3: "4.8 | Customer rating",
+        n4: "12 | Branches",
       }),
       s("t-rev", "reviews", {
         title: "Loved by foodies",
         r1: "Hira — Best zinger in town!",
         r2: "Usman — Always hot and on time.",
         r3: "Maryam — Generous portions.",
+      }),
+      s("t-cta", "cta", {
+        heading: "Hungry? Order now and get it hot",
+        subheading: "Free delivery on orders above Rs 1500",
+        buttonText: "Order now",
       }),
       s("t-contact", "contactBar", {
         phone: "021-111-222-333",

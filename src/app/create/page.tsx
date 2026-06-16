@@ -515,9 +515,13 @@ function SliderPreview({
   if (!imgs.length) {
     return (
       <div
-        className="aspect-[3/1] w-full"
+        className="grid aspect-[3/1] w-full place-items-center"
         style={{ background: `linear-gradient(135deg, ${brand}, ${accent})` }}
-      />
+      >
+        <span className="rounded-full bg-black/35 px-3 py-1 text-xs font-bold text-white">
+          📷 Add slideshow photos
+        </span>
+      </div>
     );
   }
 
@@ -547,6 +551,38 @@ function SliderPreview({
           ))}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+/** An image area in the builder preview: shows the photo, or a clear
+ *  "add a photo here" placeholder slot when empty. */
+function MediaBox({
+  src,
+  brand,
+  accent,
+  className = "",
+  label = "📷 Photo",
+}: {
+  src?: string;
+  brand: string;
+  accent: string;
+  className?: string;
+  label?: string;
+}) {
+  if (src) {
+    return (
+      <div className={className} style={{ background: `center/cover no-repeat url(${src})` }} />
+    );
+  }
+  return (
+    <div
+      className={`grid place-items-center ${className}`}
+      style={{ background: `linear-gradient(135deg, ${brand}, ${accent})` }}
+    >
+      <span className="rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold text-white">
+        {label}
+      </span>
     </div>
   );
 }
@@ -646,9 +682,10 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
       return <div className="px-6 py-6 text-center"><span className="inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white" style={{ background: ctx.brand }}>{p.text || "Order on WhatsApp"}</span></div>;
     case "imageBanner":
       return (
-        <div className="flex min-h-32 items-center justify-center px-6 py-8 text-center text-white"
+        <div className="relative flex min-h-32 items-center justify-center px-6 py-8 text-center text-white"
           style={{ background: p.imageUrl ? `linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)), center/cover url(${p.imageUrl})` : `linear-gradient(135deg, ${ctx.brand}, ${ctx.accent})` }}>
           <p className="text-xl font-bold">{p.heading || "Banner heading"}</p>
+          {!p.imageUrl ? <span className="absolute right-2 top-2 rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold">📷 Add background photo</span> : null}
         </div>
       );
     case "countdown":
@@ -662,11 +699,11 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
       return <SliderPreview imgs={imgs} brand={ctx.brand} accent={ctx.accent} caption={p.caption} />;
     }
     case "gallery": {
-      const imgs = ["g1","g2","g3","g4","g5","g6"].map((k) => p[k]).filter(Boolean);
-      return <div className="px-6 py-6"><div className="grid grid-cols-3 gap-2">{(imgs.length ? imgs : [0,1,2,3,4,5]).slice(0,6).map((src,i) => <div key={i} className="aspect-square rounded" style={{ background: typeof src === "string" ? `center/cover url(${src})` : `linear-gradient(135deg, ${ctx.brand}, ${ctx.accent})` }} />)}</div></div>;
+      const imgs = ["g1","g2","g3","g4","g5","g6"].map((k) => p[k]);
+      return <div className="px-6 py-6">{p.title ? <p className="mb-2 font-bold">{p.title}</p> : null}<div className="grid grid-cols-3 gap-2">{imgs.map((src,i) => <MediaBox key={i} src={src || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square rounded" />)}</div></div>;
     }
     case "deals":
-      return <div className="px-6 py-6"><p className="mb-2 font-bold">{p.title || "Deals"}</p><div className="grid grid-cols-3 gap-2">{[p.d1img,p.d2img,p.d3img].map((src,i) => <div key={i} className="overflow-hidden rounded border border-black/10 bg-white"><div className="aspect-[4/3]" style={{ background: src ? `center/cover url(${src})` : `linear-gradient(135deg,${ctx.brand},${ctx.accent})` }} /><div className="p-1.5 text-[10px] font-bold">{([p.d1,p.d2,p.d3][i]||"Deal").split("|")[0]}</div></div>)}</div></div>;
+      return <div className="px-6 py-6"><p className="mb-2 font-bold">{p.title || "Deals"}</p><div className="grid grid-cols-3 gap-2">{[p.d1img,p.d2img,p.d3img].map((src,i) => <div key={i} className="overflow-hidden rounded border border-black/10 bg-white"><MediaBox src={src || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-[4/3]" /><div className="p-1.5 text-[10px] font-bold">{([p.d1,p.d2,p.d3][i]||"Deal").split("|")[0]}</div></div>)}</div></div>;
     case "menuList": {
       const rows = (p.items || "Zinger Burger | 650\nFamily Deal | 1800").split("\n").filter(Boolean).slice(0,4);
       return <div className="px-6 py-6"><p className="mb-2 font-bold">{p.title || "Menu"}</p>{rows.map((l,i) => { const a=l.split("|"); return <div key={i} className="flex justify-between border-b border-black/10 py-1.5 text-sm"><span className="font-semibold">{a[0]?.trim()}</span><span className="font-mono font-bold" style={{ color: ctx.brand }}>{a[1]?.trim()}</span></div>; })}</div>;
@@ -681,10 +718,10 @@ function PreviewSection({ section, ctx }: { section: Section; ctx: Ctx }) {
     }
     case "imageText": {
       const right = (p.side||"").toLowerCase()==="right";
-      return <div className="px-6 py-6"><div className={`grid grid-cols-2 items-center gap-3 ${right?"[&>*:first-child]:order-2":""}`}><div className="aspect-[4/3] rounded" style={{ background: p.image ? `center/cover url(${p.image})` : `linear-gradient(135deg,${ctx.brand},${ctx.accent})` }} /><div><p className="font-bold">{p.heading||"Heading"}</p><p className="mt-1 text-xs text-[#555]">{p.body||"Description text"}</p></div></div></div>;
+      return <div className="px-6 py-6"><div className={`grid grid-cols-2 items-center gap-3 ${right?"[&>*:first-child]:order-2":""}`}><MediaBox src={p.image || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-[4/3] rounded" /><div><p className="font-bold">{p.heading||"Heading"}</p><p className="mt-1 text-xs text-[#555]">{p.body||"Description text"}</p></div></div></div>;
     }
     case "cta":
-      return <div className="px-6 py-8 text-center text-white" style={{ background: p.bgImage ? `linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),center/cover url(${p.bgImage})` : ctx.brand }}><p className="text-xl font-bold">{p.heading||"Call to action"}</p><span className="mt-2 inline-block rounded bg-white px-3 py-1.5 text-xs font-bold" style={{ color: ctx.brand }}>{p.buttonText||"Shop now"}</span></div>;
+      return <div className="relative px-6 py-8 text-center text-white" style={{ background: p.bgImage ? `linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),center/cover url(${p.bgImage})` : ctx.brand }}><p className="text-xl font-bold">{p.heading||"Call to action"}</p><span className="mt-2 inline-block rounded bg-white px-3 py-1.5 text-xs font-bold" style={{ color: ctx.brand }}>{p.buttonText||"Shop now"}</span>{!p.bgImage ? <span className="absolute right-2 top-2 rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold">📷 Add background photo</span> : null}</div>;
     case "contactBar":
       return <div className="px-6 py-2.5 text-center text-xs font-semibold text-white" style={{ background: ctx.brand }}>{[p.phone&&`📞 ${p.phone}`, p.address&&`📍 ${p.address}`].filter(Boolean).join("   ") || "📞 021-111-666-111   📍 Your address"}</div>;
     default:
