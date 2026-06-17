@@ -125,7 +125,7 @@ export default function Home() {
               SEO-first online store builder
             </div>
             <h1
-              className="kinetic-heading font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
+              className="kinetic-heading hero-neon-title font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
               style={{ "--delay": "90ms" } as CSSProperties}
             >
               <AnimatedHeadline text="StoreBuilder Cloud" />
