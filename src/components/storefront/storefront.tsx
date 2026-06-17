@@ -250,29 +250,33 @@ function SectionView({
           </h2>
           {store.products.length > 0 ? (
             visibleProducts.length > 0 ? (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="flex flex-wrap justify-center gap-5">
                 {visibleProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    store={store}
-                    theme={theme}
-                    brand={brand}
-                    accent={accent}
-                  />
+                  <div key={product.id} className="w-full max-w-xs sm:w-60">
+                    <ProductCard
+                      product={product}
+                      store={store}
+                      theme={theme}
+                      brand={brand}
+                      accent={accent}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
-              <p className="rounded-xl border border-dashed border-black/15 bg-white/60 p-8 text-center text-[#68716d]">
-                No products match “{query}”.
-              </p>
+              <div className="rounded-xl border border-dashed border-black/15 bg-white/60 p-8 text-center text-[#68716d]">
+                <p>No products in “{query}” yet.</p>
+                <a href={`/store/${store.slug}`} className="mt-2 inline-block font-semibold underline" style={{ color: brand }}>
+                  View all products
+                </a>
+              </div>
             )
           ) : manual.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="flex flex-wrap justify-center gap-5">
               {manual.map((d, idx) => {
                 const [pname, pprice] = (d.text || "").split("|").map((x) => x.trim());
                 return (
-                  <article key={idx} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${theme.radius}`}>
+                  <article key={idx} className={`w-full max-w-xs overflow-hidden border border-black/10 bg-white shadow-sm sm:w-60 ${theme.radius}`}>
                     <div
                       className="aspect-square w-full"
                       style={{ background: d.img ? `center/cover no-repeat url(${d.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
@@ -360,11 +364,11 @@ function SectionView({
           {p.title ? (
             <h2 className={`mb-6 text-2xl font-bold ${upper}`}>{p.title}</h2>
           ) : null}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap justify-center gap-4">
             {items.map((item) => (
               <div
                 key={item}
-                className="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-4"
+                className="flex w-full items-center gap-3 rounded-xl border border-black/10 bg-white p-4 sm:w-64"
               >
                 <span
                   className="grid size-9 shrink-0 place-items-center rounded-lg text-white"
@@ -396,9 +400,9 @@ function SectionView({
           <h2 className={`mb-6 text-3xl font-bold ${upper}`}>
             {p.title || "What customers say"}
           </h2>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="flex flex-wrap justify-center gap-4">
             {reviews.map((r, i) => (
-              <div key={i} className="rounded-xl border border-black/10 bg-white p-5">
+              <div key={i} className="w-full rounded-xl border border-black/10 bg-white p-5 sm:w-80">
                 <div className="flex gap-0.5" style={{ color: accent }}>
                   {[0, 1, 2, 3, 4].map((s) => (
                     <Star key={s} size={14} fill="currentColor" />
@@ -538,11 +542,11 @@ function SectionView({
       return (
         <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
           <h2 className={`mb-6 text-3xl font-bold ${upper}`}>{p.title || "Deals"}</h2>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap justify-center gap-5">
             {deals.map((d, idx) => {
               const [dname, dprice] = (d.text || "").split("|").map((x) => x.trim());
               return (
-                <article key={idx} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${theme.radius}`}>
+                <article key={idx} className={`w-full max-w-sm overflow-hidden border border-black/10 bg-white shadow-sm sm:w-80 ${theme.radius}`}>
                   <div
                     className="aspect-[4/3] w-full"
                     style={{ background: d.img ? `center/cover no-repeat url(${d.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
@@ -597,9 +601,9 @@ function SectionView({
       return (
         <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
           <h2 className={`mb-6 text-3xl font-bold ${upper}`}>{p.title || "How it works"}</h2>
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="flex flex-wrap justify-center gap-5">
             {steps.map((s, idx) => (
-              <div key={idx} className="rounded-xl border border-black/10 bg-white p-5">
+              <div key={idx} className="w-full rounded-xl border border-black/10 bg-white p-5 sm:w-64">
                 <span className="grid size-9 place-items-center rounded-full text-sm font-bold text-white" style={{ background: brand }}>
                   {idx + 1}
                 </span>
@@ -612,15 +616,15 @@ function SectionView({
     }
 
     case "stats": {
-      const stats = [p.n1, p.n2, p.n3, p.n4]
+      const stats = Array.from({ length: 8 }, (_, k) => p[`n${k + 1}`])
         .filter(Boolean)
         .map((n) => (n || "").split("|").map((x) => x.trim()));
       if (!stats.length) return null;
       return (
         <section className="px-5 py-12 lg:px-8" style={{ background: brand }}>
-          <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 text-center text-white sm:grid-cols-4">
+          <div className="mx-auto flex max-w-5xl flex-wrap justify-center gap-x-12 gap-y-6 text-center text-white">
             {stats.map((st, idx) => (
-              <div key={idx}>
+              <div key={idx} className="w-28">
                 <p className="text-3xl font-bold md:text-4xl">{st[0]}</p>
                 <p className="mt-1 text-sm text-white/75">{st[1]}</p>
               </div>
@@ -695,7 +699,7 @@ function SectionView({
           <h2 className={`mb-6 text-3xl font-bold ${upper}`}>
             {p.title || "Shop by category"}
           </h2>
-          <div className="flex gap-5 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center">
+          <div className="flex flex-wrap justify-center gap-x-7 gap-y-6">
             {cats.map((c, idx) => (
               <a
                 key={idx}
