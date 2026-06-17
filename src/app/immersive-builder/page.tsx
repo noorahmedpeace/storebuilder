@@ -69,11 +69,16 @@ export default function ImmersiveBuilderPage() {
 
           <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_220px]">
             <div className="relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[#071512]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/media/immersive-builder-scene.png"
-                alt="3D store scene editor preview"
+              <video
+                src="/media/immersive-builder-scene.mp4"
+                poster="/media/immersive-builder-scene.png"
                 className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] object-contain"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                aria-label="3D store scene editor preview"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-[#071512]/10 via-transparent to-[#071512]/72" />
               <div className="absolute inset-x-5 bottom-5 rounded-lg border border-white/10 bg-black/36 p-4 backdrop-blur">
