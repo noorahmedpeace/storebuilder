@@ -110,33 +110,34 @@ export default function Home() {
       <MotionHydrator />
       <MarketingHeader />
 
-      <section className="relative overflow-hidden border-b border-black/10 bg-[#f7f4ee]">
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#06110f] text-white">
         <AutoplayVideo
-          className="ambient-video absolute inset-0 h-full w-full object-cover opacity-100"
+          className="ambient-video absolute inset-0 h-full w-full object-cover opacity-55"
           src="/media/ambient-hero-background.mp4"
           hidden
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4ee]/92 via-[#f7f4ee]/48 to-[#f7f4ee]/8" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ee]/45 via-transparent to-[#f7f4ee]/70" />
-        <div className="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 py-10 md:grid-cols-[0.86fr_1.14fr] md:items-center lg:gap-10 lg:px-8 lg:py-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_18%,rgba(80,183,154,0.24),transparent_32%),radial-gradient(circle_at_24%_12%,rgba(243,183,79,0.16),transparent_28%),linear-gradient(90deg,#06110f_0%,rgba(6,17,15,0.94)_34%,rgba(6,17,15,0.62)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:72px_72px] opacity-25" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#06110f] to-transparent" />
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 py-12 md:grid-cols-[0.9fr_1.1fr] md:items-center lg:gap-10 lg:px-8 lg:py-20">
           <div className="flex flex-col justify-center">
-            <div className="motion-reveal mb-5 inline-flex w-fit items-center gap-2 rounded-lg border border-[#c6d1c7] bg-white/82 px-3 py-2 text-sm font-semibold text-[#143c3a] shadow-sm backdrop-blur">
+            <div className="motion-reveal mb-5 inline-flex w-fit items-center gap-2 rounded-md border border-[#88f5d5]/22 bg-[#88f5d5]/10 px-3 py-2 text-sm font-black text-[#d4fff1] shadow-[0_0_35px_rgba(80,183,154,0.16)] backdrop-blur">
               <Sparkles size={16} />
-              SEO-first online store builder
+              Premium commerce launch system
             </div>
             <h1
-              className="kinetic-heading hero-neon-title font-display max-w-3xl text-4xl font-bold leading-[1.08] tracking-normal text-[#101514] sm:text-5xl md:text-6xl lg:text-6xl"
+              className="hero-command-title font-display max-w-3xl text-5xl font-black leading-[0.96] tracking-normal sm:text-6xl md:text-7xl lg:text-7xl"
               style={{ "--delay": "90ms" } as CSSProperties}
             >
-              <AnimatedHeadline text="StoreBuilder Cloud" />
+              Build stores that feel expensive.
             </h1>
             <p
-              className="motion-reveal mt-5 max-w-2xl text-lg font-semibold leading-8 text-[#4f5b58]"
+              className="motion-reveal mt-6 max-w-2xl text-lg font-semibold leading-8 text-white/72"
               style={{ "--delay": "160ms" } as CSSProperties}
             >
-              Create a professional ecommerce website, manage products and
-              orders, accept payments, automate marketing, and grow with AI from
-              one cloud platform built for every business category.
+              StoreBuilder Cloud gives every business a polished storefront,
+              merchant dashboard, payments, automations, AI growth tools, and
+              immersive 3D product moments from one global commerce platform.
             </p>
             <div
               className="motion-reveal mt-7 flex flex-col gap-3 sm:flex-row"
@@ -145,7 +146,7 @@ export default function Home() {
               <Magnetic>
                 <a
                   href="/create"
-                  className="magnetic-button inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#143c3a] px-5 text-sm font-bold text-white transition hover:bg-[#0f2c2a]"
+                  className="nav-cta-prism magnetic-button inline-flex h-12 items-center justify-center gap-2 rounded-md px-5 text-sm font-black text-[#06110f] transition"
                 >
                   Create your store <Store size={17} />
                 </a>
@@ -153,7 +154,7 @@ export default function Home() {
               <Magnetic strength={0.22}>
                 <a
                   href="/immersive-builder"
-                  className="magnetic-button inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-black/15 bg-white/86 px-5 text-sm font-bold text-[#143c3a] backdrop-blur transition hover:border-[#143c3a]"
+                  className="magnetic-button inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/14 bg-white/8 px-5 text-sm font-black text-white backdrop-blur transition hover:border-[#88f5d5]/55 hover:bg-white/12"
                 >
                   3D builder plan <BarChart3 size={17} />
                 </a>
@@ -174,13 +175,13 @@ export default function Home() {
             {stats.map((item, index) => (
               <div
                 key={item.label}
-                className="motion-reveal premium-surface rounded-lg border border-black/10 bg-white/86 p-4 shadow-sm backdrop-blur"
+                className="motion-reveal hero-stat-tile rounded-lg border border-white/10 bg-white/7 p-4 shadow-sm backdrop-blur"
                 style={{ "--delay": `${120 + index * 70}ms` } as CSSProperties}
               >
-                <p className="font-mono text-xl font-bold text-[#143c3a]">
+                <p className="font-mono text-xl font-bold text-[#d4fff1]">
                   {item.value}
                 </p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-[#6b6f69]">
+                <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-white/52">
                   {item.label}
                 </p>
               </div>
@@ -188,7 +189,7 @@ export default function Home() {
           </div>
           <Marquee
             items={motionRail}
-            className="motion-reveal order-4 rounded-lg border border-black/10 bg-white/64 py-3 backdrop-blur md:col-span-2"
+            className="motion-reveal order-4 rounded-lg border border-white/10 bg-white/7 py-3 text-white/72 backdrop-blur md:col-span-2"
           />
         </div>
       </section>
