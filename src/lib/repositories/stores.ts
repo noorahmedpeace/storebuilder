@@ -5,6 +5,38 @@ import { stores } from "@/lib/platform-data";
 import { getTheme } from "@/lib/themes";
 import { normalizeLayout } from "@/lib/sections";
 import type { Section } from "@/lib/sections";
+import { normalizePrice } from "@/lib/validation";
+
+/** Pull every sellable item out of a builder layout (Shop Grid products, Deals,
+ *  and Menu rows) so they can be created as real, buyable catalog products. */
+function sellableItemsFromLayout(
+  layout: Section[],
+): { name: string; price: string; img?: string; desc?: string }[] {
+  const items: { name: string; price: string; img?: string; desc?: string }[] = [];
+  for (const sec of layout) {
+    const p = sec.props ?? {};
+    if (sec.type === "products" || sec.type === "deals") {
+      const prefix = sec.type === "products" ? "pr" : "d";
+      for (let i = 1; i <= 24; i++) {
+        const raw = p[`${prefix}${i}`];
+        const img = p[`${prefix}${i}img`];
+        if (!raw && !img) continue;
+        const [name, price] = String(raw ?? "").split("|");
+        if ((name && name.trim()) || img) {
+          items.push({ name: (name || "Product").trim(), price: (price || "").trim(), img: img || undefined });
+        }
+      }
+    } else if (sec.type === "menuList") {
+      for (const row of String(p.items ?? "").split("\n")) {
+        const [name, price, desc] = row.split("|");
+        if (name && name.trim()) {
+          items.push({ name: name.trim(), price: (price || "").trim(), desc: (desc || "").trim() });
+        }
+      }
+    }
+  }
+  return items;
+}
 
 /** Platform-admin scope: stores ARE the tenants, so these are not storeId-scoped. */
 export async function listStores() {
@@ -110,6 +142,14 @@ export async function createStoreWithOwner(
   const theme = getTheme(input.themeKey);
   const passwordHash = await bcrypt.hash(input.password, 10);
 
+  // Build the final layout: normalize, and ensure there's a Shop Grid so the
+  // store always has a working products section to sell from.
+  const layout: Section[] = input.layout ? normalizeLayout(input.layout) : [];
+  if (layout.length && !layout.some((s) => s.type === "products" && s.visible !== false)) {
+    layout.push({ id: "shop-grid", type: "products", visible: true, props: { title: "Shop" } });
+  }
+  const sellable = sellableItemsFromLayout(layout);
+
   try {
     const result = await db.$transaction(async (tx) => {
       const ownerRole = await tx.role.upsert({
@@ -135,14 +175,44 @@ export async function createStoreWithOwner(
             input.logoText || input.storeName.slice(0, 2).toUpperCase(),
           logoUrl: input.logoUrl || null,
           fontKey: input.fontKey || theme.defaultFont,
-          ...(input.layout
-            ? { layout: normalizeLayout(input.layout) as unknown as Prisma.InputJsonValue }
+          ...(layout.length
+            ? { layout: layout as unknown as Prisma.InputJsonValue }
             : {}),
           tagline: input.tagline || `Welcome to ${input.storeName}`,
           subscription: { create: { plan: "Starter", status: "trialing" } },
           members: { create: { userId: user.id, roleId: ownerRole.id } },
         },
       });
+
+      // Turn the builder's items into real, buyable catalog products.
+      const seen = new Set<string>();
+      let idx = 0;
+      for (const item of sellable) {
+        const key = item.name.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        idx += 1;
+        const baseSlug = (slugify(item.name) || "item").slice(0, 36);
+        await tx.product.create({
+          data: {
+            storeId: store.id,
+            title: item.name,
+            slug: `${baseSlug}-${idx}`,
+            description: item.desc || "",
+            status: "active",
+            variants: {
+              create: {
+                sku: `SKU-${idx}`,
+                title: "Default",
+                price: new Prisma.Decimal(normalizePrice(item.price || "0")),
+              },
+            },
+            ...(item.img
+              ? { images: { create: { url: item.img, position: 0 } } }
+              : {}),
+          },
+        });
+      }
 
       return { storeId: store.id, slug: store.slug, userId: user.id };
     });
