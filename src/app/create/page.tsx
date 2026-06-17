@@ -772,6 +772,9 @@ export function MediaBox({
 
 export type Editor = { set: (key: string, value: string) => void; pick: (key: string) => void };
 
+export type PreviewItem = { name: string; price: string; img?: string; desc?: string };
+export type OpenItem = (item: PreviewItem) => void;
+
 /** Dashed "+ Add ..." button shown inside editable sections. */
 export function AddBtn({ onClick, label }: { onClick: () => void; label: string }) {
   return (
@@ -786,8 +789,21 @@ export function AddBtn({ onClick, label }: { onClick: () => void; label: string 
 }
 
 /* ---------------- Preview section renderer ---------------- */
-export function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ctx; ed?: Editor }) {
+export function PreviewSection({
+  section,
+  ctx,
+  ed,
+  onOpenItem,
+}: {
+  section: Section;
+  ctx: Ctx;
+  ed?: Editor;
+  onOpenItem?: OpenItem;
+}) {
   const p = section.props ?? {};
+  // In read-only preview (/preview), make item cards tappable to open a detail popup.
+  const tap = (item: PreviewItem) =>
+    onOpenItem && !ed ? { role: "button" as const, tabIndex: 0, onClick: () => onOpenItem(item), className: "cursor-pointer" } : {};
   // text helper: editable when `ed` is present, plain text otherwise
   const T = (key: string, current: string, placeholder: string, area = false, className = "") =>
     ed ? (
@@ -835,7 +851,7 @@ export function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ct
           <div className="grid grid-cols-3 gap-3">
             {showSamples
               ? previewProducts.map((product) => (
-                  <div key={product.name} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`}>
+                  <div key={product.name} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`} {...tap({ name: product.name, price: product.price, img: product.image })}>
                     <div className="aspect-square w-full overflow-hidden bg-zinc-100">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
@@ -851,7 +867,7 @@ export function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ct
                   const name = (raw.split("|")[0] || "").trim();
                   const price = (raw.split("|")[1] || "").trim();
                   return (
-                    <div key={i} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`}>
+                    <div key={i} className={`overflow-hidden border border-black/10 bg-white shadow-sm ${ctx.radius}`} {...tap({ name, price, img: p[`pr${i}img`] })}>
                       <MediaBox src={p[`pr${i}img`] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-square" onPick={ed ? () => ed.pick(`pr${i}img`) : undefined} />
                       <div className="p-2">
                         <p className="truncate text-xs font-bold">{ed ? <EditableText value={name} placeholder="Product name" onSave={(v) => setPart(`pr${i}`, raw, 0, v)} /> : name}</p>
@@ -981,7 +997,7 @@ export function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ct
               const name = (raw.split("|")[0] || "").trim();
               const price = (raw.split("|")[1] || "").trim();
               return (
-                <div key={i} className="overflow-hidden rounded border border-black/10 bg-white">
+                <div key={i} className="overflow-hidden rounded border border-black/10 bg-white" {...tap({ name, price, img: p[imgKey] })}>
                   <MediaBox src={p[imgKey] || undefined} brand={ctx.brand} accent={ctx.accent} className="aspect-[4/3]" onPick={ed ? () => ed.pick(imgKey) : undefined} />
                   <div className="p-1.5 text-[10px] font-bold">{ed ? <EditableText value={name} placeholder="Name" onSave={(v) => setPart(nameKey, raw, 0, v)} /> : name}</div>
                   <div className="px-1.5 pb-1.5 text-[10px] text-[#555]">{ed ? <EditableText value={price} placeholder="Price" onSave={(v) => setPart(nameKey, raw, 1, v)} /> : price}</div>
@@ -1013,7 +1029,7 @@ export function PreviewSection({ section, ctx, ed }: { section: Section; ctx: Ct
             const name = (a[0] || "").trim();
             const price = (a[1] || "").trim();
             return (
-              <div key={i} className="flex justify-between border-b border-black/10 py-1.5 text-sm">
+              <div key={i} className="flex justify-between border-b border-black/10 py-1.5 text-sm" {...tap({ name, price, desc: (a[2] || "").trim() })}>
                 <span className="font-semibold">{ed ? <EditableText value={name} placeholder="Item" onSave={(v) => setCell(i, 0, v)} /> : name}</span>
                 <span className="font-mono font-bold" style={{ color: ctx.brand }}>{ed ? <EditableText value={price} placeholder="0" onSave={(v) => setCell(i, 1, v)} /> : price}</span>
               </div>

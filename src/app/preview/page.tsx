@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Monitor, Smartphone } from "lucide-react";
+import { ArrowLeft, ArrowRight, Monitor, Smartphone, X } from "lucide-react";
 import { getTheme } from "@/lib/themes";
 import { getFont } from "@/lib/fonts";
 import { normalizeLayout, type Section } from "@/lib/sections";
 import { STARTER_TEMPLATES } from "@/lib/templates";
-import { PreviewSection, type Ctx } from "@/app/create/page";
+import { PreviewSection, type Ctx, type PreviewItem } from "@/app/create/page";
 
 const DRAFT_KEY = "storebuilder_draft";
 
@@ -27,6 +27,7 @@ export default function PreviewPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [device, setDevice] = useState<"phone" | "desktop" | null>(null);
+  const [selected, setSelected] = useState<PreviewItem | null>(null);
 
   useEffect(() => {
     let d: Draft | null = null;
@@ -121,7 +122,7 @@ export default function PreviewPage() {
       {sections
         .filter((s) => s.visible)
         .map((s) => (
-          <PreviewSection key={s.id} section={s} ctx={ctx} />
+          <PreviewSection key={s.id} section={s} ctx={ctx} onOpenItem={setSelected} />
         ))}
       <div className="px-6 py-8 text-center text-xs text-[#8a8a8a]">
         © {name} · Powered by StoreBuilder
@@ -170,6 +171,51 @@ export default function PreviewPage() {
           {storeContent}
         </div>
       )}
+
+      {/* product detail popup (preview) */}
+      {selected ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative">
+              <div
+                className="aspect-[4/3] w-full"
+                style={{ background: selected.img ? `center/cover no-repeat url(${selected.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
+              />
+              <button
+                onClick={() => setSelected(null)}
+                className="absolute right-3 top-3 grid size-8 place-items-center rounded-full bg-white/90 text-zinc-700 shadow"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="p-5">
+              <h3 className="text-xl font-bold">{selected.name || "Product"}</h3>
+              {selected.price ? (
+                <p className="mt-1 font-mono text-lg font-bold" style={{ color: brand }}>
+                  Rs {selected.price.replace(/^rs\.?\s*/i, "")}
+                </p>
+              ) : null}
+              {selected.desc ? <p className="mt-3 text-sm leading-6 text-[#555]">{selected.desc}</p> : null}
+              <button
+                className="mt-5 h-11 w-full rounded-lg font-bold text-white"
+                style={{ background: brand }}
+                onClick={() => setSelected(null)}
+              >
+                Add to cart
+              </button>
+              <p className="mt-2 text-center text-xs text-zinc-400">
+                This is a preview. Add-to-cart &amp; checkout work on your published store.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
