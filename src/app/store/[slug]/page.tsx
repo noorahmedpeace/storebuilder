@@ -19,12 +19,15 @@ export async function generateMetadata({
 
 export default async function StorefrontPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ q?: string }>;
 }) {
   const { slug } = await params;
+  const { q } = await searchParams;
   const store = await getStoreBySlug(slug);
   if (!store) notFound();
   const cartCount = await getCartCount(store.id);
-  return <Storefront store={store} cartCount={cartCount} />;
+  return <Storefront store={store} cartCount={cartCount} query={q ?? ""} />;
 }

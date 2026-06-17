@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, MessageCircle, ShoppingBag, ShoppingCart, Star } from "lucide-react";
+import { Check, MessageCircle, Search, ShoppingBag, ShoppingCart, Star } from "lucide-react";
 import { getStoreBySlug } from "@/lib/repositories/stores";
 import { AddToCart } from "./add-to-cart";
 import { StoreJsonLd } from "./json-ld";
@@ -30,18 +30,34 @@ function waLink(whatsapp: string | null, text: string) {
   return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
 }
 
+/** Loose match for search / category clicks: matches if any meaningful word of
+ *  the query (singularised) appears in the text. Handles plural category names. */
+function matchesQuery(text: string, query: string): boolean {
+  const tokens = query
+    .toLowerCase()
+    .split(/[\s,&]+/)
+    .map((w) => w.replace(/s$/, ""))
+    .filter((w) => w.length > 2);
+  if (!tokens.length) return true;
+  const t = text.toLowerCase();
+  return tokens.some((tok) => t.includes(tok));
+}
+
 export function Storefront({
   store,
   cartCount = 0,
+  query = "",
 }: {
   store: StoreData;
   cartCount?: number;
+  query?: string;
 }) {
   const theme = getTheme(store.themeKey);
   const brand = store.brandColor || theme.brandColor;
   const accent = store.accentColor || theme.accentColor;
   const sections = normalizeLayout(store.layout).filter((s) => s.visible);
   const font = getFont(store.fontKey ?? theme.defaultFont);
+  const hasProducts = store.products.length > 0;
 
   return (
     <main
@@ -96,7 +112,30 @@ export function Storefront({
             </Link>
           </div>
         </div>
+        {hasProducts ? (
+          <div className="mx-auto max-w-7xl px-5 pb-3 lg:px-8">
+            <form action={`/store/${store.slug}`} className="relative">
+              <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-black/40" />
+              <input
+                name="q"
+                defaultValue={query}
+                placeholder={`Search ${store.name}…`}
+                className="h-10 w-full rounded-lg border border-black/10 bg-white pl-9 pr-3 text-sm outline-none focus:border-black/30"
+              />
+            </form>
+          </div>
+        ) : null}
       </header>
+
+      {query ? (
+        <div className="mx-auto max-w-7xl px-5 pt-4 text-sm lg:px-8">
+          <span className="text-[#5d6561]">Showing results for </span>
+          <span className="font-bold">“{query}”</span>
+          <Link href={`/store/${store.slug}`} className="ml-2 font-semibold underline" style={{ color: brand }}>
+            clear
+          </Link>
+        </div>
+      ) : null}
 
       {sections.map((section) => (
         <Reveal key={section.id}>
@@ -106,6 +145,7 @@ export function Storefront({
             theme={theme}
             brand={brand}
             accent={accent}
+            query={query}
           />
         </Reveal>
       ))}
@@ -137,12 +177,14 @@ function SectionView({
   theme,
   brand,
   accent,
+  query = "",
 }: {
   section: Section;
   store: StoreData;
   theme: ReturnType<typeof getTheme>;
   brand: string;
   accent: string;
+  query?: string;
 }) {
   const p = section.props ?? {};
   const head = "";
@@ -198,24 +240,33 @@ function SectionView({
         text: p[`pr${k + 1}`],
       })).filter((d) => d.text || d.img);
       const orderLink = waLink(store.whatsapp, `Hi ${store.name}, I'd like to order.`);
+      const visibleProducts = query
+        ? store.products.filter((pr) => matchesQuery(`${pr.title} ${pr.description ?? ""}`, query))
+        : store.products;
       return (
-        <section className="mx-auto max-w-7xl px-5 pb-16 lg:px-8">
+        <section id="shop" className="mx-auto max-w-7xl scroll-mt-24 px-5 pb-16 lg:px-8">
           <h2 className={`mb-7 text-3xl font-bold ${head} ${upper}`}>
             {p.title || "Products"}
           </h2>
           {store.products.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {store.products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  store={store}
-                  theme={theme}
-                  brand={brand}
-                  accent={accent}
-                />
-              ))}
-            </div>
+            visibleProducts.length > 0 ? (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {visibleProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    store={store}
+                    theme={theme}
+                    brand={brand}
+                    accent={accent}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-xl border border-dashed border-black/15 bg-white/60 p-8 text-center text-[#68716d]">
+                No products match “{query}”.
+              </p>
+            )
           ) : manual.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {manual.map((d, idx) => {
@@ -646,13 +697,17 @@ function SectionView({
           </h2>
           <div className="flex gap-5 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center">
             {cats.map((c, idx) => (
-              <div key={idx} className="w-24 shrink-0 text-center">
+              <a
+                key={idx}
+                href={c.name ? `/store/${store.slug}?q=${encodeURIComponent(c.name)}#shop` : "#"}
+                className="w-24 shrink-0 text-center transition hover:-translate-y-0.5"
+              >
                 <div
                   className="mx-auto size-20 rounded-full border border-black/10 shadow-sm"
                   style={{ background: c.img ? `center/cover no-repeat url(${c.img})` : `linear-gradient(135deg, ${brand}, ${accent})` }}
                 />
                 <p className="mt-2 text-xs font-semibold leading-tight">{c.name}</p>
-              </div>
+              </a>
             ))}
           </div>
         </section>
