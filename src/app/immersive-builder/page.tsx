@@ -68,15 +68,18 @@ export default function ImmersiveBuilderPage() {
           </div>
 
           <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_220px]">
-            <div className="relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[radial-gradient(circle_at_30%_20%,#4cb396,transparent_26%),linear-gradient(135deg,#143c3a,#0b1716)] p-4">
-              <div className="absolute left-[12%] top-[18%] h-28 w-40 rotate-[-8deg] rounded-lg border border-white/20 bg-white/12 shadow-2xl" />
-              <div className="absolute right-[16%] top-[12%] h-36 w-32 rotate-[9deg] rounded-lg border border-white/20 bg-[#f3b74f]/80 shadow-2xl" />
-              <div className="absolute bottom-[18%] left-[28%] h-32 w-52 rotate-[4deg] rounded-lg border border-white/20 bg-white/16 shadow-2xl" />
-              <div className="absolute bottom-[12%] right-[10%] h-24 w-24 rounded-full border border-white/20 bg-[#9fcfc0]/70 shadow-2xl" />
-              <div className="absolute inset-x-6 bottom-5 rounded-lg border border-white/10 bg-black/25 p-4 backdrop-blur">
+            <div className="relative min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-[#071512]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/media/immersive-builder-scene.png"
+                alt="3D store scene editor preview"
+                className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] object-contain"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#071512]/10 via-transparent to-[#071512]/72" />
+              <div className="absolute inset-x-5 bottom-5 rounded-lg border border-white/10 bg-black/36 p-4 backdrop-blur">
                 <p className="font-mono text-xs text-white/60">scene.json</p>
                 <p className="mt-2 text-sm text-white/80">
-                  pages → objects → animations → publish bundle
+                  pages to objects to animations to publish bundle
                 </p>
               </div>
             </div>
