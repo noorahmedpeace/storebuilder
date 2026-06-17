@@ -1,8 +1,10 @@
 import Link from "next/link";
 import {
   ChevronRight,
+  CircleDot,
   Menu,
   ShoppingBag,
+  Sparkles,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
@@ -29,43 +31,43 @@ const allLinks = [...primaryLinks, ...secondaryLinks];
 
 export function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-30 bg-[#f7f4ee]/86 px-3 py-3 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-white/8 bg-[#06110f]/94 px-3 py-3 shadow-[0_18px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
       <div className="mx-auto max-w-7xl">
-        <div className="grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg border border-[#143c3a]/20 bg-[#102321] px-3 text-white shadow-[0_20px_70px_rgba(16,35,33,0.22)] lg:grid-cols-[1fr_auto_1fr] lg:px-4">
+        <div className="nav-command-deck grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg border border-white/12 bg-[#081916]/88 px-3 text-white shadow-[0_26px_90px_rgba(0,0,0,0.36),inset_0_1px_0_rgba(255,255,255,0.08)] lg:grid-cols-[1fr_auto_1fr] lg:px-4">
           <Link href="/" className="group flex min-w-0 items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-md border border-white/14 bg-white/10 text-[#d4fff1] transition group-hover:bg-[#d4fff1] group-hover:text-[#102321]">
+            <span className="nav-logo-cube grid size-11 shrink-0 place-items-center rounded-md border border-[#c9fff0]/18 bg-[#d4fff1]/9 text-[#d4fff1] shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_16px_35px_rgba(80,183,154,0.16)] transition group-hover:border-[#d4fff1]/45 group-hover:bg-[#d4fff1] group-hover:text-[#06110f]">
               <ShoppingBag size={19} />
             </span>
             <span className="min-w-0 leading-none">
-              <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-[#9fcfc0]">
+              <span className="block text-[10px] font-extrabold uppercase tracking-[0.28em] text-[#88f5d5]">
                 StoreBuilder
               </span>
-              <span className="font-display mt-1 block truncate text-base font-bold text-white sm:text-lg">
+              <span className="font-display mt-1 block truncate text-base font-extrabold text-white sm:text-lg">
                 Commerce Cloud
               </span>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-md border border-white/10 bg-black/18 p-1 text-sm font-semibold text-white/70 lg:flex">
+          <nav className="hidden items-center gap-1 rounded-lg border border-white/10 bg-black/28 p-1 text-sm font-bold text-white/66 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] lg:flex">
             {primaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-[6px] px-3 py-2 transition hover:bg-white hover:text-[#102321]"
+                className="nav-link-glow rounded-[7px] px-3 py-2 transition hover:text-white"
               >
                 {link.label}
               </Link>
             ))}
             <details className="group relative">
-              <summary className="cursor-pointer list-none rounded-[6px] px-3 py-2 transition hover:bg-white hover:text-[#102321]">
+              <summary className="nav-link-glow cursor-pointer list-none rounded-[7px] px-3 py-2 transition hover:text-white">
                 More
               </summary>
-              <div className="absolute right-0 top-11 w-52 rounded-lg border border-white/10 bg-[#102321] p-2 shadow-2xl">
+              <div className="absolute right-0 top-11 w-56 rounded-lg border border-white/12 bg-[#071512]/96 p-2 shadow-[0_24px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl">
                 {secondaryLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="block rounded-md px-3 py-2 text-white/76 transition hover:bg-white hover:text-[#102321]"
+                    className="block rounded-md px-3 py-2 text-white/76 transition hover:bg-[#d4fff1] hover:text-[#071512]"
                   >
                     {link.label}
                   </Link>
@@ -75,16 +77,21 @@ export function MarketingHeader() {
           </nav>
 
           <div className="ml-auto flex items-center justify-end gap-2">
+            <span className="hidden h-10 items-center gap-2 rounded-md border border-[#f3b74f]/20 bg-[#f3b74f]/8 px-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#ffd98d] xl:inline-flex">
+              <CircleDot size={12} className="animate-pulse" />
+              Live
+            </span>
             <Link
               href="/login"
-              className="hidden h-10 items-center rounded-md border border-white/14 px-4 text-sm font-semibold text-white/82 transition hover:bg-white hover:text-[#102321] sm:inline-flex"
+              className="hidden h-10 items-center rounded-md border border-white/12 bg-white/5 px-4 text-sm font-bold text-white/78 transition hover:border-white/30 hover:bg-white hover:text-[#06110f] sm:inline-flex"
             >
               Sign in
             </Link>
             <Link
               href="/create"
-              className="magnetic-button inline-flex h-10 items-center gap-2 rounded-md bg-[#d4fff1] px-4 text-sm font-bold text-[#102321] shadow-sm transition hover:bg-white"
+              className="magnetic-button inline-flex h-10 items-center gap-2 rounded-md bg-[#d4fff1] px-4 text-sm font-extrabold text-[#06110f] shadow-[0_0_0_1px_rgba(212,255,241,0.2),0_18px_38px_rgba(80,183,154,0.2)] transition hover:bg-white"
             >
+              <Sparkles size={15} />
               Create store <ChevronRight size={16} />
             </Link>
             <details className="relative lg:hidden">
@@ -94,12 +101,12 @@ export function MarketingHeader() {
               >
                 <Menu size={18} />
               </summary>
-              <nav className="absolute right-0 top-12 z-40 grid w-64 gap-1 rounded-lg border border-white/12 bg-[#102321] p-2 shadow-2xl">
+              <nav className="absolute right-0 top-12 z-40 grid w-64 gap-1 rounded-lg border border-white/12 bg-[#071512]/98 p-2 shadow-2xl backdrop-blur-xl">
                 {allLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="rounded-md px-3 py-2 text-sm font-bold text-white/78 transition hover:bg-white hover:text-[#102321]"
+                    className="rounded-md px-3 py-2 text-sm font-bold text-white/78 transition hover:bg-[#d4fff1] hover:text-[#071512]"
                   >
                     {link.label}
                   </Link>

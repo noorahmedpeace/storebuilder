@@ -85,6 +85,26 @@ h3,
   }
 }
 
+@keyframes nav-border-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes nav-cube-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: translate3d(0, -2px, 0) rotateX(7deg) rotateY(-8deg);
+  }
+}
+
 .ambient-video {
   animation: ambient-drift 18s ease-in-out infinite;
   transform-origin: center;
@@ -188,6 +208,93 @@ h3,
 
 .pulse-ring {
   animation: soft-pulse 4.8s ease-in-out infinite;
+}
+
+.nav-command-deck {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-command-deck::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    110deg,
+    rgba(212, 255, 241, 0.08),
+    rgba(80, 183, 154, 0.48),
+    rgba(243, 183, 79, 0.34),
+    rgba(212, 255, 241, 0.08)
+  );
+  background-size: 260% 100%;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: nav-border-flow 8s ease-in-out infinite;
+}
+
+.nav-command-deck::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(80, 183, 154, 0.18), transparent 30%),
+    radial-gradient(circle at 86% 10%, rgba(243, 183, 79, 0.12), transparent 28%);
+  pointer-events: none;
+}
+
+.nav-command-deck > * {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-logo-cube {
+  animation: nav-cube-float 5.4s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+.nav-link-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link-glow::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(212, 255, 241, 0.14), rgba(255, 255, 255, 0.03));
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.nav-link-glow::after {
+  content: "";
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 4px;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #88f5d5, transparent);
+  opacity: 0.28;
+  transform: scaleX(0.45);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+.nav-link-glow:hover::before {
+  opacity: 1;
+}
+
+.nav-link-glow:hover::after {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
 @keyframes aurora-drift {
