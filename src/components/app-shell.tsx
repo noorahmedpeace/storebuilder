@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   ChevronRight,
-  CircleDot,
   Menu,
   ShoppingBag,
   Sparkles,
@@ -31,35 +30,35 @@ const allLinks = [...primaryLinks, ...secondaryLinks];
 
 export function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-white/8 bg-[#06110f]/94 px-3 py-3 shadow-[0_18px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+    <header className="sticky top-0 z-30 px-3 py-3">
       <div className="mx-auto max-w-7xl">
-        <div className="nav-command-deck grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg border border-white/12 bg-[#081916]/88 px-3 text-white shadow-[0_26px_90px_rgba(0,0,0,0.36),inset_0_1px_0_rgba(255,255,255,0.08)] lg:grid-cols-[1fr_auto_1fr] lg:px-4">
-          <Link href="/" className="group flex min-w-0 items-center gap-3">
-            <span className="nav-logo-cube grid size-11 shrink-0 place-items-center rounded-md border border-[#c9fff0]/18 bg-[#d4fff1]/9 text-[#d4fff1] shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_16px_35px_rgba(80,183,154,0.16)] transition group-hover:border-[#d4fff1]/45 group-hover:bg-[#d4fff1] group-hover:text-[#06110f]">
+        <div className="nav-hologram-wrap grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg px-2.5 py-2 text-white shadow-[0_26px_90px_rgba(0,0,0,0.24)] lg:grid-cols-[1fr_auto_1fr]">
+          <Link href="/" className="nav-brand-plate group flex min-w-0 items-center gap-3 rounded-lg px-2.5 py-2">
+            <span className="nav-logo-cube grid size-11 shrink-0 place-items-center rounded-md border border-[#c9fff0]/22 bg-[#d4fff1]/10 text-[#d4fff1] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_16px_35px_rgba(80,183,154,0.18)] transition group-hover:border-[#d4fff1]/50 group-hover:bg-[#d4fff1] group-hover:text-[#06110f]">
               <ShoppingBag size={19} />
             </span>
             <span className="min-w-0 leading-none">
-              <span className="block text-[10px] font-extrabold uppercase tracking-[0.28em] text-[#88f5d5]">
+              <span className="nav-brand-kicker block text-[10px] font-black uppercase tracking-[0.32em] text-[#88f5d5]">
                 StoreBuilder
               </span>
-              <span className="font-display mt-1 block truncate text-base font-extrabold text-white sm:text-lg">
+              <span className="font-display mt-1 block truncate text-base font-black text-white sm:text-lg">
                 Commerce Cloud
               </span>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-lg border border-white/10 bg-black/28 p-1 text-sm font-bold text-white/66 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] lg:flex">
+          <nav className="hidden items-center gap-1.5 text-sm font-black text-white/68 lg:flex">
             {primaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="nav-link-glow rounded-[7px] px-3 py-2 transition hover:text-white"
+                className="nav-link-chip px-3 py-2 transition hover:text-white"
               >
                 {link.label}
               </Link>
             ))}
             <details className="group relative">
-              <summary className="nav-link-glow cursor-pointer list-none rounded-[7px] px-3 py-2 transition hover:text-white">
+              <summary className="nav-link-chip cursor-pointer list-none px-3 py-2 transition hover:text-white">
                 More
               </summary>
               <div className="absolute right-0 top-11 w-56 rounded-lg border border-white/12 bg-[#071512]/96 p-2 shadow-[0_24px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl">
@@ -77,19 +76,19 @@ export function MarketingHeader() {
           </nav>
 
           <div className="ml-auto flex items-center justify-end gap-2">
-            <span className="hidden h-10 items-center gap-2 rounded-md border border-[#f3b74f]/20 bg-[#f3b74f]/8 px-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#ffd98d] xl:inline-flex">
-              <CircleDot size={12} className="animate-pulse" />
-              Live
+            <span className="nav-status-pill hidden h-10 items-center gap-2 rounded-md px-3 text-xs font-black uppercase tracking-[0.18em] text-[#ffd98d] xl:inline-flex">
+              <span className="size-1.5 rounded-full bg-[#ffd98d] shadow-[0_0_18px_rgba(255,217,141,0.9)]" />
+              Online OS
             </span>
             <Link
               href="/login"
-              className="hidden h-10 items-center rounded-md border border-white/12 bg-white/5 px-4 text-sm font-bold text-white/78 transition hover:border-white/30 hover:bg-white hover:text-[#06110f] sm:inline-flex"
+              className="hidden h-10 items-center rounded-md border border-white/10 bg-white/5 px-4 text-sm font-black text-white/76 transition hover:border-white/28 hover:bg-white hover:text-[#06110f] sm:inline-flex"
             >
               Sign in
             </Link>
             <Link
               href="/create"
-              className="magnetic-button inline-flex h-10 items-center gap-2 rounded-md bg-[#d4fff1] px-4 text-sm font-extrabold text-[#06110f] shadow-[0_0_0_1px_rgba(212,255,241,0.2),0_18px_38px_rgba(80,183,154,0.2)] transition hover:bg-white"
+              className="nav-cta-prism magnetic-button inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-black text-[#06110f] transition"
             >
               <Sparkles size={15} />
               Create store <ChevronRight size={16} />
