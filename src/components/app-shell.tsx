@@ -30,10 +30,10 @@ const allLinks = [...primaryLinks, ...secondaryLinks];
 
 export function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#06110f]/88 px-3 py-3 backdrop-blur-2xl">
+    <header className="sticky top-0 z-30 px-3 py-3">
       <div className="mx-auto max-w-7xl">
-        <div className="nav-premium-shell grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg px-2.5 py-2 text-white lg:grid-cols-[1fr_auto_1fr]">
-          <Link href="/" className="nav-brand-plate group flex min-w-0 items-center gap-3 rounded-md px-2.5 py-2">
+        <div className="nav-hologram-wrap grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg px-2.5 py-2 text-white shadow-[0_26px_90px_rgba(0,0,0,0.24)] lg:grid-cols-[1fr_auto_1fr]">
+          <Link href="/" className="nav-brand-plate group flex min-w-0 items-center gap-3 rounded-lg px-2.5 py-2">
             <span className="nav-logo-cube grid size-11 shrink-0 place-items-center rounded-md border border-[#c9fff0]/22 bg-[#d4fff1]/10 text-[#d4fff1] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_16px_35px_rgba(80,183,154,0.18)] transition group-hover:border-[#d4fff1]/50 group-hover:bg-[#d4fff1] group-hover:text-[#06110f]">
               <ShoppingBag size={19} />
             </span>
@@ -47,7 +47,7 @@ export function MarketingHeader() {
             </span>
           </Link>
 
-          <nav className="nav-orbit-rail hidden items-center gap-1 text-sm font-black text-white/70 lg:flex">
+          <nav className="hidden items-center gap-1.5 text-sm font-black text-white/68 lg:flex">
             {primaryLinks.map((link) => (
               <Link
                 key={link.href}
@@ -78,7 +78,7 @@ export function MarketingHeader() {
           <div className="ml-auto flex items-center justify-end gap-2">
             <span className="nav-status-pill hidden h-10 items-center gap-2 rounded-md px-3 text-xs font-black uppercase tracking-[0.18em] text-[#ffd98d] xl:inline-flex">
               <span className="size-1.5 rounded-full bg-[#ffd98d] shadow-[0_0_18px_rgba(255,217,141,0.9)]" />
-              Live builder
+              Online OS
             </span>
             <Link
               href="/login"
