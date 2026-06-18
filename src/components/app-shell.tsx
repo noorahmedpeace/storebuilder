@@ -4,6 +4,7 @@ import {
   Menu,
   ShoppingBag,
   Sparkles,
+  WandSparkles,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
@@ -32,41 +33,41 @@ export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-30 px-3 py-3">
       <div className="mx-auto max-w-7xl">
-        <div className="nav-hologram-wrap grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-lg px-2.5 py-2 text-white shadow-[0_26px_90px_rgba(0,0,0,0.24)] lg:grid-cols-[1fr_auto_1fr]">
-          <Link href="/" className="nav-brand-plate group flex min-w-0 items-center gap-3 rounded-lg px-2.5 py-2">
-            <span className="nav-logo-cube grid size-11 shrink-0 place-items-center rounded-md border border-[#c9fff0]/22 bg-[#d4fff1]/10 text-[#d4fff1] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_16px_35px_rgba(80,183,154,0.18)] transition group-hover:border-[#d4fff1]/50 group-hover:bg-[#d4fff1] group-hover:text-[#06110f]">
+        <div className="grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 lg:grid-cols-[1fr_auto_1fr]">
+          <Link href="/" className="nav-liquid-brand group flex min-w-0 items-center gap-3 rounded-lg px-3 py-2.5">
+            <span className="nav-logo-cube grid size-10 shrink-0 place-items-center rounded-md border border-[#143c3a]/12 bg-[#143c3a] text-[#d4fff1] shadow-[0_16px_32px_rgba(20,60,58,0.24)] transition group-hover:-rotate-3 group-hover:scale-105">
               <ShoppingBag size={19} />
             </span>
             <span className="min-w-0 leading-none">
-              <span className="nav-brand-kicker block text-[10px] font-black uppercase tracking-[0.32em] text-[#88f5d5]">
+              <span className="nav-brand-kicker block text-[10px] font-black uppercase tracking-[0.3em] text-[#143c3a]/62">
                 StoreBuilder
               </span>
-              <span className="font-display mt-1 block truncate text-base font-black text-white sm:text-lg">
+              <span className="font-display mt-1 block truncate text-base font-black text-[#071512] sm:text-lg">
                 Commerce Cloud
               </span>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1.5 text-sm font-black text-white/68 lg:flex">
+          <nav className="nav-liquid-dock hidden items-center gap-1 rounded-lg p-1 text-sm font-black text-[#183b37]/68 lg:flex">
             {primaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="nav-link-chip px-3 py-2 transition hover:text-white"
+                className="nav-liquid-link rounded-[7px] px-3 py-2 transition"
               >
                 {link.label}
               </Link>
             ))}
             <details className="group relative">
-              <summary className="nav-link-chip cursor-pointer list-none px-3 py-2 transition hover:text-white">
+              <summary className="nav-liquid-link cursor-pointer list-none rounded-[7px] px-3 py-2 transition">
                 More
               </summary>
-              <div className="absolute right-0 top-11 w-56 rounded-lg border border-white/12 bg-[#071512]/96 p-2 shadow-[0_24px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl">
+              <div className="absolute right-0 top-12 w-56 rounded-lg border border-[#143c3a]/12 bg-white/92 p-2 text-[#071512] shadow-[0_24px_70px_rgba(20,60,58,0.22)] backdrop-blur-2xl">
                 {secondaryLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="block rounded-md px-3 py-2 text-white/76 transition hover:bg-[#d4fff1] hover:text-[#071512]"
+                    className="block rounded-md px-3 py-2 text-sm font-black text-[#143c3a]/70 transition hover:bg-[#143c3a] hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -76,19 +77,19 @@ export function MarketingHeader() {
           </nav>
 
           <div className="ml-auto flex items-center justify-end gap-2">
-            <span className="nav-status-pill hidden h-10 items-center gap-2 rounded-md px-3 text-xs font-black uppercase tracking-[0.18em] text-[#ffd98d] xl:inline-flex">
-              <span className="size-1.5 rounded-full bg-[#ffd98d] shadow-[0_0_18px_rgba(255,217,141,0.9)]" />
-              Online OS
+            <span className="nav-ai-pill hidden h-10 items-center gap-2 rounded-md px-3 text-xs font-black uppercase tracking-[0.18em] text-[#143c3a] xl:inline-flex">
+              <WandSparkles size={13} />
+              AI ready
             </span>
             <Link
               href="/login"
-              className="hidden h-10 items-center rounded-md border border-white/10 bg-white/5 px-4 text-sm font-black text-white/76 transition hover:border-white/28 hover:bg-white hover:text-[#06110f] sm:inline-flex"
+              className="nav-subtle-action hidden h-10 items-center rounded-md px-4 text-sm font-black text-[#143c3a]/74 transition sm:inline-flex"
             >
               Sign in
             </Link>
             <Link
               href="/create"
-              className="nav-cta-prism magnetic-button inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-black text-[#06110f] transition"
+              className="nav-primary-action magnetic-button inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-black text-white transition"
             >
               <Sparkles size={15} />
               Create store <ChevronRight size={16} />
@@ -96,16 +97,16 @@ export function MarketingHeader() {
             <details className="relative lg:hidden">
               <summary
                 aria-label="Open navigation"
-                className="grid size-10 cursor-pointer list-none place-items-center rounded-md border border-white/14 bg-white/10 text-white"
+                className="nav-subtle-action grid size-10 cursor-pointer list-none place-items-center rounded-md text-[#143c3a]"
               >
                 <Menu size={18} />
               </summary>
-              <nav className="absolute right-0 top-12 z-40 grid w-64 gap-1 rounded-lg border border-white/12 bg-[#071512]/98 p-2 shadow-2xl backdrop-blur-xl">
+              <nav className="absolute right-0 top-12 z-40 grid w-64 gap-1 rounded-lg border border-[#143c3a]/12 bg-white/94 p-2 shadow-2xl backdrop-blur-2xl">
                 {allLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="rounded-md px-3 py-2 text-sm font-bold text-white/78 transition hover:bg-[#d4fff1] hover:text-[#071512]"
+                    className="rounded-md px-3 py-2 text-sm font-black text-[#143c3a]/76 transition hover:bg-[#143c3a] hover:text-white"
                   >
                     {link.label}
                   </Link>
